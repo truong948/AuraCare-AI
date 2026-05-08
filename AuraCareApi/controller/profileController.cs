@@ -1,34 +1,38 @@
 using Microsoft.AspNetCore.Mvc;
 using Supabase;
 
-namespace AuraCareApi.controller
+namespace AuraCareApi.Controllers
 {
-  [ApiController]
-  [Route("api/[controller]")]
-  public class profileController : ControllerBase
-  {
-    private readonly ILogger<profileController> _logger;
-
-    public profileController(ILogger<profileController> logger)
+    [ApiController] // Chỉ định đây là một Web API Controller
+    [Route("api/[controller]")] // Đường dẫn sẽ là: api/SkinProfile
+    public class SkinProfileController : ControllerBase
     {
-      _logger = logger;
+        private readonly Supabase.Client _supabaseClient;
+
+        // Dependency Injection: Lấy Supabase Client đã cấu hình ở Program.cs
+        public SkinProfileController(Supabase.Client supabaseClient)
+        {
+            _supabaseClient = supabaseClient;
+        }
+
+        // 1. Lấy thông tin da của người dùng (GET)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProfile(string id)
+        {
+            var result = await _supabaseClient.From<Models.Profile>()
+                .Where(x => x.Id == id)
+                .Get();
+
+            if (result.Model == null) return NotFound("Không tìm thấy profile!");
+            return Ok(result.Model);
+        }
+
+        // 2. Cập nhật tình trạng da mới (POST/PUT)
+        [HttpPost]
+        public async Task<IActionResult> CreateProfile([FromBody] Models.Profile newProfile)
+        {
+            var result = await _supabaseClient.From<Models.Profile>().Insert(newProfile);
+            return Ok("Đã lưu thông tin da thành công!");
+        }
     }
-
-    [HttpGet(Name = "Id")]
-    public async Task<ActionResult> Get(string id)
-    {
-      var client = new Supabase.Client.From<model.profile>().where(p => p.Id == id).Get();
-      await client.InitializeAsync();
-
-      var profile = await client.From<Profile>().Where(p => p.Id == id).SingleAsync();
-
-      if (profile == null)
-      {
-        return NotFound();
-      }
-
-      return Ok(profile);
-    }
-
-  }
 }
