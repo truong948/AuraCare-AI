@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/storefront/product-card";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
+import { AddToCartButton } from "@/components/storefront/add-to-cart-button";
 import {
   formatMockPrice,
   getBadgeLabel,
@@ -86,7 +87,7 @@ export default async function ProductDetailPage({
                 </span>
               </div>
 
-              <div className="mt-6 flex items-end gap-4">
+              <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <p className="text-3xl font-bold text-[#0f172a]">{formatMockPrice(product.price)}</p>
                   <p className="mt-1 text-sm text-[#94a3b8] line-through">{formatMockPrice(product.compareAtPrice)}</p>
@@ -94,6 +95,10 @@ export default async function ProductDetailPage({
                 <div className="rounded-2xl bg-[#f5efe1] px-4 py-3 text-sm font-semibold text-[#8e6423]">
                   Tiết kiệm {formatMockPrice(product.compareAtPrice - product.price)}
                 </div>
+              </div>
+
+              <div className="mt-6">
+                <AddToCartButton productSlug={product.slug} />
               </div>
 
               <div className="mt-6 flex flex-wrap gap-2">

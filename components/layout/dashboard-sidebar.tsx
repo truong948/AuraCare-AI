@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 const navigationItems = [
   { label: "Tổng quan", href: "/dashboard", icon: SquareKanban },
+  { label: "Sản phẩm", href: "/dashboard/products", icon: SquareKanban },
   { label: "Nhật ký da", href: "/diary", icon: BookOpenText },
   { label: "AI Scan", href: "/scan", icon: ScanLine },
   { label: "Cài đặt", href: "/dashboard/settings", icon: Settings },
