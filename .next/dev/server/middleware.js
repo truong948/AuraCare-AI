@@ -53,6 +53,26 @@ module.exports = require("next/dist/server/app-render/after-task-async-storage.e
 
 /***/ }),
 
+/***/ "../app-render/work-async-storage.external":
+/*!*****************************************************************************!*\
+  !*** external "next/dist/server/app-render/work-async-storage.external.js" ***!
+  \*****************************************************************************/
+/***/ ((module) => {
+
+module.exports = require("next/dist/server/app-render/work-async-storage.external.js");
+
+/***/ }),
+
+/***/ "../app-render/work-unit-async-storage.external":
+/*!**********************************************************************************!*\
+  !*** external "next/dist/server/app-render/work-unit-async-storage.external.js" ***!
+  \**********************************************************************************/
+/***/ ((module) => {
+
+module.exports = require("next/dist/server/app-render/work-unit-async-storage.external.js");
+
+/***/ }),
+
 /***/ "./memory-cache.external":
 /*!**********************************************************************************!*\
   !*** external "next/dist/server/lib/incremental-cache/memory-cache.external.js" ***!
@@ -80,26 +100,6 @@ module.exports = require("next/dist/server/lib/incremental-cache/shared-cache-co
 /***/ ((module) => {
 
 module.exports = require("next/dist/server/lib/incremental-cache/tags-manifest.external.js");
-
-/***/ }),
-
-/***/ "./work-async-storage.external":
-/*!*****************************************************************************!*\
-  !*** external "next/dist/server/app-render/work-async-storage.external.js" ***!
-  \*****************************************************************************/
-/***/ ((module) => {
-
-module.exports = require("next/dist/server/app-render/work-async-storage.external.js");
-
-/***/ }),
-
-/***/ "./work-unit-async-storage.external":
-/*!**********************************************************************************!*\
-  !*** external "next/dist/server/app-render/work-unit-async-storage.external.js" ***!
-  \**********************************************************************************/
-/***/ ((module) => {
-
-module.exports = require("next/dist/server/app-render/work-unit-async-storage.external.js");
 
 /***/ }),
 

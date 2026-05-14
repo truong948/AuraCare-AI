@@ -1,11 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, Search, ShoppingCart, Sparkles, User2 } from "lucide-react";
+import { Menu, Search, Sparkles, User2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { StorefrontCartSheet } from "@/components/storefront/storefront-cart-sheet";
 
-const navItems = ["Supplement", "Skincare", "AI Consult", "Knowledge", "About"];
+const navItems = [
+  { label: "Bổ sung", href: "/categories/supplement" },
+  { label: "Chăm sóc da", href: "/categories/skincare" },
+  { label: "AI tư vấn", href: "/#ai-consult" },
+  { label: "Kiến thức", href: "/#knowledge" },
+  { label: "Giới thiệu", href: "/#top" },
+] as const;
 
 export function StorefrontHeader() {
   return (
@@ -15,7 +22,7 @@ export function StorefrontHeader() {
           variant="outline"
           size="icon"
           className="rounded-2xl border-[#d7e5df] bg-white lg:hidden"
-          aria-label="Open storefront menu"
+          aria-label="Mở menu"
         >
           <Menu className="h-4 w-4" />
         </Button>
@@ -26,7 +33,7 @@ export function StorefrontHeader() {
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#5b8c7a]">
-              Clean Clinical
+              Sạch sẽ và tin cậy
             </p>
             <p className="text-lg font-semibold tracking-tight text-slate-900">AuraCare</p>
           </div>
@@ -35,23 +42,31 @@ export function StorefrontHeader() {
         <nav className="hidden items-center gap-1 lg:flex">
           {navItems.map((item) => (
             <Button
-              key={item}
+              key={item.label}
+              asChild
               variant="ghost"
               className="rounded-2xl px-4 text-sm text-slate-600 hover:bg-[#edf4f1] hover:text-slate-900"
             >
-              {item}
+              <Link href={item.href}>{item.label}</Link>
             </Button>
           ))}
         </nav>
 
-        <div className="relative ml-auto hidden max-w-xl flex-1 lg:block">
+        <form action="/search" className="relative ml-auto hidden max-w-xl flex-1 lg:block">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <Input
             type="search"
-            placeholder="Search supplement, skincare, concern, ingredient..."
-            className="h-12 rounded-2xl border-[#d7e5df] bg-[#f8fbfa] pl-11 text-sm shadow-sm shadow-slate-950/5"
+            name="q"
+            placeholder="Tìm sản phẩm, vấn đề da, thành phần..."
+            className="h-12 rounded-2xl border-[#d7e5df] bg-[#f8fbfa] pl-11 pr-32 text-sm shadow-sm shadow-slate-950/5"
           />
-        </div>
+          <Button
+            type="submit"
+            className="absolute right-2 top-1/2 h-8 -translate-y-1/2 rounded-xl bg-[#5b8c7a] px-4 text-[#ffffff] hover:bg-[#4f7c6d]"
+          >
+            Tìm
+          </Button>
+        </form>
 
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
           <Button variant="outline" size="icon" className="rounded-2xl border-[#d7e5df] bg-white lg:hidden">
@@ -60,10 +75,7 @@ export function StorefrontHeader() {
           <Button variant="outline" size="icon" className="rounded-2xl border-[#d7e5df] bg-white">
             <User2 className="h-4 w-4" />
           </Button>
-          <Button className="rounded-2xl bg-[#e8a950] px-4 text-slate-950 hover:bg-[#d59c48]">
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            Cart
-          </Button>
+          <StorefrontCartSheet />
         </div>
       </div>
     </header>

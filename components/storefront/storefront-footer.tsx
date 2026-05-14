@@ -2,16 +2,31 @@ import Link from "next/link";
 
 const footerColumns = [
   {
-    title: "Shop",
-    links: ["Supplement", "Skincare", "Flash deals", "New arrivals"],
+    title: "Mua sắm",
+    links: [
+      { label: "Thực phẩm bổ sung", href: "/categories/supplement" },
+      { label: "Chăm sóc da", href: "/categories/skincare" },
+      { label: "Ưu đãi nhanh", href: "/#deals" },
+      { label: "Bài viết mới", href: "/#knowledge" },
+    ],
   },
   {
-    title: "AI Features",
-    links: ["Aura assistant", "Semantic search", "Recommendation feed", "AI notes"],
+    title: "Tính năng AI",
+    links: [
+      { label: "Aura AI", href: "/#ai-consult" },
+      { label: "Tìm kiếm ngữ nghĩa", href: "/#ai-consult" },
+      { label: "Gợi ý sản phẩm", href: "/#deals" },
+      { label: "Ghi chú AI", href: "/#knowledge" },
+    ],
   },
   {
-    title: "Support",
-    links: ["Shipping", "Returns", "Privacy", "Contact"],
+    title: "Hỗ trợ",
+    links: [
+      { label: "Giao hàng", href: "/" },
+      { label: "Đổi trả", href: "/" },
+      { label: "Quyền riêng tư", href: "/" },
+      { label: "Liên hệ", href: "/" },
+    ],
   },
 ] as const;
 
@@ -22,8 +37,8 @@ export function StorefrontFooter() {
         <div className="space-y-3">
           <p className="text-lg font-semibold text-slate-900">AuraCare</p>
           <p className="max-w-sm text-sm leading-6 text-slate-600">
-            A research-first health commerce concept focused on clean product discovery, helpful AI,
-            and trustworthy product education.
+            Mô hình thương mại điện tử sức khỏe định hướng nghiên cứu, tập trung vào khám phá sản phẩm rõ ràng, AI hữu
+            ích và nội dung đáng tin cậy.
           </p>
         </div>
 
@@ -35,11 +50,11 @@ export function StorefrontFooter() {
             <div className="space-y-2">
               {column.links.map((link) => (
                 <Link
-                  key={link}
-                  href="/"
+                  key={link.label}
+                  href={link.href}
                   className="block text-sm text-slate-600 transition hover:text-slate-900"
                 >
-                  {link}
+                  {link.label}
                 </Link>
               ))}
             </div>

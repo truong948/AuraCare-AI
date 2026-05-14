@@ -319,30 +319,30 @@ export const mockProducts = [...buildSupplementProducts(), ...buildSkincareProdu
 export const storefrontCategories = [
   {
     id: "supplement",
-    label: "Supplement",
-    description: "Daily wellness, immunity, focus, sleep, and beauty support.",
+    label: "Thực phẩm bổ sung",
+    description: "Hỗ trợ năng lượng, miễn dịch, tập trung, giấc ngủ và chăm sóc sắc đẹp mỗi ngày.",
     itemCount: mockProducts.filter((product) => product.category === "supplement").length,
   },
   {
     id: "skincare",
-    label: "Skincare",
-    description: "Hydration, barrier care, acne support, and sensitive skin essentials.",
+    label: "Chăm sóc da",
+    description: "Dưỡng ẩm, phục hồi hàng rào bảo vệ da, hỗ trợ da mụn và làn da nhạy cảm.",
     itemCount: mockProducts.filter((product) => product.category === "skincare").length,
   },
 ] as const;
 
 export const quickActions = [
-  { title: "Ask Aura AI", description: "Natural language product help in seconds." },
-  { title: "Semantic Search", description: "Search by concern, benefit, or skin need." },
-  { title: "Fast Reorder", description: "Save favorites and come back to them quickly." },
-  { title: "Clinical Notes", description: "Read usage, ingredients, and safety guidance." },
+  { title: "Hỏi Aura AI", description: "Nhận gợi ý sản phẩm bằng ngôn ngữ tự nhiên chỉ trong vài giây." },
+  { title: "Tìm kiếm ngữ nghĩa", description: "Tìm theo nhu cầu, công dụng hoặc vấn đề da." },
+  { title: "Mua lại nhanh", description: "Lưu sản phẩm yêu thích và quay lại đặt hàng dễ dàng." },
+  { title: "Ghi chú sử dụng", description: "Đọc cách dùng, thành phần và lưu ý an toàn rõ ràng." },
 ] as const;
 
 export const aiHighlights = [
-  "Vitamin support for tired office workers",
-  "Gentle skincare for sensitive dehydrated skin",
-  "Supplement stack for immunity and focus",
-  "Barrier repair routine without heavy fragrance",
+  "Vitamin hỗ trợ năng lượng cho người làm việc văn phòng",
+  "Chăm sóc da dịu nhẹ cho da thiếu nước và nhạy cảm",
+  "Bộ gợi ý bổ sung cho miễn dịch và tập trung",
+  "Phục hồi hàng rào bảo vệ da với công thức ít hương liệu",
 ] as const;
 
 export const mockArticles: MockArticle[] = [
@@ -375,3 +375,102 @@ export const skincareProducts = mockProducts.filter((product) => product.categor
 export const flashDealProducts = [...mockProducts]
   .sort((first, second) => (second.compareAtPrice - second.price) - (first.compareAtPrice - first.price))
   .slice(0, 4);
+
+export function formatMockPrice(value: number) {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+export function getProductsByCategory(category: ProductCategory) {
+  return mockProducts.filter((product) => product.category === category);
+}
+
+export function getProductBySlug(slug: string) {
+  return mockProducts.find((product) => product.slug === slug);
+}
+
+export function getRelatedProducts(product: MockProduct, limit = 4) {
+  return mockProducts
+    .filter((candidate) => candidate.slug !== product.slug && candidate.category === product.category)
+    .sort((first, second) => {
+      const firstOverlap = first.concernTags.filter((tag) => product.concernTags.includes(tag)).length;
+      const secondOverlap = second.concernTags.filter((tag) => product.concernTags.includes(tag)).length;
+
+      if (firstOverlap !== secondOverlap) {
+        return secondOverlap - firstOverlap;
+      }
+
+      return second.rating - first.rating;
+    })
+    .slice(0, limit);
+}
+
+export function getCategoryLabel(category: ProductCategory) {
+  return category === "supplement" ? "Thực phẩm bổ sung" : "Chăm sóc da";
+}
+
+export function getBadgeLabel(badge: MockProduct["badge"]) {
+  switch (badge) {
+    case "Best seller":
+      return "Bán chạy";
+    case "New":
+      return "Mới";
+    case "AI pick":
+      return "AI gợi ý";
+    case "Flash deal":
+      return "Giá tốt";
+  }
+}
+
+export function getStockLabel(stockStatus: MockProduct["stockStatus"]) {
+  return stockStatus === "in_stock" ? "Còn hàng" : "Sắp hết hàng";
+}
+
+export function searchMockProducts(query: string, category?: ProductCategory) {
+  const normalizedQuery = query.trim().toLowerCase();
+  const products = category ? getProductsByCategory(category) : mockProducts;
+
+  if (!normalizedQuery) {
+    return products.slice(0, 12);
+  }
+
+  return [...products]
+    .map((product) => {
+      const haystack = [
+        product.name,
+        product.brand,
+        product.shortDescription,
+        product.longDescription,
+        product.searchableText,
+        ...product.concernTags,
+        ...product.benefitTags,
+        ...product.symptomTags,
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      let score = 0;
+
+      if (product.name.toLowerCase().includes(normalizedQuery)) score += 4;
+      if (product.brand.toLowerCase().includes(normalizedQuery)) score += 2;
+      if (haystack.includes(normalizedQuery)) score += 3;
+
+      for (const token of normalizedQuery.split(/\s+/)) {
+        if (haystack.includes(token)) score += 1;
+      }
+
+      return { product, score };
+    })
+    .filter((item) => item.score > 0)
+    .sort((first, second) => {
+      if (first.score !== second.score) {
+        return second.score - first.score;
+      }
+
+      return second.product.rating - first.product.rating;
+    })
+    .map((item) => item.product);
+}
