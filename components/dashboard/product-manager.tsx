@@ -130,6 +130,7 @@ export function DashboardProductManager() {
       originCountry: draft.originCountry || "Vietnam",
       badge: draft.badge || "New",
       image: draft.image || "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80",
+      embeddingVector: draft.embeddingVector ?? null,
     };
 
     setProducts((current) => {

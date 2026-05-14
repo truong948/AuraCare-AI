@@ -2413,6 +2413,13 @@
       }
     }
   }
+  .hover\:bg-\[\#f8fbfa\] {
+    &:hover {
+      @media (hover: hover) {
+        background-color: #f8fbfa;
+      }
+    }
+  }
   .hover\:bg-\[rgba\(255\,255\,255\,0\.1\)\] {
     &:hover {
       @media (hover: hover) {

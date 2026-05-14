@@ -33,6 +33,7 @@ export interface MockArticle {
   title: string;
   excerpt: string;
   category: string;
+  content: string[];
 }
 
 const supplementBase = [
@@ -349,23 +350,38 @@ export const mockArticles: MockArticle[] = [
   {
     id: "article-1",
     slug: "how-to-choose-daily-supplements",
-    title: "How to choose a daily supplement stack without overwhelming your routine",
-    excerpt: "A research-oriented guide to building a simple supplement baseline for energy, sleep, and immunity.",
-    category: "Wellness Guide",
+    title: "Cách chọn bộ thực phẩm bổ sung hằng ngày mà không làm routine trở nên quá tải",
+    excerpt: "Hướng dẫn xây một nền tảng bổ sung đơn giản cho năng lượng, giấc ngủ và miễn dịch theo góc nhìn nghiên cứu.",
+    category: "Hướng dẫn sức khỏe",
+    content: [
+      "Một routine tốt không cần quá nhiều sản phẩm. Với nhóm thực phẩm bổ sung, điều quan trọng nhất là hiểu rõ mục tiêu của bạn: năng lượng, giấc ngủ, miễn dịch hay vẻ ngoài của làn da.",
+      "Nếu mục tiêu là năng lượng, hãy ưu tiên sản phẩm có nhóm vitamin B, sắt hoặc CoQ10. Nếu mục tiêu là nghỉ ngơi tốt hơn, magnesium hoặc l-theanine sẽ là những từ khóa đáng chú ý trong danh sách thành phần.",
+      "Trong một storefront có AI như AuraCare, hệ thống recommendation nên giải thích rõ vì sao nó gợi ý sản phẩm, thay vì chỉ xếp hạng theo độ phổ biến."
+    ],
   },
   {
     id: "article-2",
     slug: "sensitive-skin-barrier-basics",
-    title: "Sensitive skin barrier basics: what to look for before buying skincare",
-    excerpt: "Learn how to read ingredients, avoid irritation triggers, and simplify skincare choices.",
-    category: "Skin Health",
+    title: "Kiến thức cơ bản về hàng rào bảo vệ da nhạy cảm trước khi mua skincare",
+    excerpt: "Tìm hiểu cách đọc thành phần, tránh yếu tố gây kích ứng và đơn giản hóa quyết định mua skincare.",
+    category: "Sức khỏe làn da",
+    content: [
+      "Người dùng có làn da nhạy cảm thường không tìm bằng tên sản phẩm, mà tìm bằng nhu cầu: da châm chích, thiếu ẩm, đỏ rát hoặc dễ phản ứng. Đây là lý do semantic search đặc biệt hữu ích ở nhóm skincare.",
+      "Khi đọc thành phần, hãy chú ý đến ceramides, panthenol, centella, oat extract hoặc hyaluronic acid. Những thành phần này thường được dùng trong các công thức hỗ trợ làm dịu và phục hồi da.",
+      "Một PDP tốt không chỉ cần đẹp mà còn phải trình bày rõ thành phần, cách dùng, cảnh báo và nhóm người dùng phù hợp."
+    ],
   },
   {
     id: "article-3",
     slug: "semantic-search-in-health-ecommerce",
-    title: "Why semantic search matters in health ecommerce and product discovery",
-    excerpt: "An overview of how vector search can improve user trust, precision, and conversion.",
-    category: "AI Notes",
+    title: "Vì sao semantic search quan trọng trong thương mại điện tử sức khỏe",
+    excerpt: "Tổng quan về cách vector search giúp tăng độ chính xác, niềm tin và khả năng chuyển đổi.",
+    category: "Ghi chú AI",
+    content: [
+      "Keyword search phù hợp khi người dùng đã biết tên sản phẩm hoặc thương hiệu. Nhưng trong thương mại điện tử sức khỏe, người dùng thường nhập một mô tả dài về nhu cầu của họ.",
+      "Semantic search cho phép hệ thống hiểu gần đúng ý định của câu hỏi đó, rồi đối chiếu với metadata sản phẩm như concern tags, symptom tags và benefit tags.",
+      "Khi kết hợp semantic search với UI giải thích kết quả, người dùng sẽ tin tưởng hơn vào hệ thống gợi ý thay vì cảm thấy kết quả chỉ là quảng cáo."
+    ],
   },
 ] as const;
 
@@ -406,6 +422,10 @@ export function getRelatedProducts(product: MockProduct, limit = 4) {
       return second.rating - first.rating;
     })
     .slice(0, limit);
+}
+
+export function getArticleBySlug(slug: string) {
+  return mockArticles.find((article) => article.slug === slug);
 }
 
 export function getCategoryLabel(category: ProductCategory) {

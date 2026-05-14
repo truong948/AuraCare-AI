@@ -15,10 +15,6 @@ import {
   mockProducts,
 } from "@/lib/mock-data/catalog";
 
-export function generateStaticParams() {
-  return mockProducts.map((product) => ({ slug: product.slug }));
-}
-
 export default async function ProductDetailPage({
   params,
 }: {
@@ -97,8 +93,14 @@ export default async function ProductDetailPage({
                 </div>
               </div>
 
-              <div className="mt-6">
+              <div className="mt-6 flex flex-wrap gap-3">
                 <AddToCartButton productSlug={product.slug} />
+                <Link
+                  href="/cart"
+                  className="inline-flex items-center rounded-2xl border border-[#d7e5df] bg-[#ffffff] px-5 py-3 text-sm font-semibold text-[#334155] hover:bg-[#f8fbfa]"
+                >
+                  Xem giỏ hàng
+                </Link>
               </div>
 
               <div className="mt-6 flex flex-wrap gap-2">

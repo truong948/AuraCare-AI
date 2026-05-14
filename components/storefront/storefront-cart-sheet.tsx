@@ -16,14 +16,14 @@ import { useCart } from "@/components/cart/cart-context";
 import { getBadgeLabel, formatMockPrice, getProductBySlug } from "@/lib/mock-data/catalog";
 
 export function StorefrontCartSheet() {
-  const { items, subtotal } = useCart();
+  const { items, subtotal, count, updateQuantity, removeItem } = useCart();
 
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button className="rounded-2xl bg-[#e8a950] px-4 text-slate-950 hover:bg-[#d59c48]">
           <ShoppingBag className="mr-2 h-4 w-4" />
-          Giỏ hàng ({items.length})
+          Giỏ hàng ({count})
         </Button>
       </SheetTrigger>
 
@@ -71,18 +71,32 @@ export function StorefrontCartSheet() {
 
                       <div className="mt-4 flex items-center justify-between">
                         <div className="inline-flex items-center gap-2 rounded-full bg-[#f5f8f6] px-2 py-1 text-sm text-[#334155]">
-                          <button className="rounded-full bg-[#ffffff] p-1 text-[#64748b] shadow-sm">
+                          <button
+                            onClick={() => updateQuantity(product.slug, item.quantity - 1)}
+                            className="rounded-full bg-[#ffffff] p-1 text-[#64748b] shadow-sm"
+                          >
                             <Minus className="h-3 w-3" />
                           </button>
                           <span className="text-sm font-semibold text-[#0f172a]">{item.quantity}</span>
-                          <button className="rounded-full bg-[#ffffff] p-1 text-[#64748b] shadow-sm">
+                          <button
+                            onClick={() => updateQuantity(product.slug, item.quantity + 1)}
+                            className="rounded-full bg-[#ffffff] p-1 text-[#64748b] shadow-sm"
+                          >
                             <Plus className="h-3 w-3" />
                           </button>
                         </div>
 
-                        <Link href={`/products/${product.slug}`} className="text-sm font-semibold text-[#5b8c7a]">
-                          Xem sản phẩm
-                        </Link>
+                        <div className="flex items-center gap-3">
+                          <Link href={`/products/${product.slug}`} className="text-sm font-semibold text-[#5b8c7a]">
+                            Xem sản phẩm
+                          </Link>
+                          <button
+                            onClick={() => removeItem(product.slug)}
+                            className="text-sm font-semibold text-[#c2410c]"
+                          >
+                            Xóa
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -98,11 +112,11 @@ export function StorefrontCartSheet() {
               <span className="text-[#64748b]">Tạm tính</span>
               <span className="text-lg font-bold text-[#0f172a]">{formatMockPrice(subtotal)}</span>
             </div>
-            <Link href="/cart">
-              <Button className="h-11 w-full rounded-2xl bg-[#5b8c7a] text-[#ffffff] hover:bg-[#4f7c6d]">
+            <Button asChild className="h-11 w-full rounded-2xl bg-[#5b8c7a] text-[#ffffff] hover:bg-[#4f7c6d]">
+              <Link href="/cart">
                 Xem giỏ hàng và thanh toán
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         </SheetFooter>
       </SheetContent>

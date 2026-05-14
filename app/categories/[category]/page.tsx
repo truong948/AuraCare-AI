@@ -40,10 +40,6 @@ function sortProducts(products: MockProduct[], sort: string) {
   }
 }
 
-export function generateStaticParams() {
-  return storefrontCategories.map((category) => ({ category: category.id }));
-}
-
 export default async function CategoryPage({
   params,
   searchParams,

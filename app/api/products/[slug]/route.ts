@@ -3,9 +3,10 @@ import { getProductBySlug } from "@/lib/mock-data/catalog";
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const product = getProductBySlug(params.slug);
+  const { slug } = await params;
+  const product = getProductBySlug(slug);
   if (!product) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }

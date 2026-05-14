@@ -738,10 +738,10 @@ export default function HomePage() {
                 Nội dung biên tập giúp tăng độ tin cậy và hỗ trợ truy xuất thông tin
               </h2>
             </div>
-            <a href="#top" className="inline-flex items-center text-sm font-semibold text-[#5b8c7a]">
+            <Link href="/articles/how-to-choose-daily-supplements" className="inline-flex items-center text-sm font-semibold text-[#5b8c7a]">
               Xem thêm bài viết
               <ChevronRight className="ml-1 h-4 w-4" />
-            </a>
+            </Link>
           </div>
 
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -759,10 +759,10 @@ export default function HomePage() {
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#5b8c7a]">{article.category}</p>
                   <h3 className="mt-3 text-xl font-bold leading-8 text-[#0f172a]">{article.title}</h3>
                   <p className="mt-3 text-sm leading-7 text-[#475569]">{article.excerpt}</p>
-                  <a href="#top" className="mt-4 inline-flex items-center text-sm font-semibold text-[#5b8c7a]">
+                  <Link href={`/articles/${article.slug}`} className="mt-4 inline-flex items-center text-sm font-semibold text-[#5b8c7a]">
                     Đọc bài viết
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </a>
+                  </Link>
                 </div>
               </article>
             ))}
@@ -777,6 +777,10 @@ export default function HomePage() {
               Khối này giữ đúng tinh thần FAQ trong template, nhưng nội dung đã chuyển sang giải thích chiến lược xây
               dựng storefront và AI layer của AuraCare.
             </p>
+            <Link href="/faq" className="mt-4 inline-flex items-center text-sm font-semibold text-[#5b8c7a]">
+              Mở trang FAQ đầy đủ
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
           </div>
 
           <div className="space-y-3">
