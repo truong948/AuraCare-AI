@@ -1,21 +1,46 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { createSupabaseMiddlewareClient } from "@/lib/supabase-middleware";
+import { type NextRequest, NextResponse } from "next/server";
+import { updateSession } from "@/utils/supabase/middleware";
 
-export async function proxy(req: NextRequest) {
-  const res = NextResponse.next();
-  const supabase = createSupabaseMiddlewareClient(req, res);
-  const {
-    data: { session }
-  } = await supabase.auth.getSession();
+export async function proxy(request: NextRequest) {
+  // Refresh the user session and propagate cookies
+  const { supabaseResponse, user } = await updateSession(request);
 
-  if (!session) {
-    return NextResponse.redirect(new URL("/auth", req.url));
+  const { pathname } = request.nextUrl;
+
+  // Keep the main dashboard shell public for UI development.
+  // Data-driven flows remain protected until auth is available.
+  const protectedPrefixes = ["/diary", "/scan", "/onboarding"];
+  const isProtected = protectedPrefixes.some((prefix) =>
+    pathname.startsWith(prefix)
+  );
+
+  if (isProtected && !user) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.searchParams.set("redirectTo", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  return res;
+  // Redirect already-authenticated users away from /login and /auth
+  if (user && (pathname === "/login" || pathname === "/auth")) {
+    const dashboardUrl = request.nextUrl.clone();
+    dashboardUrl.pathname = "/dashboard";
+    return NextResponse.redirect(dashboardUrl);
+  }
+
+  // Always return the supabaseResponse so that cookies are forwarded correctly.
+  return supabaseResponse;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/diary/:path*", "/scan/:path*"]
+  matcher: [
+    /*
+     * Match all request paths EXCEPT:
+     * - _next/static (static files)
+     * - _next/image (image optimisation)
+     * - favicon.ico, robots.txt, sitemap.xml
+     * - public files with extensions
+     */
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

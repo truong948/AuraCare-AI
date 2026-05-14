@@ -1,13 +1,13 @@
 "use server";
 
 import { consultationSchema } from "@/lib/validation";
-import { createServerActionSupabaseClient } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function createConsultation(formData: FormData, userId: string) {
   const values = Object.fromEntries(formData) as { skin_concern?: string; description?: string };
   const parsed = consultationSchema.parse(values);
-  const supabase = createServerActionSupabaseClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.from("consultations").insert([
     {

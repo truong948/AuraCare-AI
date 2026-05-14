@@ -1,6 +1,6 @@
 "use server";
 
-import { createServerActionSupabaseClient } from "@/lib/supabase-server";
+import { createClient } from "@/utils/supabase/server";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
@@ -12,18 +12,18 @@ const diarySchema = z.object({
 export async function saveDiaryEntry(formData: FormData) {
   const values = Object.fromEntries(formData) as { imageUrl?: string; notes?: string };
   const parsed = diarySchema.parse(values);
-  const supabase = createServerActionSupabaseClient();
+  const supabase = await createClient();
 
   const {
-    data: { session }
-  } = await supabase.auth.getSession();
+    data: { user }
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     throw new Error("Authentication required.");
   }
 
   const { error } = await supabase.from("skin_diaries").insert({
-    user_id: session.user.id,
+    user_id: user.id,
     image_url: parsed.imageUrl,
     notes: parsed.notes
   } as any);

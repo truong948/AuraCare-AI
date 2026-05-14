@@ -1,7 +1,7 @@
 "use server";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { createServerActionSupabaseClient } from "@/lib/supabase-server";
+import { createClient } from "@/utils/supabase/server";
 import type { ScanAIResponse, ProductSuggestion } from "@/types/scan";
 
 const googleApiKey = process.env.GOOGLE_API_KEY;
@@ -88,7 +88,7 @@ Nếu cần, giải thích ngắn gọn nhưng không thêm bất kỳ văn bả
   const aiResult = normalizeAiResult(extractedText || "");
   const symptomKeywords = aiResult.symptomKeywords || aiResult.symptoms.join(", ") || "viêm mụn";
 
-  const supabase = createServerActionSupabaseClient();
+  const supabase = await createClient();
   const { data, error } = await (supabase.rpc as any)(
     "match_products_by_symptoms",
     {

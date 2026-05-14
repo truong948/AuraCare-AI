@@ -1,13 +1,13 @@
 "use server";
 
-import { createServerActionSupabaseClient } from "@/lib/supabase-server";
+import { createClient } from "@/utils/supabase/server";
 import { authSchema, signUpSchema } from "@/lib/validation";
 import { revalidatePath } from "next/cache";
 
 export async function signIn(formData: FormData) {
   const values = Object.fromEntries(formData) as { email?: string; password?: string };
   const parsed = authSchema.parse(values);
-  const supabase = createServerActionSupabaseClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
     email: parsed.email,
@@ -25,7 +25,7 @@ export async function signIn(formData: FormData) {
 export async function signUp(formData: FormData) {
   const values = Object.fromEntries(formData) as { email?: string; password?: string; confirmPassword?: string };
   const parsed = signUpSchema.parse(values);
-  const supabase = createServerActionSupabaseClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp({
     email: parsed.email,

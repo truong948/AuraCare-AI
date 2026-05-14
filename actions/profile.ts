@@ -1,6 +1,6 @@
 "use server";
 
-import { createServerActionSupabaseClient } from "@/lib/supabase-server";
+import { createClient } from "@/utils/supabase/server";
 import { profileSchema } from "@/lib/validation";
 import { revalidatePath } from "next/cache";
 
@@ -15,18 +15,18 @@ const normalizeProfileForm = (formData: FormData) => {
 export async function createSkinProfile(formData: FormData) {
   const values = normalizeProfileForm(formData);
   const parsed = profileSchema.parse(values);
-  const supabase = createServerActionSupabaseClient();
+  const supabase = await createClient();
 
   const {
-    data: { session }
-  } = await supabase.auth.getSession();
+    data: { user }
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     throw new Error("Authentication required.");
   }
 
   const { error } = await (supabase as any).from("skin_profiles").insert({
-    user_id: session.user.id,
+    user_id: user.id,
     skin_type: parsed.skinType,
     concerns: parsed.concerns,
     allergies: parsed.allergies
@@ -43,13 +43,13 @@ export async function createSkinProfile(formData: FormData) {
 export async function updateSkinProfile(formData: FormData) {
   const values = normalizeProfileForm(formData);
   const parsed = profileSchema.parse(values);
-  const supabase = createServerActionSupabaseClient();
+  const supabase = await createClient();
 
   const {
-    data: { session }
-  } = await supabase.auth.getSession();
+    data: { user }
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     throw new Error("Authentication required.");
   }
 
@@ -60,7 +60,7 @@ export async function updateSkinProfile(formData: FormData) {
       concerns: parsed.concerns,
       allergies: parsed.allergies
     })
-    .eq("user_id", session.user.id);
+    .eq("user_id", user.id);
 
   if (error) {
     throw error;
