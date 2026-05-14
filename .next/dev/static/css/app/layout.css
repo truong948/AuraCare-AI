@@ -33,6 +33,7 @@
     --color-rose-200: oklch(89.2% 0.058 10.001);
     --color-rose-400: oklch(71.2% 0.194 13.428);
     --color-rose-500: oklch(64.5% 0.246 16.439);
+    --color-rose-700: oklch(51.4% 0.222 16.935);
     --color-rose-900: oklch(41% 0.159 10.272);
     --color-rose-950: oklch(27.1% 0.105 12.094);
     --color-slate-50: oklch(98.4% 0.003 247.858);
@@ -518,6 +519,9 @@
   }
   .hidden {
     display: none;
+  }
+  .inline-block {
+    display: inline-block;
   }
   .inline-flex {
     display: inline-flex;
@@ -1498,6 +1502,9 @@
   .p-1 {
     padding: calc(var(--spacing) * 1);
   }
+  .p-2 {
+    padding: calc(var(--spacing) * 2);
+  }
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
@@ -1573,6 +1580,9 @@
   .py-14 {
     padding-block: calc(var(--spacing) * 14);
   }
+  .pt-4 {
+    padding-top: calc(var(--spacing) * 4);
+  }
   .pt-32 {
     padding-top: calc(var(--spacing) * 32);
   }
@@ -1611,6 +1621,9 @@
   }
   .text-right {
     text-align: right;
+  }
+  .align-text-bottom {
+    vertical-align: text-bottom;
   }
   .font-heading {
     font-family: var(--font-sans);
@@ -1782,6 +1795,9 @@
   .text-\[\#b88530\] {
     color: #b88530;
   }
+  .text-\[\#c2410c\] {
+    color: #c2410c;
+  }
   .text-\[\#c7861b\] {
     color: #c7861b;
   }
@@ -1862,6 +1878,9 @@
   }
   .text-rose-400 {
     color: var(--color-rose-400);
+  }
+  .text-rose-700 {
+    color: var(--color-rose-700);
   }
   .text-rose-900 {
     color: var(--color-rose-900);
@@ -2463,6 +2482,13 @@
     &:hover {
       @media (hover: hover) {
         color: #5b8c7a;
+      }
+    }
+  }
+  .hover\:text-\[\#9a3412\] {
+    &:hover {
+      @media (hover: hover) {
+        color: #9a3412;
       }
     }
   }
@@ -3085,6 +3111,11 @@
       justify-content: space-between;
     }
   }
+  .sm\:p-5 {
+    @media (width >= 40rem) {
+      padding: calc(var(--spacing) * 5);
+    }
+  }
   .sm\:p-6 {
     @media (width >= 40rem) {
       padding: calc(var(--spacing) * 6);
@@ -3264,6 +3295,11 @@
       flex-direction: row;
     }
   }
+  .lg\:items-center {
+    @media (width >= 64rem) {
+      align-items: center;
+    }
+  }
   .lg\:items-end {
     @media (width >= 64rem) {
       align-items: flex-end;
@@ -3322,6 +3358,16 @@
   .xl\:grid-cols-\[1\.2fr_0\.8fr\] {
     @media (width >= 80rem) {
       grid-template-columns: 1.2fr 0.8fr;
+    }
+  }
+  .xl\:grid-cols-\[1\.3fr_0\.7fr\] {
+    @media (width >= 80rem) {
+      grid-template-columns: 1.3fr 0.7fr;
+    }
+  }
+  .xl\:grid-cols-\[1\.4fr_0\.6fr\] {
+    @media (width >= 80rem) {
+      grid-template-columns: 1.4fr 0.6fr;
     }
   }
   .xl\:grid-cols-\[1\.12fr_0\.88fr\] {
