@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, Heart, Home, Menu, PackageSearch, ReceiptText, Scale, Search, Sparkles, User2 } from "lucide-react";
+import { BookOpen, Camera, Heart, Home, Menu, PackageSearch, ReceiptText, Scale, Search, Sparkles, User2 } from "lucide-react";
 import { useCompare } from "@/components/compare/compare-context";
 import { useWishlist } from "@/components/wishlist/wishlist-context";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ const navItems = [
   { label: "Trang chủ", href: "/", icon: Home },
   { label: "Danh mục", href: "/products", icon: PackageSearch },
   { label: "Tư vấn AI", href: "/consult", icon: Sparkles },
+  { label: "AI Scan", href: "/scan", icon: Camera },
   { label: "Bài viết", href: "/articles", icon: BookOpen },
   { label: "So sánh", href: "/compare", icon: Scale },
 ] as const;

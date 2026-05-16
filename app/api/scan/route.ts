@@ -4,13 +4,14 @@ import { scanSkin } from "@/actions/scan";
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl : "";
+  const imageDataUrl = typeof body.imageDataUrl === "string" ? body.imageDataUrl : "";
 
-  if (!imageUrl) {
-    return NextResponse.json({ error: "imageUrl is required" }, { status: 400 });
+  if (!imageUrl && !imageDataUrl) {
+    return NextResponse.json({ error: "Cần cung cấp ảnh chụp da hoặc URL hình ảnh." }, { status: 400 });
   }
 
   try {
-    const result = await scanSkin(imageUrl);
+    const result = await scanSkin({ imageUrl, imageDataUrl });
     return NextResponse.json(result);
   } catch (error: unknown) {
     return NextResponse.json(
@@ -22,9 +23,13 @@ export async function POST(request: Request) {
           severity: "Không rõ",
           recommendations: "",
           symptomKeywords: "",
+          confidence: "low",
+          carePlan: [],
           rawText: ""
         },
-        products: []
+        products: [],
+        source: "local-fallback",
+        disclaimer: "Kết quả AI Scan chỉ mang tính tham khảo, không thay thế tư vấn y tế."
       },
       { status: 500 }
     );

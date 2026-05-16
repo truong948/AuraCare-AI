@@ -7,9 +7,9 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Keep the main dashboard shell public for UI development.
-  // Data-driven flows remain protected until auth is available.
-  const protectedPrefixes = ["/diary", "/scan", "/onboarding"];
+  // Keep storefront AI Scan public so users can try product consultation before auth.
+  // Data-driven personal flows remain protected until auth is available.
+  const protectedPrefixes = ["/diary", "/onboarding"];
   const isProtected = protectedPrefixes.some((prefix) =>
     pathname.startsWith(prefix)
   );
