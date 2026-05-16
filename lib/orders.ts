@@ -19,11 +19,19 @@ export interface OrderShipping {
 export interface Order {
   id: string;
   createdAt: string;
-  status: "pending" | "processing" | "completed";
+  status: OrderStatus;
   items: OrderItem[];
   subtotal: number;
   shipping: OrderShipping;
 }
+
+export type OrderStatus = "pending" | "processing" | "completed";
+
+export const orderStatusLabels: Record<OrderStatus, string> = {
+  pending: "Chờ xác nhận",
+  processing: "Đang xử lý",
+  completed: "Hoàn tất",
+};
 
 export const ORDERS_STORAGE_KEY = "auracare_orders";
 
@@ -86,4 +94,20 @@ export function createOrder(cartItems: CartItem[], shipping: OrderShipping): Ord
 
 export function getOrderById(id: string): Order | undefined {
   return loadOrders().find((order) => order.id === id);
+}
+
+export function updateOrderStatus(id: string, status: OrderStatus): Order[] {
+  const next = loadOrders().map((order) => (order.id === id ? { ...order, status } : order));
+  saveOrders(next);
+  return next;
+}
+
+export function getOrdersSummary(orders: Order[]) {
+  return {
+    totalOrders: orders.length,
+    pendingOrders: orders.filter((order) => order.status === "pending").length,
+    processingOrders: orders.filter((order) => order.status === "processing").length,
+    completedOrders: orders.filter((order) => order.status === "completed").length,
+    revenue: orders.reduce((total, order) => total + order.subtotal, 0),
+  };
 }

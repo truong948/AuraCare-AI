@@ -4,14 +4,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/utils/supabase/server";
 import type { ScanAIResponse, ProductSuggestion } from "@/types/scan";
 
-const googleApiKey = process.env.GOOGLE_API_KEY;
-
-if (!googleApiKey) {
-  throw new Error("Missing GOOGLE_API_KEY environment variable.");
-}
-
-const aiClient = new GoogleGenerativeAI(googleApiKey);
-
 function extractJsonPayload(text: string) {
   const jsonMatch = text.match(/\{[\s\S]*\}/m);
   if (!jsonMatch) return null;
@@ -53,6 +45,13 @@ export async function scanSkin(imageUrl: string) {
   if (!imageUrl) {
     throw new Error("Image URL is required for skin scan.");
   }
+
+  const googleApiKey = process.env.GOOGLE_API_KEY;
+  if (!googleApiKey) {
+    throw new Error("Missing GOOGLE_API_KEY environment variable.");
+  }
+
+  const aiClient = new GoogleGenerativeAI(googleApiKey);
 
   const prompt = `Bạn là một bác sĩ da liễu chuyên sâu. Phân tích các triệu chứng viêm, mụn, đỏ, sưng và da nhạy cảm trong hình ảnh sau. Trả về kết quả chỉ dưới dạng JSON với các khóa sau:
 {

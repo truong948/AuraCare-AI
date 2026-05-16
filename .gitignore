@@ -482,3 +482,10 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+node_modules/
+.next/
+dist/
+build/
+.env
+.env.local
+.vercel/

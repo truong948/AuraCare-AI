@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
-import { Heart, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CompareToggleButton } from "@/components/storefront/compare-toggle-button";
+import { ProductImage } from "@/components/storefront/product-image";
+import { WishlistToggleButton } from "@/components/storefront/wishlist-toggle-button";
 import {
   formatMockPrice,
   getBadgeLabel,
@@ -9,26 +14,32 @@ import {
   type MockProduct,
 } from "@/lib/mock-data/catalog";
 
-export function ProductCard({ product }: { product: MockProduct }) {
+export function ProductCard({
+  product,
+  onProductOpen,
+}: {
+  product: MockProduct;
+  onProductOpen?: (productSlug: string) => void;
+}) {
   return (
-    <Card className="group overflow-hidden rounded-[28px] border border-[#d7e5df] bg-[#ffffff] py-0 shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(15,23,42,0.1)]">
+    <Card
+      className="group overflow-hidden rounded-[28px] border border-[#d7e5df] bg-[#ffffff] py-0 shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(15,23,42,0.1)]"
+      onClickCapture={(event) => {
+        if (!onProductOpen) return;
+        const target = event.target as HTMLElement | null;
+        const productLink = target?.closest(`a[href="/products/${product.slug}"]`);
+        if (productLink) {
+          onProductOpen(product.slug);
+        }
+      }}
+    >
       <Link href={`/products/${product.slug}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-[linear-gradient(180deg,#f6fbf8_0%,#edf5f1_100%)]">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-          />
+        <ProductImage product={product} className="aspect-[4/3]" imageClassName="p-5 group-hover:scale-[1.03]">
           <span className="absolute left-4 top-4 rounded-full bg-[rgba(255,255,255,0.95)] px-3 py-1 text-xs font-semibold text-[#5b8c7a] shadow-sm">
             {getBadgeLabel(product.badge)}
           </span>
-          <span
-            aria-hidden="true"
-            className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-[rgba(255,255,255,0.92)] text-[#64748b] shadow-sm transition group-hover:text-[#5b8c7a]"
-          >
-            <Heart className="h-4 w-4" />
-          </span>
-        </div>
+          <WishlistToggleButton productSlug={product.slug} className="absolute right-4 top-4 h-9 w-9" />
+        </ProductImage>
       </Link>
 
       <CardContent className="space-y-4 px-5 py-5">
@@ -71,6 +82,13 @@ export function ProductCard({ product }: { product: MockProduct }) {
           <Button asChild className="rounded-2xl bg-[#5b8c7a] px-4 text-[#ffffff] hover:bg-[#4f7c6d]">
             <Link href={`/products/${product.slug}`}>Xem chi tiết</Link>
           </Button>
+        </div>
+
+        <div className="flex items-center justify-between gap-3">
+          <CompareToggleButton productSlug={product.slug} />
+          <Link href="/wishlist" className="text-sm font-semibold text-[#5b8c7a]">
+            Xem wishlist
+          </Link>
         </div>
       </CardContent>
     </Card>

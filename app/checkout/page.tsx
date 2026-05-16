@@ -2,8 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
-import { AlertTriangle, CreditCard, MapPin, Package, User } from "lucide-react";
+import { AlertTriangle, CreditCard, User } from "lucide-react";
 import { useCart } from "@/components/cart/cart-context";
+import { StorefrontFooter } from "@/components/storefront/storefront-footer";
+import { StorefrontHeader } from "@/components/storefront/storefront-header";
 import { createOrder, OrderShipping } from "@/lib/orders";
 import { getProductBySlug, formatMockPrice } from "@/lib/mock-data/catalog";
 import { Button } from "@/components/ui/button";
@@ -43,8 +45,10 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f6f4ee] text-[#0f172a] py-10">
-      <div className="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#f6f4ee] text-[#0f172a]">
+      <StorefrontHeader />
+      <main className="py-10">
+        <div className="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
         <div className="rounded-[36px] border border-[#dce6df] bg-white p-8 shadow-[0_16px_34px_rgba(15,23,42,0.06)]">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -150,7 +154,9 @@ export default function CheckoutPage() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </main>
+      <StorefrontFooter />
     </div>
   );
 }

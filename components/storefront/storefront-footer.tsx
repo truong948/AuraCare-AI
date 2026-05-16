@@ -4,19 +4,22 @@ const footerColumns = [
   {
     title: "Mua sắm",
     links: [
+      { label: "Tất cả sản phẩm", href: "/products" },
       { label: "Thực phẩm bổ sung", href: "/categories/supplement" },
       { label: "Chăm sóc da", href: "/categories/skincare" },
+      { label: "Wishlist", href: "/wishlist" },
+      { label: "So sánh sản phẩm", href: "/compare" },
       { label: "Ưu đãi nhanh", href: "/#deals" },
-      { label: "Bài viết mới", href: "/#knowledge" },
     ],
   },
   {
     title: "Tính năng AI",
     links: [
-      { label: "Aura AI", href: "/#ai-consult" },
-      { label: "Tìm kiếm ngữ nghĩa", href: "/#ai-consult" },
-      { label: "Gợi ý sản phẩm", href: "/#deals" },
-      { label: "Ghi chú AI", href: "/#knowledge" },
+      { label: "Aura AI", href: "/consult" },
+      { label: "Tìm kiếm ngữ nghĩa", href: "/search?q=da%20nh%E1%BA%A1y%20c%E1%BA%A3m" },
+      { label: "Gợi ý sản phẩm", href: "/products" },
+      { label: "Lịch sử AI", href: "/ai-history" },
+      { label: "Ghi chú AI", href: "/articles" },
     ],
   },
   {

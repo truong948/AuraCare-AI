@@ -6,8 +6,9 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint"
+    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
+    "lint": "eslint",
+    "ai:enrich-embeddings": "node scripts/enrich-product-embeddings.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

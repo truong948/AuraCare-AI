@@ -1,0 +1,11 @@
+.git
+.next
+node_modules
+npm-debug.log*
+.env*
+.ai-logs
+.ai-data
+.codex-logs
+*.log
+README.local.md
+quy-che-thi-cuoi-ky.pdf

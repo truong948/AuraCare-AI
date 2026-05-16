@@ -1,13 +1,11 @@
 import Link from "next/link";
 import { ArrowRight, SearchCheck, Sparkles } from "lucide-react";
 import { ProductCard } from "@/components/storefront/product-card";
+import { SearchAiWidget } from "@/components/storefront/search-ai-widget";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
-import {
-  getCategoryLabel,
-  searchMockProducts,
-  type ProductCategory,
-} from "@/lib/mock-data/catalog";
+import { runSemanticSearch } from "@/lib/ai/search";
+import { getCategoryLabel, type ProductCategory } from "@/lib/mock-data/catalog";
 
 export default async function SearchPage({
   searchParams,
@@ -15,7 +13,12 @@ export default async function SearchPage({
   searchParams: Promise<{ q?: string; category?: ProductCategory }>;
 }) {
   const { q = "", category } = await searchParams;
-  const results = searchMockProducts(q, category);
+  const searchResponse = await runSemanticSearch({
+    query: q,
+    category,
+    limit: 12,
+  });
+  const results = searchResponse.results;
 
   return (
     <div className="min-h-screen bg-[#f6f4ee] text-[#0f172a]">
@@ -34,8 +37,7 @@ export default async function SearchPage({
                     {q ? `Tìm thấy kết quả cho "${q}"` : "Khám phá sản phẩm theo nhu cầu"}
                   </h1>
                   <p className="mt-4 max-w-2xl text-sm leading-8 text-[#475569] sm:text-base">
-                    Đây là khung trang kết quả cho semantic search phase đầu. Về sau, trang này có thể nhận query từ
-                    Gemini embeddings và xếp hạng bằng pgvector trước khi hiển thị cho người dùng.
+                    {searchResponse.explanation}
                   </p>
                 </div>
 
@@ -51,8 +53,10 @@ export default async function SearchPage({
                     </p>
                   </div>
                   <div className="rounded-[26px] bg-[#ffffff] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94a3b8]">Kết quả</p>
-                    <p className="mt-2 text-3xl font-bold text-[#0f172a]">{results.length}</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94a3b8]">Nguồn AI</p>
+                    <p className="mt-2 text-base font-semibold text-[#0f172a]">
+                      {searchResponse.source === "gemini-pgvector" ? "Gemini + pgvector" : "Fallback hybrid local"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -61,6 +65,10 @@ export default async function SearchPage({
         </section>
 
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <SearchAiWidget initialQuery={q} category={category} />
+          </div>
+
           <div className="mb-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="rounded-[28px] border border-[#dce6df] bg-[#ffffff] p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
               <div className="flex items-start gap-4">
@@ -70,8 +78,8 @@ export default async function SearchPage({
                 <div>
                   <h2 className="text-xl font-bold text-[#0f172a]">Giải thích ngắn cho kết quả</h2>
                   <p className="mt-2 text-sm leading-7 text-[#475569]">
-                    Với prototype hiện tại, kết quả được match theo tên, mô tả, concern tags, benefit tags và symptom
-                    tags. Khi bước sang phase AI thật, phần này sẽ hiển thị lý do xếp hạng và tín hiệu semantic.
+                    Mỗi kết quả hiện đã có điểm xếp hạng, tín hiệu semantic, tín hiệu keyword và câu giải thích ngắn
+                    để bạn kiểm thử luồng AI MVP ngay trên giao diện storefront.
                   </p>
                 </div>
               </div>
@@ -110,12 +118,15 @@ export default async function SearchPage({
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#5b8c7a]">Sản phẩm phù hợp</p>
               <p className="mt-2 text-sm text-[#64748b]">
                 {results.length > 0
-                  ? `Đây là những sản phẩm mock phù hợp nhất với truy vấn hiện tại.`
+                  ? "Đây là các sản phẩm được AI MVP đánh giá là phù hợp nhất với truy vấn hiện tại."
                   : "Chưa có kết quả khớp, hãy thử thay đổi cách diễn đạt truy vấn."}
               </p>
             </div>
             {results[0] ? (
-              <Link href={`/products/${results[0].slug}`} className="inline-flex items-center text-sm font-semibold text-[#5b8c7a]">
+              <Link
+                href={`/products/${results[0].product.slug}`}
+                className="inline-flex items-center text-sm font-semibold text-[#5b8c7a]"
+              >
                 Xem sản phẩm nổi bật
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -124,8 +135,14 @@ export default async function SearchPage({
 
           {results.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-              {results.map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {results.map((item) => (
+                <div key={item.product.id} className="space-y-3">
+                  <ProductCard product={item.product} />
+                  <div className="rounded-[22px] bg-[#ffffff] px-4 py-4 shadow-[0_8px_20px_rgba(15,23,42,0.03)]">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94a3b8]">Lý do AI match</p>
+                    <p className="mt-2 text-sm leading-7 text-[#475569]">{item.reason}</p>
+                  </div>
+                </div>
               ))}
             </div>
           ) : (

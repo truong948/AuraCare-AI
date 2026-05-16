@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, CalendarDays, Package, ShoppingBag } from "lucide-react";
-import { loadOrders } from "@/lib/orders";
-import { formatMockPrice, getProductBySlug } from "@/lib/mock-data/catalog";
+import { CalendarDays, ShoppingBag } from "lucide-react";
+import { loadOrders, orderStatusLabels } from "@/lib/orders";
+import { formatMockPrice } from "@/lib/mock-data/catalog";
 import Link from "next/link";
+import { ProductImage } from "@/components/storefront/product-image";
+import { StorefrontFooter } from "@/components/storefront/storefront-footer";
+import { StorefrontHeader } from "@/components/storefront/storefront-header";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([] as Array<ReturnType<typeof loadOrders>[number]>);
@@ -14,8 +17,10 @@ export default function OrdersPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#f6f4ee] text-[#0f172a] py-10">
-      <div className="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#f6f4ee] text-[#0f172a]">
+      <StorefrontHeader />
+      <main className="py-10">
+        <div className="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
         <div className="rounded-[36px] border border-[#dce6df] bg-white p-8 shadow-[0_16px_34px_rgba(15,23,42,0.06)]">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -47,8 +52,10 @@ export default function OrdersPage() {
                       <CalendarDays className="h-4 w-4" />
                       <span>{new Date(order.createdAt).toLocaleString("vi-VN")}</span>
                     </div>
-                    <p className="mt-2 text-xl font-semibold text-[#0f172a]">Mã đơn hàng: {order.id}</p>
-                    <p className="text-sm text-[#475569]">Trạng thái: {order.status}</p>
+                    <Link href={`/orders/${order.id}`} className="mt-2 block text-xl font-semibold text-[#0f172a] hover:text-[#5b8c7a]">
+                      Mã đơn hàng: {order.id}
+                    </Link>
+                    <p className="text-sm text-[#475569]">Trạng thái: {orderStatusLabels[order.status]}</p>
                   </div>
                   <div className="rounded-2xl bg-[#f5f8f6] px-4 py-3 text-sm text-[#334155]">
                     Tổng: {formatMockPrice(order.subtotal)}
@@ -68,7 +75,11 @@ export default function OrdersPage() {
                     <div className="mt-3 space-y-3">
                       {order.items.map((item) => (
                         <div key={item.productSlug} className="flex items-center gap-3">
-                          <img src={item.image} alt={item.name} className="h-14 w-14 rounded-2xl object-cover" />
+                          <ProductImage
+                            product={{ image: item.image, name: item.name }}
+                            className="h-14 w-14 shrink-0 rounded-2xl"
+                            imageClassName="p-1.5"
+                          />
                           <div className="min-w-0">
                             <p className="text-sm font-semibold text-[#0f172a]">{item.name}</p>
                             <p className="text-xs text-[#64748b]">Số lượng {item.quantity}</p>
@@ -82,7 +93,9 @@ export default function OrdersPage() {
             ))}
           </div>
         )}
-      </div>
+        </div>
+      </main>
+      <StorefrontFooter />
     </div>
   );
 }

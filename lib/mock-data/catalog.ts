@@ -227,12 +227,145 @@ const skincareBrands = ["Calmistry", "Derma Bloom", "Sage Skin"];
 const countries = ["Japan", "Korea", "Australia", "USA", "France"];
 const supplementBadges: MockProduct["badge"][] = ["Best seller", "AI pick", "Flash deal"];
 const skincareBadges: MockProduct["badge"][] = ["New", "AI pick", "Best seller"];
+const supplementColors = [
+  { primary: "#5b8c7a", accent: "#e8a950", soft: "#edf4f1" },
+  { primary: "#315f72", accent: "#8fb9c9", soft: "#eaf4f7" },
+  { primary: "#7a6fbd", accent: "#d9c178", soft: "#f3f1fb" },
+  { primary: "#8a5c4c", accent: "#d99b70", soft: "#f8eee8" },
+] as const;
+const skincareColors = [
+  { primary: "#5b8c7a", accent: "#f0c987", soft: "#edf4f1" },
+  { primary: "#b76f86", accent: "#f3c7d3", soft: "#fff0f4" },
+  { primary: "#4f6f9f", accent: "#bdd1f1", soft: "#edf3fb" },
+  { primary: "#9a7a48", accent: "#f1d6a3", soft: "#fff8eb" },
+] as const;
 
 function formatTitle(value: string) {
   return value
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function svgDataUri(svg: string) {
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+function buildSupplementImage({
+  brand,
+  format,
+  concern,
+  itemIndex,
+  variantIndex,
+}: {
+  brand: string;
+  format: string;
+  concern: string;
+  itemIndex: number;
+  variantIndex: number;
+}) {
+  const palette = supplementColors[(itemIndex + variantIndex) % supplementColors.length];
+  const shape =
+    format.includes("gummies") || format.includes("tablets")
+      ? "jar"
+      : format.includes("powder") || format.includes("sachets")
+        ? "box"
+        : format.includes("softgels")
+          ? "softgel"
+          : "bottle";
+  const title = formatTitle(concern).split(" ").slice(0, 2).join(" ");
+
+  return svgDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+      <rect width="900" height="700" rx="44" fill="${palette.soft}"/>
+      <circle cx="718" cy="118" r="84" fill="#ffffff" opacity="0.65"/>
+      <circle cx="166" cy="574" r="122" fill="#ffffff" opacity="0.45"/>
+      <ellipse cx="450" cy="604" rx="210" ry="32" fill="#0f172a" opacity="0.09"/>
+      ${
+        shape === "jar"
+          ? `<rect x="312" y="188" width="276" height="340" rx="54" fill="#ffffff"/>
+             <rect x="340" y="154" width="220" height="64" rx="26" fill="${palette.primary}"/>
+             <rect x="344" y="296" width="212" height="124" rx="26" fill="${palette.primary}"/>
+             <circle cx="390" cy="496" r="20" fill="${palette.accent}"/>
+             <circle cx="448" cy="510" r="18" fill="${palette.primary}" opacity="0.35"/>
+             <circle cx="506" cy="490" r="22" fill="${palette.accent}" opacity="0.72"/>`
+          : shape === "box"
+            ? `<path d="M298 190h254l64 62v266H298z" fill="#ffffff"/>
+               <path d="M552 190l64 62h-64z" fill="${palette.primary}" opacity="0.22"/>
+               <rect x="338" y="292" width="218" height="122" rx="18" fill="${palette.primary}"/>
+               <rect x="348" y="444" width="170" height="18" rx="9" fill="${palette.accent}"/>`
+            : shape === "softgel"
+              ? `<rect x="318" y="172" width="264" height="374" rx="42" fill="#ffffff"/>
+                 <rect x="354" y="128" width="192" height="70" rx="28" fill="${palette.primary}"/>
+                 <rect x="350" y="292" width="200" height="122" rx="24" fill="${palette.primary}"/>
+                 <ellipse cx="386" cy="498" rx="34" ry="20" fill="${palette.accent}"/>
+                 <ellipse cx="466" cy="510" rx="34" ry="20" fill="${palette.accent}" opacity="0.8"/>
+                 <ellipse cx="530" cy="486" rx="30" ry="18" fill="${palette.primary}" opacity="0.28"/>`
+              : `<rect x="330" y="156" width="240" height="392" rx="44" fill="#ffffff"/>
+                 <rect x="370" y="112" width="160" height="72" rx="26" fill="${palette.primary}"/>
+                 <rect x="360" y="292" width="180" height="136" rx="26" fill="${palette.primary}"/>
+                 <rect x="386" y="458" width="128" height="18" rx="9" fill="${palette.accent}"/>`
+      }
+      <text x="450" y="344" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#ffffff">${brand}</text>
+      <text x="450" y="382" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#ffffff" opacity="0.92">${title}</text>
+    </svg>
+  `);
+}
+
+function buildSkincareImage({
+  brand,
+  texture,
+  concern,
+  itemIndex,
+  variantIndex,
+}: {
+  brand: string;
+  texture: string;
+  concern: string;
+  itemIndex: number;
+  variantIndex: number;
+}) {
+  const palette = skincareColors[(itemIndex + variantIndex) % skincareColors.length];
+  const shape =
+    texture.includes("cleanser") || texture.includes("sunscreen")
+      ? "tube"
+      : texture.includes("cream") || texture.includes("balm")
+        ? "jar"
+        : texture.includes("toner") || texture.includes("essence")
+          ? "tall"
+          : "dropper";
+  const title = formatTitle(concern).split(" ").slice(0, 2).join(" ");
+
+  return svgDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+      <rect width="900" height="700" rx="44" fill="${palette.soft}"/>
+      <circle cx="726" cy="146" r="92" fill="#ffffff" opacity="0.58"/>
+      <circle cx="168" cy="555" r="116" fill="#ffffff" opacity="0.48"/>
+      <ellipse cx="450" cy="606" rx="208" ry="32" fill="#0f172a" opacity="0.08"/>
+      ${
+        shape === "tube"
+          ? `<path d="M348 150h204l44 380c5 43-28 80-72 80H376c-44 0-77-37-72-80z" fill="#ffffff"/>
+             <rect x="346" y="184" width="208" height="86" rx="26" fill="${palette.primary}"/>
+             <rect x="362" y="510" width="176" height="48" rx="20" fill="${palette.accent}"/>`
+          : shape === "jar"
+            ? `<rect x="304" y="272" width="292" height="240" rx="58" fill="#ffffff"/>
+               <rect x="326" y="210" width="248" height="92" rx="36" fill="${palette.primary}"/>
+               <rect x="348" y="356" width="204" height="82" rx="26" fill="${palette.primary}"/>`
+            : shape === "tall"
+              ? `<rect x="350" y="132" width="200" height="426" rx="46" fill="#ffffff"/>
+                 <rect x="384" y="88" width="132" height="76" rx="26" fill="${palette.primary}"/>
+                 <rect x="374" y="308" width="152" height="116" rx="28" fill="${palette.primary}"/>
+                 <rect x="392" y="454" width="116" height="18" rx="9" fill="${palette.accent}"/>`
+              : `<rect x="344" y="178" width="212" height="370" rx="48" fill="#ffffff"/>
+                 <rect x="376" y="126" width="148" height="88" rx="30" fill="${palette.primary}"/>
+                 <path d="M422 90h56v48h-56z" fill="#ffffff"/>
+                 <rect x="374" y="318" width="152" height="118" rx="28" fill="${palette.primary}"/>
+                 <path d="M450 472c32 42 44 65 44 88a44 44 0 0 1-88 0c0-23 12-46 44-88z" fill="${palette.accent}" opacity="0.85"/>`
+      }
+      <text x="450" y="366" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#ffffff">${brand}</text>
+      <text x="450" y="404" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#ffffff" opacity="0.92">${title}</text>
+    </svg>
+  `);
 }
 
 function buildSupplementProducts() {
@@ -268,7 +401,13 @@ function buildSupplementProducts() {
         reviewCount: 72 + itemIndex * 11 + variantIndex * 9,
         originCountry: countries[(itemIndex + variantIndex) % countries.length],
         badge: supplementBadges[(itemIndex + variantIndex) % supplementBadges.length],
-        image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=900&q=80",
+        image: buildSupplementImage({
+          brand,
+          format: item.format,
+          concern: item.concern,
+          itemIndex,
+          variantIndex,
+        }),
         embeddingVector: null,
       } satisfies MockProduct;
     })
@@ -308,7 +447,13 @@ function buildSkincareProducts() {
         reviewCount: 58 + itemIndex * 13 + variantIndex * 8,
         originCountry: countries[(itemIndex + variantIndex + 2) % countries.length],
         badge: skincareBadges[(itemIndex + variantIndex) % skincareBadges.length],
-        image: "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80",
+        image: buildSkincareImage({
+          brand,
+          texture: item.texture,
+          concern: item.concern,
+          itemIndex,
+          variantIndex,
+        }),
         embeddingVector: null,
       } satisfies MockProduct;
     })

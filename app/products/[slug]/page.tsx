@@ -2,17 +2,22 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, BadgeCheck, ShieldAlert, Sparkles, Star } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/storefront/product-card";
+import { ProductAiAssistant } from "@/components/storefront/product-ai-assistant";
+import { ProductConsultationPanel } from "@/components/storefront/product-consultation-panel";
+import { ProductImage } from "@/components/storefront/product-image";
+import { RecentlyViewedTracker } from "@/components/storefront/recently-viewed-tracker";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
 import { AddToCartButton } from "@/components/storefront/add-to-cart-button";
+import { CompareToggleButton } from "@/components/storefront/compare-toggle-button";
+import { WishlistToggleButton } from "@/components/storefront/wishlist-toggle-button";
+import { getProductRecommendations } from "@/lib/ai/recommendations";
 import {
   formatMockPrice,
   getBadgeLabel,
   getCategoryLabel,
   getProductBySlug,
-  getRelatedProducts,
   getStockLabel,
-  mockProducts,
 } from "@/lib/mock-data/catalog";
 
 export default async function ProductDetailPage({
@@ -27,10 +32,11 @@ export default async function ProductDetailPage({
     notFound();
   }
 
-  const relatedProducts = getRelatedProducts(product, 4);
+  const relatedProducts = getProductRecommendations(product.slug, 4);
 
   return (
     <div className="min-h-screen bg-[#f6f4ee] text-[#0f172a]">
+      <RecentlyViewedTracker productSlug={product.slug} />
       <StorefrontHeader />
 
       <main>
@@ -42,12 +48,11 @@ export default async function ProductDetailPage({
 
           <div className="mt-6 grid gap-6 lg:grid-cols-[0.96fr_1.04fr]">
             <div className="rounded-[36px] border border-[#dce6df] bg-[#ffffff] p-5 shadow-[0_16px_34px_rgba(15,23,42,0.06)] sm:p-6">
-              <div className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(180deg,#f5fbf7_0%,#edf4f0_100%)]">
-                <img src={product.image} alt={product.name} className="aspect-[4/4.2] w-full object-cover" />
+              <ProductImage product={product} className="rounded-[28px]" imageClassName="p-10">
                 <span className="absolute left-4 top-4 rounded-full bg-[rgba(255,255,255,0.94)] px-3 py-1 text-xs font-semibold text-[#5b8c7a] shadow-sm">
                   {getBadgeLabel(product.badge)}
                 </span>
-              </div>
+              </ProductImage>
 
               <div className="mt-5 grid gap-4 sm:grid-cols-3">
                 <div className="rounded-[22px] bg-[#f8fbfa] p-4">
@@ -101,6 +106,11 @@ export default async function ProductDetailPage({
                 >
                   Xem giỏ hàng
                 </Link>
+                <WishlistToggleButton
+                  productSlug={product.slug}
+                  className="h-12 w-12 rounded-2xl border border-[#d7e5df] bg-white shadow-none"
+                />
+                <CompareToggleButton productSlug={product.slug} className="h-12 rounded-2xl px-5 text-sm" />
               </div>
 
               <div className="mt-6 flex flex-wrap gap-2">
@@ -145,11 +155,17 @@ export default async function ProductDetailPage({
           </div>
         </section>
 
+        <ProductConsultationPanel product={product} />
+
+        <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+          <ProductAiAssistant productSlug={product.slug} productName={product.name} />
+        </section>
+
         <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#5b8c7a]">Gợi ý liên quan</p>
-              <h2 className="mt-2 text-3xl font-bold text-[#0f172a]">Sản phẩm có nhu cầu tương tự</h2>
+              <h2 className="mt-2 text-3xl font-bold text-[#0f172a]">Sản phẩm AI đánh giá là liên quan nhất</h2>
             </div>
             <Link href={`/categories/${product.category}`} className="inline-flex items-center text-sm font-semibold text-[#5b8c7a]">
               Xem toàn bộ danh mục
@@ -158,8 +174,14 @@ export default async function ProductDetailPage({
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {relatedProducts.map((relatedProduct) => (
-              <ProductCard key={relatedProduct.id} product={relatedProduct} />
+            {relatedProducts.map((item) => (
+              <div key={item.product.id} className="space-y-3">
+                <ProductCard product={item.product} />
+                <div className="rounded-[22px] bg-[#ffffff] px-4 py-4 shadow-[0_8px_20px_rgba(15,23,42,0.03)]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94a3b8]">Vì sao được gợi ý</p>
+                  <p className="mt-2 text-sm leading-7 text-[#475569]">{item.reason}</p>
+                </div>
+              </div>
             ))}
           </div>
         </section>

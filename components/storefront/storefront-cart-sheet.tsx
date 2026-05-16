@@ -13,6 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useCart } from "@/components/cart/cart-context";
+import { ProductImage } from "@/components/storefront/product-image";
 import { getBadgeLabel, formatMockPrice, getProductBySlug } from "@/lib/mock-data/catalog";
 
 export function StorefrontCartSheet() {
@@ -51,11 +52,7 @@ export function StorefrontCartSheet() {
                   className="rounded-[24px] border border-[#d7e5df] bg-[#ffffff] p-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]"
                 >
                   <div className="flex gap-4">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="h-24 w-24 rounded-2xl object-cover"
-                    />
+                    <ProductImage product={product} className="h-24 w-24 shrink-0 rounded-2xl" imageClassName="p-2" />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-3">
                         <div>

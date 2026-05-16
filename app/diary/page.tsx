@@ -5,6 +5,8 @@ import { DiaryGrid } from "@/components/diary/diary-grid";
 import { ImageComparison } from "@/components/image-comparison";
 import type { DiaryEntry } from "@/types/diary";
 
+export const dynamic = "force-dynamic";
+
 export default async function DiaryPage() {
   const supabase = createServerComponentSupabaseClient();
   const {
