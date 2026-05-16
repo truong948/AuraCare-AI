@@ -16,13 +16,14 @@ export function ProductImage({
   return (
     <div
       className={cn(
-        "relative aspect-square overflow-hidden bg-[linear-gradient(180deg,#f6fbf8_0%,#edf5f1_100%)]",
+        "relative aspect-square overflow-hidden bg-white",
         className
       )}
     >
       <img
         src={product.image}
         alt={product.name}
+        decoding="async"
         className={cn("h-full w-full object-contain p-6 transition duration-500", imageClassName)}
       />
       {children}

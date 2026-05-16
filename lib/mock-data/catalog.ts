@@ -222,24 +222,141 @@ const skincareBase = [
   },
 ] as const;
 
-const supplementBrands = ["Nutrivive", "Auralabs", "Vitaglow"];
-const skincareBrands = ["Calmistry", "Derma Bloom", "Sage Skin"];
 const countries = ["Japan", "Korea", "Australia", "USA", "France"];
 const supplementBadges: MockProduct["badge"][] = ["Best seller", "AI pick", "Flash deal"];
 const skincareBadges: MockProduct["badge"][] = ["New", "AI pick", "Best seller"];
-const supplementColors = [
-  { primary: "#5b8c7a", accent: "#e8a950", soft: "#edf4f1" },
-  { primary: "#315f72", accent: "#8fb9c9", soft: "#eaf4f7" },
-  { primary: "#7a6fbd", accent: "#d9c178", soft: "#f3f1fb" },
-  { primary: "#8a5c4c", accent: "#d99b70", soft: "#f8eee8" },
-] as const;
-const skincareColors = [
-  { primary: "#5b8c7a", accent: "#f0c987", soft: "#edf4f1" },
-  { primary: "#b76f86", accent: "#f3c7d3", soft: "#fff0f4" },
-  { primary: "#4f6f9f", accent: "#bdd1f1", soft: "#edf3fb" },
-  { primary: "#9a7a48", accent: "#f1d6a3", soft: "#fff8eb" },
-] as const;
 
+interface RealProductAsset {
+  brand: string;
+  name: string;
+  sizes: [string, string, string];
+  image: string;
+}
+
+const realSupplementProducts: RealProductAsset[] = [
+  {
+    brand: "Nature Made",
+    name: "Zero Sugar Energy B12 Gummies",
+    sizes: ["60 gummies", "90 gummies", "120 gummies"],
+    image: "https://cdn.shopify.com/s/files/1/0066/7569/3639/files/NMHL000385PK001945ZEROSUGARB12GUMMIES_5A008300ccfront.png?v=1756999567",
+  },
+  {
+    brand: "Nature Made",
+    name: "Melatonin 3 mg + Magnesium Sleep Gummies",
+    sizes: ["30 gummies", "60 gummies", "90 gummies"],
+    image: "https://cdn.shopify.com/s/files/1/0066/7569/3639/files/NMHL000736PK002707MELATONINMAGNESIUMGUMMIES_300cc5A008frontnf.png?v=1766510235",
+  },
+  {
+    brand: "Nature Made",
+    name: "Probiotic + Prebiotic Fiber Gummies",
+    sizes: ["50 gummies", "80 gummies", "120 gummies"],
+    image: "https://cdn.shopify.com/s/files/1/0066/7569/3639/files/NMHL000585PK002247PROBIOTICPREBIOTICFIBERGUMMIES_5A008300ccfrontnf.png?v=1741619813",
+  },
+  {
+    brand: "Nature Made",
+    name: "Zero Sugar Vitamin C Gummies",
+    sizes: ["60 gummies", "90 gummies", "120 gummies"],
+    image: "https://cdn.shopify.com/s/files/1/0066/7569/3639/files/NM_HL000383_PK002563_ZERO_SUGAR_VIT_C_GUMMIES_5A009_500cc_front_nf.png?v=1770753876",
+  },
+  {
+    brand: "Nature Made",
+    name: "Focus Boost Capsules",
+    sizes: ["30 capsules", "60 capsules", "90 capsules"],
+    image: "https://cdn.shopify.com/s/files/1/0066/7569/3639/files/NMHL000739PK002600FOCUSBOOST_5A044150ccfrontnf.png?v=1766510129",
+  },
+  {
+    brand: "Nature Made",
+    name: "Collagen Peptides + C Gummies",
+    sizes: ["60 gummies", "90 gummies", "120 gummies"],
+    image: "https://cdn.shopify.com/s/files/1/0066/7569/3639/files/NM_HL000744_PK002845_COLLAGEN_GUMMIES_5A009_400cc_front_nf.png?v=1777234288",
+  },
+  {
+    brand: "Nature Made",
+    name: "Glucosamine Chondroitin Complex with MSM",
+    sizes: ["60 tablets", "90 tablets", "120 tablets"],
+    image: "https://cdn.shopify.com/s/files/1/0066/7569/3639/files/NMHL000055PK002321GLUCOSAMINECHONDCOMPLEXMSM_5A008300ccfront.png?v=1757005867",
+  },
+  {
+    brand: "Nature Made",
+    name: "Fish Oil 1000 mg Softgels",
+    sizes: ["100 softgels", "150 softgels", "200 softgels"],
+    image: "https://cdn.shopify.com/s/files/1/0066/7569/3639/files/NM2662PK000743FISHOIL_5A008300ccfront.png?v=1695678872",
+  },
+  {
+    brand: "Nature Made",
+    name: "Iron 18 mg Gummies with Vitamin C",
+    sizes: ["60 gummies", "90 gummies", "120 gummies"],
+    image: "https://cdn.shopify.com/s/files/1/0066/7569/3639/files/NM3284PK001267IRONGUMMIESfront.png?v=1695678574",
+  },
+  {
+    brand: "Nuun",
+    name: "Nuun Sport Electrolyte Tablets",
+    sizes: ["10 tablets", "20 tablets", "30 tablets"],
+    image: "https://nuunlife.com/cdn/shop/files/Nuun_Tube_Upright_withTabs_Strawberry_lemonade_web_1200x1200.png?v=1744037007",
+  },
+];
+const realSkincareProducts: RealProductAsset[] = [
+  {
+    brand: "CeraVe",
+    name: "Hydrating Hyaluronic Acid Serum",
+    sizes: ["30 ml", "50 ml", "75 ml"],
+    image: "https://www.cerave.com/-/media/project/loreal/brand-sites/cerave/americas/us/products/hydrating-hyaluronic-acid-serum/700x700/hydrating-hyaluronic-acid-serum-front-700x700-v1.jpg?rev=7e9d7479b01940a39f84ffec62dca5ba",
+  },
+  {
+    brand: "CeraVe",
+    name: "Moisturizing Cream",
+    sizes: ["56 g", "340 g", "453 g"],
+    image: "https://www.cerave.com/-/media/project/loreal/brand-sites/cerave/americas/us/products-v4/moisturizing-cream/cerave_moisturizing_cream_16oz_jar_front-700x700-v3.jpg?rev=7e37e9cc45754615b1532d77df5a0b52",
+  },
+  {
+    brand: "CeraVe",
+    name: "Acne Foaming Cream Cleanser",
+    sizes: ["89 ml", "150 ml", "236 ml"],
+    image: "https://www.cerave.com/-/media/project/loreal/brand-sites/cerave/americas/us/skincare/cleansers/acne-pdp-resizes/foaming-cleanser/acne-foaming-cleanser-tube-packshot-700x785-v1.jpg?rev=a5e2960fd1bf4bceb9a3f31d44fa740f",
+  },
+  {
+    brand: "The Ordinary",
+    name: "Niacinamide 10% + Zinc 1% Serum",
+    sizes: ["30 ml", "60 ml", "120 ml"],
+    image: "https://theordinary.com/dw/image/v2/BFKJ_PRD/on/demandware.static/-/Sites-deciem-master/default/dwce8a7cdf/Images/products/The%20Ordinary/rdn-niacinamide-10pct-zinc-1pct-30ml.png?sw=900&sh=900&sm=fit",
+  },
+  {
+    brand: "The Ordinary",
+    name: "Natural Moisturizing Factors + HA",
+    sizes: ["30 ml", "100 ml", "150 ml"],
+    image: "https://theordinary.com/dw/image/v2/BFKJ_PRD/on/demandware.static/-/Sites-deciem-master/default/dw51f90af8/Images/products/The%20Ordinary/rdn-natural-moisturizing-factors-ha-30ml.png?sw=900&sh=900&sm=fit",
+  },
+  {
+    brand: "The Ordinary",
+    name: "Retinal 0.2% Emulsion",
+    sizes: ["15 ml", "30 ml", "50 ml"],
+    image: "https://theordinary.com/dw/image/v2/BFKJ_PRD/on/demandware.static/-/Sites-deciem-master/default/dwa863ca2c/Images/products/The%20Ordinary/ord-retinal-02-emulsion-15ml.png?sw=900&sh=900&sm=fit",
+  },
+  {
+    brand: "CeraVe",
+    name: "Hydrating Mineral Sunscreen SPF 50",
+    sizes: ["50 ml", "75 ml", "100 ml"],
+    image: "https://www.cerave.com/-/media/project/loreal/brand-sites/cerave/americas/us/sunscreen/face/50-spf-face/50-spf-face_front.jpg?rev=876337554bf7423bb530d2f754cb9e78",
+  },
+  {
+    brand: "CeraVe",
+    name: "Healing Ointment",
+    sizes: ["42 g", "85 g", "340 g"],
+    image: "https://www.cerave.com/-/media/project/loreal/brand-sites/cerave/americas/us/skincare/moisturizers/healing-ointment/2025/healing-ointment_front.jpg?rev=c41d50fa05b34fa59e5affe3b389b681",
+  },
+  {
+    brand: "Paula's Choice",
+    name: "Skin Perfecting 2% BHA Liquid Exfoliant",
+    sizes: ["30 ml", "118 ml", "236 ml"],
+    image: "https://www.paulaschoice.com/dw/image/v2/BBNX_PRD/on/demandware.static/-/Sites-pc-catalog/default/dw006e394e/images/products/2-percent-bha-liquid-exfoliant-2010-portrait.png?sw=1000&sfrm=png",
+  },
+  {
+    brand: "The Ordinary",
+    name: "Caffeine Solution 5% + EGCG",
+    sizes: ["30 ml", "60 ml", "90 ml"],
+    image: "https://theordinary.com/dw/image/v2/BFKJ_PRD/on/demandware.static/-/Sites-deciem-master/default/dwd2b40942/Images/products/The%20Ordinary/rdn-caffeine-solution-5pct-egcg-30ml.png?sw=900&sh=900&sm=fit",
+  },
+];
 function formatTitle(value: string) {
   return value
     .split("-")
@@ -247,141 +364,21 @@ function formatTitle(value: string) {
     .join(" ");
 }
 
-function svgDataUri(svg: string) {
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-}
-
-function buildSupplementImage({
-  brand,
-  format,
-  concern,
-  itemIndex,
-  variantIndex,
-}: {
-  brand: string;
-  format: string;
-  concern: string;
-  itemIndex: number;
-  variantIndex: number;
-}) {
-  const palette = supplementColors[(itemIndex + variantIndex) % supplementColors.length];
-  const shape =
-    format.includes("gummies") || format.includes("tablets")
-      ? "jar"
-      : format.includes("powder") || format.includes("sachets")
-        ? "box"
-        : format.includes("softgels")
-          ? "softgel"
-          : "bottle";
-  const title = formatTitle(concern).split(" ").slice(0, 2).join(" ");
-
-  return svgDataUri(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
-      <rect width="900" height="700" rx="44" fill="${palette.soft}"/>
-      <circle cx="718" cy="118" r="84" fill="#ffffff" opacity="0.65"/>
-      <circle cx="166" cy="574" r="122" fill="#ffffff" opacity="0.45"/>
-      <ellipse cx="450" cy="604" rx="210" ry="32" fill="#0f172a" opacity="0.09"/>
-      ${
-        shape === "jar"
-          ? `<rect x="312" y="188" width="276" height="340" rx="54" fill="#ffffff"/>
-             <rect x="340" y="154" width="220" height="64" rx="26" fill="${palette.primary}"/>
-             <rect x="344" y="296" width="212" height="124" rx="26" fill="${palette.primary}"/>
-             <circle cx="390" cy="496" r="20" fill="${palette.accent}"/>
-             <circle cx="448" cy="510" r="18" fill="${palette.primary}" opacity="0.35"/>
-             <circle cx="506" cy="490" r="22" fill="${palette.accent}" opacity="0.72"/>`
-          : shape === "box"
-            ? `<path d="M298 190h254l64 62v266H298z" fill="#ffffff"/>
-               <path d="M552 190l64 62h-64z" fill="${palette.primary}" opacity="0.22"/>
-               <rect x="338" y="292" width="218" height="122" rx="18" fill="${palette.primary}"/>
-               <rect x="348" y="444" width="170" height="18" rx="9" fill="${palette.accent}"/>`
-            : shape === "softgel"
-              ? `<rect x="318" y="172" width="264" height="374" rx="42" fill="#ffffff"/>
-                 <rect x="354" y="128" width="192" height="70" rx="28" fill="${palette.primary}"/>
-                 <rect x="350" y="292" width="200" height="122" rx="24" fill="${palette.primary}"/>
-                 <ellipse cx="386" cy="498" rx="34" ry="20" fill="${palette.accent}"/>
-                 <ellipse cx="466" cy="510" rx="34" ry="20" fill="${palette.accent}" opacity="0.8"/>
-                 <ellipse cx="530" cy="486" rx="30" ry="18" fill="${palette.primary}" opacity="0.28"/>`
-              : `<rect x="330" y="156" width="240" height="392" rx="44" fill="#ffffff"/>
-                 <rect x="370" y="112" width="160" height="72" rx="26" fill="${palette.primary}"/>
-                 <rect x="360" y="292" width="180" height="136" rx="26" fill="${palette.primary}"/>
-                 <rect x="386" y="458" width="128" height="18" rx="9" fill="${palette.accent}"/>`
-      }
-      <text x="450" y="344" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#ffffff">${brand}</text>
-      <text x="450" y="382" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#ffffff" opacity="0.92">${title}</text>
-    </svg>
-  `);
-}
-
-function buildSkincareImage({
-  brand,
-  texture,
-  concern,
-  itemIndex,
-  variantIndex,
-}: {
-  brand: string;
-  texture: string;
-  concern: string;
-  itemIndex: number;
-  variantIndex: number;
-}) {
-  const palette = skincareColors[(itemIndex + variantIndex) % skincareColors.length];
-  const shape =
-    texture.includes("cleanser") || texture.includes("sunscreen")
-      ? "tube"
-      : texture.includes("cream") || texture.includes("balm")
-        ? "jar"
-        : texture.includes("toner") || texture.includes("essence")
-          ? "tall"
-          : "dropper";
-  const title = formatTitle(concern).split(" ").slice(0, 2).join(" ");
-
-  return svgDataUri(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
-      <rect width="900" height="700" rx="44" fill="${palette.soft}"/>
-      <circle cx="726" cy="146" r="92" fill="#ffffff" opacity="0.58"/>
-      <circle cx="168" cy="555" r="116" fill="#ffffff" opacity="0.48"/>
-      <ellipse cx="450" cy="606" rx="208" ry="32" fill="#0f172a" opacity="0.08"/>
-      ${
-        shape === "tube"
-          ? `<path d="M348 150h204l44 380c5 43-28 80-72 80H376c-44 0-77-37-72-80z" fill="#ffffff"/>
-             <rect x="346" y="184" width="208" height="86" rx="26" fill="${palette.primary}"/>
-             <rect x="362" y="510" width="176" height="48" rx="20" fill="${palette.accent}"/>`
-          : shape === "jar"
-            ? `<rect x="304" y="272" width="292" height="240" rx="58" fill="#ffffff"/>
-               <rect x="326" y="210" width="248" height="92" rx="36" fill="${palette.primary}"/>
-               <rect x="348" y="356" width="204" height="82" rx="26" fill="${palette.primary}"/>`
-            : shape === "tall"
-              ? `<rect x="350" y="132" width="200" height="426" rx="46" fill="#ffffff"/>
-                 <rect x="384" y="88" width="132" height="76" rx="26" fill="${palette.primary}"/>
-                 <rect x="374" y="308" width="152" height="116" rx="28" fill="${palette.primary}"/>
-                 <rect x="392" y="454" width="116" height="18" rx="9" fill="${palette.accent}"/>`
-              : `<rect x="344" y="178" width="212" height="370" rx="48" fill="#ffffff"/>
-                 <rect x="376" y="126" width="148" height="88" rx="30" fill="${palette.primary}"/>
-                 <path d="M422 90h56v48h-56z" fill="#ffffff"/>
-                 <rect x="374" y="318" width="152" height="118" rx="28" fill="${palette.primary}"/>
-                 <path d="M450 472c32 42 44 65 44 88a44 44 0 0 1-88 0c0-23 12-46 44-88z" fill="${palette.accent}" opacity="0.85"/>`
-      }
-      <text x="450" y="366" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#ffffff">${brand}</text>
-      <text x="450" y="404" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#ffffff" opacity="0.92">${title}</text>
-    </svg>
-  `);
-}
-
 function buildSupplementProducts() {
   return supplementBase.flatMap((item, itemIndex) =>
     Array.from({ length: 3 }, (_, variantIndex) => {
       const id = `supp-${itemIndex + 1}-${variantIndex + 1}`;
-      const size = variantIndex === 0 ? "30 capsules" : variantIndex === 1 ? "60 capsules" : "90 capsules";
+      const realProduct = realSupplementProducts[itemIndex];
+      const size = realProduct.sizes[variantIndex];
       const price = 260000 + itemIndex * 35000 + variantIndex * 40000;
       const compareAtPrice = price + 70000;
-      const brand = supplementBrands[(itemIndex + variantIndex) % supplementBrands.length];
+      const brand = realProduct.brand;
       const benefitName = formatTitle(item.benefit.replace(/\s+/g, "-"));
 
       return {
         id,
         slug: `${id}-${item.concern}-${variantIndex + 1}`,
-        name: `${brand} ${benefitName} ${size}`,
+        name: `${realProduct.name} ${size}`,
         brand,
         category: "supplement" as const,
         shortDescription: `${formatTitle(item.concern)} support with ${item.ingredients}.`,
@@ -401,13 +398,7 @@ function buildSupplementProducts() {
         reviewCount: 72 + itemIndex * 11 + variantIndex * 9,
         originCountry: countries[(itemIndex + variantIndex) % countries.length],
         badge: supplementBadges[(itemIndex + variantIndex) % supplementBadges.length],
-        image: buildSupplementImage({
-          brand,
-          format: item.format,
-          concern: item.concern,
-          itemIndex,
-          variantIndex,
-        }),
+        image: realProduct.image,
         embeddingVector: null,
       } satisfies MockProduct;
     })
@@ -418,16 +409,17 @@ function buildSkincareProducts() {
   return skincareBase.flatMap((item, itemIndex) =>
     Array.from({ length: 3 }, (_, variantIndex) => {
       const id = `skin-${itemIndex + 1}-${variantIndex + 1}`;
-      const size = variantIndex === 0 ? "30 ml" : variantIndex === 1 ? "50 ml" : "75 ml";
+      const realProduct = realSkincareProducts[itemIndex];
+      const size = realProduct.sizes[variantIndex];
       const price = 320000 + itemIndex * 45000 + variantIndex * 50000;
       const compareAtPrice = price + 90000;
-      const brand = skincareBrands[(itemIndex + variantIndex) % skincareBrands.length];
+      const brand = realProduct.brand;
       const benefitName = formatTitle(item.benefit.replace(/\s+/g, "-"));
 
       return {
         id,
         slug: `${id}-${item.concern}-${variantIndex + 1}`,
-        name: `${brand} ${benefitName} ${item.texture} ${size}`,
+        name: `${realProduct.name} ${size}`,
         brand,
         category: "skincare" as const,
         shortDescription: `${formatTitle(item.concern)} care for ${item.symptom}.`,
@@ -447,13 +439,7 @@ function buildSkincareProducts() {
         reviewCount: 58 + itemIndex * 13 + variantIndex * 8,
         originCountry: countries[(itemIndex + variantIndex + 2) % countries.length],
         badge: skincareBadges[(itemIndex + variantIndex) % skincareBadges.length],
-        image: buildSkincareImage({
-          brand,
-          texture: item.texture,
-          concern: item.concern,
-          itemIndex,
-          variantIndex,
-        }),
+        image: realProduct.image,
         embeddingVector: null,
       } satisfies MockProduct;
     })

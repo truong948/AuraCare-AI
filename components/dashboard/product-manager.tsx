@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { mockProducts, type MockProduct, type ProductCategory } from "@/lib/mock-data/catalog";
 
 const DASHBOARD_PRODUCTS_KEY = "auracare_admin_products";
+const defaultProductImage = mockProducts[0]?.image ?? "";
 
 function loadAdminProducts() {
   if (typeof window === "undefined") return mockProducts;
@@ -50,7 +51,7 @@ function buildEmptyProduct(): Partial<MockProduct> {
     reviewCount: 0,
     originCountry: "Vietnam",
     badge: "New",
-    image: "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80",
+    image: defaultProductImage,
   };
 }
 
@@ -129,7 +130,7 @@ export function DashboardProductManager() {
       reviewCount: Number(draft.reviewCount) || 0,
       originCountry: draft.originCountry || "Vietnam",
       badge: draft.badge || "New",
-      image: draft.image || "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=900&q=80",
+      image: draft.image || defaultProductImage,
       embeddingVector: draft.embeddingVector ?? null,
     };
 
