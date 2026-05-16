@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "react-hot-toast";
 import { createConsultation } from "@/actions/consultation";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,18 @@ interface ConsultationFormProps {
 
 export function ConsultationForm({ session }: ConsultationFormProps) {
   const action = async (formData: FormData) => createConsultation(formData, session.user.id);
+  const mountedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,18 +31,28 @@ export function ConsultationForm({ session }: ConsultationFormProps) {
     startTransition(async () => {
       try {
         const result = await action(formData);
+        if (!mountedRef.current) {
+          return;
+        }
         if (result.success) {
           setSuccess(true);
         } else {
           setError("Failed to submit consultation.");
         }
       } catch (err) {
+        if (!mountedRef.current) {
+          return;
+        }
         setError(err instanceof Error ? err.message : "Failed to submit consultation.");
       }
     });
   };
 
   useEffect(() => {
+    if (!mountedRef.current) {
+      return;
+    }
+
     if (error) {
       toast.error(error);
       setError(null);

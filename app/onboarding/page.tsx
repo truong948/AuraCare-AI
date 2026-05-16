@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,7 @@ const allergyOptions = [
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const mountedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -46,24 +47,42 @@ export default function OnboardingPage() {
   const [concerns, setConcerns] = useState<string[]>([]);
   const [allergies, setAllergies] = useState<string[]>([]);
 
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     startTransition(async () => {
       try {
         const result = await createSkinProfile(formData);
+        if (!mountedRef.current) {
+          return;
+        }
         if (result.success) {
           setSuccess(true);
         } else {
           setError("Không thể lưu thông tin da.");
         }
       } catch (err) {
+        if (!mountedRef.current) {
+          return;
+        }
         setError(err instanceof Error ? err.message : "Không thể lưu thông tin da.");
       }
     });
   };
 
   useEffect(() => {
+    if (!mountedRef.current) {
+      return;
+    }
+
     if (error) {
       toast.error(error);
       setError(null);
@@ -72,7 +91,6 @@ export default function OnboardingPage() {
     if (success) {
       toast.success("Thông tin da đã được lưu. Chuyển về dashboard.");
       router.push("/dashboard");
-      setSuccess(false);
     }
   }, [error, success, router]);
 

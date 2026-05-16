@@ -1,14 +1,23 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "react-hot-toast";
 import { signIn } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 
 export function AuthSignIn() {
+  const mountedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -16,18 +25,28 @@ export function AuthSignIn() {
     startTransition(async () => {
       try {
         const result = await signIn(formData);
+        if (!mountedRef.current) {
+          return;
+        }
         if (result.success) {
           setSuccess(true);
         } else {
           setError("Unable to sign in.");
         }
       } catch (err) {
+        if (!mountedRef.current) {
+          return;
+        }
         setError(err instanceof Error ? err.message : "Unable to sign in.");
       }
     });
   };
 
   useEffect(() => {
+    if (!mountedRef.current) {
+      return;
+    }
+
     if (error) {
       toast.error(error);
       setError(null);

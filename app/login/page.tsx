@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { login, signup } from "./actions";
 import { Eye, EyeOff, Sparkles, Lock, Mail, UserPlus, LogIn } from "lucide-react";
 
@@ -12,11 +12,20 @@ interface ActionState {
 }
 
 export default function LoginPage() {
+  const mountedRef = useRef(false);
   const [mode, setMode] = useState<Mode>("login");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [state, setState] = useState<ActionState>({});
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,6 +36,9 @@ export default function LoginPage() {
       const action = mode === "login" ? login : signup;
       const result = await action(formData);
       // result is only returned on error; redirect happens server-side on success
+      if (!mountedRef.current) {
+        return;
+      }
       if (result?.error) {
         setState({ error: result.error });
       }
