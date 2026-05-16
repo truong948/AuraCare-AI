@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart/cart-context";
@@ -8,11 +8,26 @@ import { useCart } from "@/components/cart/cart-context";
 export function AddToCartButton({ productSlug }: { productSlug: string }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleClick = () => {
     addItem(productSlug, 1);
     setAdded(true);
-    window.setTimeout(() => setAdded(false), 1200);
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = window.setTimeout(() => {
+      setAdded(false);
+      timeoutRef.current = null;
+    }, 1200);
   };
 
   return (

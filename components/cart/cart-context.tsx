@@ -18,14 +18,17 @@ const CartContext = createContext<CartContextValue | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
     setItems(normalizeCartItems(loadCart()));
+    setHasHydrated(true);
   }, []);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     saveCart(items);
-  }, [items]);
+  }, [hasHydrated, items]);
 
   const count = useMemo(() => getCartItemCount(items), [items]);
   const subtotal = useMemo(() => getCartSubtotal(items, mockProducts), [items]);

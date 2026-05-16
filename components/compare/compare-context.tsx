@@ -15,14 +15,17 @@ const CompareContext = createContext<CompareContextValue | undefined>(undefined)
 
 export function CompareProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<string[]>([]);
+  const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
     setItems(loadCompare());
+    setHasHydrated(true);
   }, []);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     saveCompare(items);
-  }, [items]);
+  }, [hasHydrated, items]);
 
   const count = useMemo(() => items.length, [items]);
   const hasItem = (productSlug: string) => items.includes(productSlug);

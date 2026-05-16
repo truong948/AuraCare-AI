@@ -15,14 +15,17 @@ const WishlistContext = createContext<WishlistContextValue | undefined>(undefine
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<string[]>([]);
+  const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
     setItems(loadWishlist());
+    setHasHydrated(true);
   }, []);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     saveWishlist(items);
-  }, [items]);
+  }, [hasHydrated, items]);
 
   const count = useMemo(() => items.length, [items]);
 
