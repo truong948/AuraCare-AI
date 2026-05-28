@@ -23,7 +23,7 @@ export async function updateUserAccess(formData: FormData) {
     throw new Error("Không thể tự hạ quyền admin của chính bạn.");
   }
 
-  const { error } = await supabase
+  const { error } = await (supabase as any)
     .from("profiles")
     .update({
       role: parsed.role,
