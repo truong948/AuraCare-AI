@@ -26,18 +26,27 @@ export interface Database {
           id: string;
           email: string;
           full_name: string | null;
+          role: "user" | "admin";
+          status: "active" | "suspended";
           created_at: string | null;
+          updated_at: string | null;
         };
         Insert: {
           id: string;
           email: string;
           full_name?: string | null;
+          role?: "user" | "admin";
+          status?: "active" | "suspended";
           created_at?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           email?: string;
           full_name?: string | null;
+          role?: "user" | "admin";
+          status?: "active" | "suspended";
           created_at?: string | null;
+          updated_at?: string | null;
         };
       };
       products: {
