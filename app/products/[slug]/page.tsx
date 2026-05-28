@@ -12,13 +12,16 @@ import { AddToCartButton } from "@/components/storefront/add-to-cart-button";
 import { CompareToggleButton } from "@/components/storefront/compare-toggle-button";
 import { WishlistToggleButton } from "@/components/storefront/wishlist-toggle-button";
 import { getProductRecommendations } from "@/lib/ai/recommendations";
+import { getProductBySlug } from "@/lib/database-service.server";
+import { ProductFeedbackSection } from "@/components/storefront/product-feedback-section";
 import {
   formatMockPrice,
   getBadgeLabel,
   getCategoryLabel,
-  getProductBySlug,
   getStockLabel,
 } from "@/lib/mock-data/catalog";
+
+export const dynamic = "force-dynamic";
 
 export default async function ProductDetailPage({
   params,
@@ -26,7 +29,8 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
+
 
   if (!product) {
     notFound();
@@ -159,6 +163,10 @@ export default async function ProductDetailPage({
 
         <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
           <ProductAiAssistant productSlug={product.slug} productName={product.name} />
+        </section>
+
+        <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+          <ProductFeedbackSection productId={product.id} productSlug={product.slug} />
         </section>
 
         <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">

@@ -19,10 +19,16 @@ export default function OrderDetailPage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setOrder(getOrderById(params.id) ?? null);
-    setLoaded(true);
+    async function init() {
+      if (params.id) {
+        const data = await getOrderById(params.id);
+        setOrder(data ?? null);
+      }
+      setLoaded(true);
+    }
+    init();
   }, [params.id]);
+
 
   const itemCount = useMemo(
     () => order?.items.reduce((total, item) => total + item.quantity, 0) ?? 0,

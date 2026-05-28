@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { mockProducts, type MockProduct, type ProductCategory } from "@/lib/mock-data/catalog";
+import { getProducts, adminUpsertProduct, adminDeleteProduct } from "@/lib/database-service";
 
 const DASHBOARD_PRODUCTS_KEY = "auracare_admin_products";
 const defaultProductImage = mockProducts[0]?.image ?? "";
 
-function loadAdminProducts() {
+function loadAdminProductsFallback() {
   if (typeof window === "undefined") return mockProducts;
   try {
     const raw = window.localStorage.getItem(DASHBOARD_PRODUCTS_KEY);
@@ -24,7 +25,7 @@ function loadAdminProducts() {
   return mockProducts;
 }
 
-function saveAdminProducts(products: MockProduct[]) {
+function saveAdminProductsFallback(products: MockProduct[]) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(DASHBOARD_PRODUCTS_KEY, JSON.stringify(products));
 }
@@ -68,14 +69,16 @@ export function DashboardProductManager() {
   const [draft, setDraft] = useState<Partial<MockProduct>>(() => buildEmptyProduct());
 
   useEffect(() => {
-    const loaded = loadAdminProducts();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setProducts(loaded);
+    async function init() {
+      const data = await getProducts();
+      setProducts(data);
+    }
+    init();
   }, []);
 
   useEffect(() => {
     if (products.length > 0) {
-      saveAdminProducts(products);
+      saveAdminProductsFallback(products);
     }
   }, [products]);
 
@@ -86,10 +89,8 @@ export function DashboardProductManager() {
 
   useEffect(() => {
     if (selectedProduct) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDraft(selectedProduct);
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDraft(buildEmptyProduct());
     }
   }, [selectedProduct]);
@@ -98,7 +99,7 @@ export function DashboardProductManager() {
     setDraft((current) => ({ ...current, [field]: value }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!draft.name || !draft.category || !draft.price || !draft.shortDescription) {
       return;
     }
@@ -137,14 +138,18 @@ export function DashboardProductManager() {
       embeddingVector: draft.embeddingVector ?? null,
     };
 
+    // Save to Supabase (dynamic fallback inside)
+    const { success, data: savedData } = await adminUpsertProduct(product);
+    const finalProduct = success && savedData ? savedData : product;
+
     setProducts((current) => {
       const existingIndex = current.findIndex((item) => item.slug === slug);
       if (existingIndex >= 0) {
         const next = [...current];
-        next[existingIndex] = product;
+        next[existingIndex] = finalProduct;
         return next;
       }
-      return [product, ...current];
+      return [finalProduct, ...current];
     });
     setEditingSlug(null);
     setDraft(buildEmptyProduct());
@@ -155,7 +160,8 @@ export function DashboardProductManager() {
     setDraft(buildEmptyProduct());
   };
 
-  const handleDelete = (slug: string) => {
+  const handleDelete = async (slug: string) => {
+    await adminDeleteProduct(slug);
     setProducts((current) => current.filter((item) => item.slug !== slug));
     if (editingSlug === slug) {
       handleCancel();
@@ -170,7 +176,7 @@ export function DashboardProductManager() {
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Catalog Admin</p>
             <h1 className="mt-2 text-3xl font-semibold text-slate-900">Quản lý sản phẩm</h1>
           </div>
-          <Button onClick={() => setEditingSlug(null)} className="inline-flex items-center gap-2 rounded-2xl bg-[#5b8c7a] text-white hover:bg-[#4f7c6d]">
+          <Button onClick={() => { setEditingSlug(null); setDraft(buildEmptyProduct()); }} className="inline-flex items-center gap-2 rounded-2xl bg-[#5b8c7a] text-white hover:bg-[#4f7c6d]">
             <Plus className="h-4 w-4" /> Thêm sản phẩm
           </Button>
         </div>
@@ -181,8 +187,8 @@ export function DashboardProductManager() {
             <p className="mt-2 text-4xl font-semibold text-slate-900">{products.length}</p>
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-700">Last update</p>
-            <p className="mt-2 text-base text-slate-500">Dữ liệu lưu trong localStorage, phù hợp cho Phase 2 MVP.</p>
+            <p className="text-sm font-medium text-slate-700">Trạng thái đồng bộ</p>
+            <p className="mt-2 text-base text-slate-500">Đã kết nối cơ sở dữ liệu Supabase (dự phòng LocalStorage).</p>
           </div>
         </div>
       </div>
@@ -193,7 +199,7 @@ export function DashboardProductManager() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">Danh sách sản phẩm</p>
-                <p className="mt-2 text-sm text-slate-600">Danh sách sản phẩm mock catalog, hỗ trợ chỉnh sửa và xóa trực tiếp.</p>
+                <p className="mt-2 text-sm text-slate-600">Danh sách sản phẩm từ database, hỗ trợ chỉnh sửa và xóa trực tiếp.</p>
               </div>
               <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">{products.length} items</span>
             </div>
@@ -223,8 +229,8 @@ export function DashboardProductManager() {
           <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">Trạng thái biên tập</p>
-                <p className="mt-2 text-sm text-slate-600">Chọn sản phẩm để cập nhật hoặc tạo mới catalog.</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">Biên tập sản phẩm</p>
+                <p className="mt-2 text-sm text-slate-600">Điền thông tin và lưu trực tiếp vào Supabase.</p>
               </div>
               <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
                 {editingSlug ? "Đang chỉnh sửa" : "Tạo mới"}
@@ -234,11 +240,11 @@ export function DashboardProductManager() {
             <div className="mt-6 grid gap-4">
               <div className="grid gap-3 sm:grid-cols-2">
                 <label className="block text-sm font-medium text-slate-700">
-                  Tên sản phẩm
+                  Tên sản phẩm *
                   <Input value={draft.name ?? ""} onChange={(event) => setField("name", event.target.value)} />
                 </label>
                 <label className="block text-sm font-medium text-slate-700">
-                  Giá bán
+                  Giá bán *
                   <Input type="number" value={draft.price ?? 0} onChange={(event) => setField("price", Number(event.target.value))} />
                 </label>
               </div>
@@ -269,7 +275,7 @@ export function DashboardProductManager() {
                 </label>
               </div>
               <label className="block text-sm font-medium text-slate-700">
-                Mô tả ngắn
+                Mô tả ngắn *
                 <Input value={draft.shortDescription ?? ""} onChange={(event) => setField("shortDescription", event.target.value)} />
               </label>
               <label className="block text-sm font-medium text-slate-700">
@@ -288,13 +294,13 @@ export function DashboardProductManager() {
           <div className="flex items-center gap-3 text-slate-900">
             <Archive className="h-5 w-5" />
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.22em]">Lời nhắc Phase 2</p>
-              <p className="mt-1 text-sm text-slate-600">Nâng cấp sản phẩm sang backend thật hoặc Supabase khi bước sang Phase 3.</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.22em]">Cơ sở dữ liệu tích hợp</p>
+              <p className="mt-1 text-sm text-slate-600">Đã cập nhật lên kết nối Supabase</p>
             </div>
           </div>
           <Separator className="my-6" />
           <p className="text-sm leading-7 text-slate-600">
-            Danh mục hiện đang dùng bộ dữ liệu mock, nhưng UX đã sẵn sàng cho CRUD admin. Kết nối API product vào database thật là bước tiếp theo.
+            Trang quản trị sản phẩm hiện tại đã được cấu hình liên kết trực tiếp tới các API thao tác dữ liệu của Supabase. Khi lưu hoặc xóa sản phẩm, hệ thống sẽ tự động đồng bộ hóa trên Cloud.
           </p>
         </div>
       </div>

@@ -1,6 +1,8 @@
 import { Droplets, Flame, Sparkles } from "lucide-react";
 import { DashboardStatCard } from "@/components/dashboard/dashboard-stat-card";
 import { TodayRoutineCard } from "@/components/dashboard/today-routine-card";
+import { requireSignedIn } from "@/lib/auth/roles";
+import { AdminDashboardOverview } from "@/components/dashboard/admin-overview";
 
 const stats = [
   {
@@ -40,7 +42,13 @@ const eveningRoutine = [
   { id: "evening-sleeping-mask", label: "Khóa ẩm với sleeping mask", completed: false },
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const { role } = await requireSignedIn();
+
+  if (role === "admin") {
+    return <AdminDashboardOverview />;
+  }
+
   return (
     <div className="space-y-6">
       <section className="overflow-hidden rounded-[32px] bg-[radial-gradient(circle_at_top_left,_rgba(6,182,212,0.14),_transparent_32%),linear-gradient(135deg,_#ffffff_0%,_#f1f5f9_100%)] px-6 py-8 shadow-sm shadow-slate-950/5 ring-1 ring-slate-200/80">

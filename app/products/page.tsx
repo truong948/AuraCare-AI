@@ -3,9 +3,17 @@ import { ArrowRight, Boxes, SearchCheck, Sparkles } from "lucide-react";
 import { ProductCard } from "@/components/storefront/product-card";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
-import { featuredProducts, skincareProducts, storefrontCategories, supplementProducts } from "@/lib/mock-data/catalog";
+import { storefrontCategories } from "@/lib/mock-data/catalog";
+import { getProducts } from "@/lib/database-service.server";
 
-export default function ProductsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ProductsPage() {
+  const products = await getProducts();
+  const featuredProducts = products.slice(0, 8);
+  const supplementProducts = products.filter((product) => product.category === "supplement");
+  const skincareProducts = products.filter((product) => product.category === "skincare");
+
   return (
     <div className="min-h-screen bg-[#f6f4ee] text-[#0f172a]">
       <StorefrontHeader />

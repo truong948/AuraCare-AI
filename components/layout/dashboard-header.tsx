@@ -48,7 +48,7 @@ export function DashboardHeader({ profile, role }: DashboardHeaderProps) {
               <Menu className="h-4 w-4" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[300px] border-slate-200 bg-[#eef6f5] p-0">
+          <SheetContent side="left" className="w-[300px] border-slate-200 bg-[#f0f4fa] p-0">
             <SheetHeader className="sr-only">
               <SheetTitle>Dashboard navigation</SheetTitle>
             </SheetHeader>
@@ -69,13 +69,13 @@ export function DashboardHeader({ profile, role }: DashboardHeaderProps) {
           <Input
             type="search"
             placeholder="Tìm kiếm routine, AI scan, nhật ký..."
-            className="h-12 rounded-2xl border-slate-200 bg-white pl-11 text-sm shadow-sm shadow-slate-950/5 placeholder:text-slate-400 focus-visible:ring-cyan-500/20"
+            className="h-12 rounded-2xl border-slate-200 bg-white pl-11 text-sm shadow-sm shadow-slate-950/5 placeholder:text-slate-400 focus-visible:ring-blue-500/20"
           />
         </div>
 
         <div className="ml-auto flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm shadow-slate-950/5">
           <Avatar className="h-10 w-10">
-            <AvatarFallback className="bg-slate-900 text-sm font-semibold text-white">
+            <AvatarFallback className="bg-[#0b57c5] text-sm font-semibold text-white">
               {getInitials(profile) || "AC"}
             </AvatarFallback>
           </Avatar>

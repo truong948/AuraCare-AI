@@ -24,10 +24,10 @@ export default async function DiaryPage() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    throw new Error(error.message);
+    console.error("Error fetching skin diaries from Supabase:", error.message);
   }
 
-  const diaryEntries = (entries as unknown) as DiaryEntry[];
+  const diaryEntries = error || !entries ? [] : (entries as unknown as DiaryEntry[]);
   const latestEntry = diaryEntries[0];
   const previousEntry = diaryEntries[1];
 

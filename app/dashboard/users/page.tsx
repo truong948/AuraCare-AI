@@ -26,13 +26,14 @@ export default async function DashboardUsersPage() {
   };
 
   if (error) {
-    throw new Error(error.message);
+    console.error("Error fetching profiles from Supabase:", error.message);
   }
 
-  const totalUsers = users?.length ?? 0;
-  const adminUsers = users?.filter((user) => user.role === "admin").length ?? 0;
+  const userList = error || !users ? [] : users;
+  const totalUsers = userList.length;
+  const adminUsers = userList.filter((user) => user.role === "admin").length;
   const suspendedUsers =
-    users?.filter((user) => user.status === "suspended").length ?? 0;
+    userList.filter((user) => user.status === "suspended").length;
 
   return (
     <div className="space-y-6">
@@ -102,7 +103,7 @@ export default async function DashboardUsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {(users ?? []).map((user) => (
+              {userList.map((user) => (
                 <tr key={user.id} className="align-middle">
                   <td className="px-6 py-5">
                     <p className="font-semibold text-slate-900">

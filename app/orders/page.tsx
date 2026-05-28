@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CalendarDays, ShoppingBag } from "lucide-react";
-import { loadOrders, orderStatusLabels } from "@/lib/orders";
+import { loadOrders, orderStatusLabels, type Order, type OrderStatus } from "@/lib/orders";
 import { formatMockPrice } from "@/lib/mock-data/catalog";
 import Link from "next/link";
 import { ProductImage } from "@/components/storefront/product-image";
@@ -10,12 +10,16 @@ import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState([] as Array<ReturnType<typeof loadOrders>[number]>);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setOrders(loadOrders());
+    async function init() {
+      const data = await loadOrders();
+      setOrders(data);
+    }
+    init();
   }, []);
+
 
   return (
     <div className="min-h-screen bg-[#f6f4ee] text-[#0f172a]">
@@ -56,7 +60,7 @@ export default function OrdersPage() {
                       <Link href={`/orders/${order.id}`} className="mt-2 block text-xl font-semibold text-[#0f172a] hover:text-[#5b8c7a]">
                         Mã đơn hàng: {order.id}
                       </Link>
-                      <p className="text-sm text-[#475569]">Trạng thái: {orderStatusLabels[order.status]}</p>
+                      <p className="text-sm text-[#475569]">Trạng thái: {orderStatusLabels[order.status as OrderStatus]}</p>
                     </div>
                     <div className="rounded-2xl bg-[#f5f8f6] px-4 py-3 text-sm text-[#334155]">
                       Tổng: {formatMockPrice(order.subtotal)}

@@ -20,15 +20,20 @@ export function DashboardOrderManager() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setOrders(loadOrders());
+    async function init() {
+      const data = await loadOrders();
+      setOrders(data);
+    }
+    init();
   }, []);
 
   const summary = useMemo(() => getOrdersSummary(orders), [orders]);
 
-  const handleStatusChange = (id: string, status: OrderStatus) => {
-    setOrders(updateOrderStatus(id, status));
+  const handleStatusChange = async (id: string, status: OrderStatus) => {
+    const next = await updateOrderStatus(id, status);
+    setOrders(next);
   };
+
 
   return (
     <div className="space-y-6">

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { mockProducts } from "@/lib/mock-data/catalog";
+import { getProducts } from "@/lib/database-service.server";
 
 export async function GET() {
-  return NextResponse.json({ products: mockProducts });
+  const products = await getProducts();
+  return NextResponse.json({ products });
 }

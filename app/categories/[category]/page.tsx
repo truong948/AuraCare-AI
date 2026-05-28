@@ -4,13 +4,14 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/storefront/product-card";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
+import { getProductsByCategory } from "@/lib/database-service.server";
 import {
   getBadgeLabel,
-  getProductsByCategory,
   storefrontCategories,
   type MockProduct,
   type ProductCategory,
 } from "@/lib/mock-data/catalog";
+
 
 const categoryAccents: Record<ProductCategory, { badge: string; panel: string; chip: string }> = {
   supplement: {
@@ -40,6 +41,8 @@ function sortProducts(products: MockProduct[], sort: string) {
   }
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function CategoryPage({
   params,
   searchParams,
@@ -55,7 +58,7 @@ export default async function CategoryPage({
     notFound();
   }
 
-  const baseProducts = getProductsByCategory(currentCategory.id);
+  const baseProducts = await getProductsByCategory(currentCategory.id as ProductCategory);
   const filteredProducts =
     badge === "all" ? baseProducts : baseProducts.filter((product) => product.badge === badge);
   const products = sortProducts(filteredProducts, sort);
