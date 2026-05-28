@@ -1,7 +1,7 @@
 import { ShieldCheck, UserCog, UsersRound } from "lucide-react";
 import { updateUserAccess } from "@/app/dashboard/users/actions";
 import { Button } from "@/components/ui/button";
-import { requireAdmin } from "@/lib/auth/roles";
+import { requireAdmin, type AppUserProfile } from "@/lib/auth/roles";
 
 function formatDate(value: string | null) {
   if (!value) {
@@ -17,10 +17,13 @@ function formatDate(value: string | null) {
 export default async function DashboardUsersPage() {
   const { supabase } = await requireAdmin();
 
-  const { data: users, error } = await supabase
+  const { data: users, error } = (await (supabase as any)
     .from("profiles")
     .select("id,email,full_name,role,status,created_at,updated_at")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })) as {
+    data: AppUserProfile[] | null;
+    error: Error | null;
+  };
 
   if (error) {
     throw new Error(error.message);
