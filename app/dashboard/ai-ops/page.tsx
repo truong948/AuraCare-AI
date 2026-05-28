@@ -1,4 +1,5 @@
 import { AiOpsPanel } from "@/components/dashboard/ai-ops-panel";
+import { requireAdmin } from "@/lib/auth/roles";
 import type { AiLogsRange } from "@/lib/ai/log-reader";
 
 function normalizeSearchParam(value: string | string[] | undefined) {
@@ -10,6 +11,8 @@ export default async function DashboardAiOpsPage({
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  await requireAdmin();
+
   const params = (await searchParams) ?? {};
   const rangeParam = normalizeSearchParam(params.range);
   const range: AiLogsRange =

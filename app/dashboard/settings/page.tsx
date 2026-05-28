@@ -1,6 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { requireAdmin } from "@/lib/auth/roles";
 
-export default function DashboardSettingsPage() {
+export default async function DashboardSettingsPage() {
+  await requireAdmin();
+
   return (
     <Card className="rounded-[32px] border border-slate-200/80 bg-white py-0 shadow-sm shadow-slate-950/5">
       <CardHeader className="border-b border-slate-100 px-6 py-6">
