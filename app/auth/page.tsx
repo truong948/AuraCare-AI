@@ -83,6 +83,13 @@ export default function AuthPage() {
         </div>
 
         <Form onSubmit={handleSubmit} className="space-y-6">
+          {mode === "register" ? (
+            <div className="grid gap-2">
+              <Label htmlFor="fullName">Tên hiển thị</Label>
+              <Input id="fullName" name="fullName" type="text" required minLength={2} autoComplete="name" />
+            </div>
+          ) : null}
+
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" type="email" required autoComplete="email" />

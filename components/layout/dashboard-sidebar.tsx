@@ -2,19 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BrainCircuit, BookOpenText, Droplets, ReceiptText, ScanLine, Settings, Sparkles, SquareKanban } from "lucide-react";
+import { BrainCircuit, BookOpenText, Droplets, ReceiptText, ScanLine, Settings, Sparkles, SquareKanban, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import type { UserRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils";
 
 const navigationItems = [
-  { label: "Tổng quan", href: "/dashboard", icon: SquareKanban },
-  { label: "Sản phẩm", href: "/dashboard/products", icon: SquareKanban },
-  { label: "Đơn hàng", href: "/dashboard/orders", icon: ReceiptText },
-  { label: "AI Ops", href: "/dashboard/ai-ops", icon: BrainCircuit },
-  { label: "Nhật ký da", href: "/diary", icon: BookOpenText },
-  { label: "AI Scan", href: "/scan", icon: ScanLine },
-  { label: "Cài đặt", href: "/dashboard/settings", icon: Settings },
+  { label: "Tổng quan", href: "/dashboard", icon: SquareKanban, adminOnly: false },
+  { label: "Người dùng", href: "/dashboard/users", icon: UserCog, adminOnly: true },
+  { label: "Sản phẩm", href: "/dashboard/products", icon: SquareKanban, adminOnly: true },
+  { label: "Đơn hàng", href: "/dashboard/orders", icon: ReceiptText, adminOnly: true },
+  { label: "AI Ops", href: "/dashboard/ai-ops", icon: BrainCircuit, adminOnly: true },
+  { label: "Nhật ký da", href: "/diary", icon: BookOpenText, adminOnly: false },
+  { label: "AI Scan", href: "/scan", icon: ScanLine, adminOnly: false },
+  { label: "Cài đặt", href: "/dashboard/settings", icon: Settings, adminOnly: true },
 ] as const;
 
 export function DashboardLogo() {
@@ -36,15 +38,19 @@ export function DashboardLogo() {
 }
 
 interface DashboardSidebarNavProps {
+  role: UserRole;
   onNavigate?: () => void;
 }
 
-export function DashboardSidebarNav({ onNavigate }: DashboardSidebarNavProps) {
+export function DashboardSidebarNav({ role, onNavigate }: DashboardSidebarNavProps) {
   const pathname = usePathname();
+  const visibleItems = navigationItems.filter(
+    (item) => !item.adminOnly || role === "admin"
+  );
 
   return (
     <nav className="grid gap-2" aria-label="Dashboard navigation">
-      {navigationItems.map((item) => {
+      {visibleItems.map((item) => {
         const isActive = pathname === item.href;
 
         return (
@@ -70,7 +76,11 @@ export function DashboardSidebarNav({ onNavigate }: DashboardSidebarNavProps) {
   );
 }
 
-export function DashboardSidebar() {
+interface DashboardSidebarProps {
+  role: UserRole;
+}
+
+export function DashboardSidebar({ role }: DashboardSidebarProps) {
   return (
     <aside className="hidden h-screen w-72 shrink-0 border-r border-slate-200/70 bg-[#eef6f5] px-5 py-6 lg:flex lg:flex-col">
       <DashboardLogo />
@@ -81,7 +91,7 @@ export function DashboardSidebar() {
         <p className="px-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
           Điều hướng
         </p>
-        <DashboardSidebarNav />
+        <DashboardSidebarNav role={role} />
       </div>
 
       <div className="mt-auto rounded-3xl border border-white/80 bg-white/90 p-4 shadow-sm shadow-cyan-950/5">
@@ -92,7 +102,9 @@ export function DashboardSidebar() {
           <div className="space-y-1">
             <p className="text-sm font-semibold text-slate-900">Aura Routine</p>
             <p className="text-xs leading-5 text-slate-500">
-              Giao diện này đang dùng mock data để định hình trải nghiệm dashboard.
+              {role === "admin"
+                ? "Bạn có quyền quản trị người dùng, sản phẩm, đơn hàng và AI Ops."
+                : "Tài khoản user chỉ thấy các khu vực chăm sóc da cá nhân."}
             </p>
           </div>
         </div>

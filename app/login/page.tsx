@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { login, signup } from "./actions";
-import { Eye, EyeOff, Sparkles, Lock, Mail, UserPlus, LogIn } from "lucide-react";
+import { Eye, EyeOff, Sparkles, Lock, Mail, User, UserPlus, LogIn } from "lucide-react";
 
 type Mode = "login" | "signup";
 
@@ -106,6 +106,28 @@ export default function LoginPage() {
 
           {/* Form */}
           <form id="auth-form" onSubmit={handleSubmit} className="space-y-5" noValidate>
+            {mode === "signup" && (
+              <div className="space-y-1.5">
+                <label htmlFor="fullName" className="block text-sm font-medium text-slate-300">
+                  Tên hiển thị
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                  <input
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    required
+                    minLength={2}
+                    autoComplete="name"
+                    placeholder="Nguyễn Minh Anh"
+                    className="w-full rounded-xl border border-white/10 bg-white/[0.05] py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-600 outline-none ring-violet-500 transition focus:border-violet-500/60 focus:ring-2 ring-offset-0 disabled:opacity-50"
+                    disabled={isPending}
+                  />
+                </div>
+              </div>
+            )}
+
             {/* Email */}
             <div className="space-y-1.5">
               <label htmlFor="email" className="block text-sm font-medium text-slate-300">

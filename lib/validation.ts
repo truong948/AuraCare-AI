@@ -6,6 +6,7 @@ export const authSchema = z.object({
 });
 
 export const signUpSchema = authSchema.extend({
+  fullName: z.string().trim().min(2, { message: "Tên hiển thị phải có ít nhất 2 ký tự." }),
   confirmPassword: z.string().min(8, { message: "Please confirm your password." })
 }).superRefine((data, ctx) => {
   if (data.password !== data.confirmPassword) {

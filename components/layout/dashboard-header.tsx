@@ -1,6 +1,7 @@
 "use client";
 
-import { Menu, Search } from "lucide-react";
+import { LogOut, Menu, Search, ShieldCheck } from "lucide-react";
+import { signOut } from "@/actions/auth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,8 +16,24 @@ import {
   DashboardLogo,
   DashboardSidebarNav,
 } from "@/components/layout/dashboard-sidebar";
+import type { AppUserProfile, UserRole } from "@/lib/auth/roles";
 
-export function DashboardHeader() {
+interface DashboardHeaderProps {
+  profile: AppUserProfile;
+  role: UserRole;
+}
+
+function getInitials(profile: AppUserProfile) {
+  const source = profile.full_name || profile.email || "AuraCare";
+  return source
+    .split(/[ @._-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+}
+
+export function DashboardHeader({ profile, role }: DashboardHeaderProps) {
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-slate-50/90 backdrop-blur-xl">
       <div className="flex h-20 items-center gap-3 px-4 sm:px-6 lg:px-8">
@@ -41,7 +58,7 @@ export function DashboardHeader() {
                 <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
                   Điều hướng
                 </p>
-                <DashboardSidebarNav />
+                <DashboardSidebarNav role={role} />
               </div>
             </div>
           </SheetContent>
@@ -59,13 +76,29 @@ export function DashboardHeader() {
         <div className="ml-auto flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm shadow-slate-950/5">
           <Avatar className="h-10 w-10">
             <AvatarFallback className="bg-slate-900 text-sm font-semibold text-white">
-              AC
+              {getInitials(profile) || "AC"}
             </AvatarFallback>
           </Avatar>
           <div className="hidden text-left sm:block">
-            <p className="text-sm font-semibold text-slate-900">Aura Member</p>
-            <p className="text-xs text-slate-500">Mock profile</p>
+            <p className="text-sm font-semibold text-slate-900">
+              {profile.full_name || profile.email}
+            </p>
+            <p className="flex items-center gap-1 text-xs text-slate-500">
+              {role === "admin" ? <ShieldCheck className="h-3 w-3" /> : null}
+              {role === "admin" ? "Admin" : "User"}
+            </p>
           </div>
+          <form action={signOut}>
+            <Button
+              type="submit"
+              variant="ghost"
+              size="icon"
+              className="rounded-xl text-slate-500 hover:text-slate-900"
+              aria-label="Đăng xuất"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </form>
         </div>
       </div>
     </header>

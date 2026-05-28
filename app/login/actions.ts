@@ -39,6 +39,7 @@ export async function login(formData: FormData) {
 
 export async function signup(formData: FormData) {
   const values = Object.fromEntries(formData) as {
+    fullName?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
@@ -57,6 +58,11 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
+    options: {
+      data: {
+        full_name: parsed.data.fullName,
+      },
+    },
   });
 
   if (error) {
