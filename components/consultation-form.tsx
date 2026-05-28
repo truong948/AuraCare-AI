@@ -14,7 +14,6 @@ export function ConsultationForm({ session }: ConsultationFormProps) {
   const action = async (formData: FormData) => createConsultation(formData, session.user.id);
   const mountedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -35,7 +34,7 @@ export function ConsultationForm({ session }: ConsultationFormProps) {
           return;
         }
         if (result.success) {
-          setSuccess(true);
+          toast.success("Consultation request submitted.");
         } else {
           setError("Failed to submit consultation.");
         }
@@ -55,13 +54,8 @@ export function ConsultationForm({ session }: ConsultationFormProps) {
 
     if (error) {
       toast.error(error);
-      setError(null);
     }
-    if (success) {
-      toast.success("Consultation request submitted.");
-      setSuccess(false);
-    }
-  }, [error, success]);
+  }, [error]);
 
   return (
     <div className="space-y-6 rounded-3xl border border-slate-200 bg-slate-50 p-8 shadow-card dark:border-slate-800 dark:bg-slate-950">

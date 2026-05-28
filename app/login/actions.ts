@@ -57,12 +57,6 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
-    options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(
-        ".supabase.co",
-        ""
-      )}/auth/confirm`,
-    },
   });
 
   if (error) {

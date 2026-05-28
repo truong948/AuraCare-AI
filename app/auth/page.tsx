@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -22,11 +23,11 @@ const authText = {
 };
 
 export default function AuthPage() {
+  const router = useRouter();
   const mountedRef = useRef(false);
   const [mode, setMode] = useState<"login" | "register">("login");
   const action = mode === "login" ? signIn : signUp;
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function AuthPage() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError(null);
     const formData = new FormData(event.currentTarget);
     startTransition(async () => {
       try {
@@ -47,7 +49,9 @@ export default function AuthPage() {
           return;
         }
         if (result.success) {
-          setSuccess(true);
+          const message = mode === "login" ? "Đăng nhập thành công." : "Đăng ký thành công. Xin hãy kiểm tra email để xác nhận.";
+          toast.success(message);
+          router.push("/dashboard");
         } else {
           setError("Lỗi xác thực. Vui lòng thử lại.");
         }
@@ -67,15 +71,8 @@ export default function AuthPage() {
 
     if (error) {
       toast.error(error);
-      setError(null);
     }
-
-    if (success) {
-      const message = mode === "login" ? "Đăng nhập thành công." : "Đăng ký thành công. Xin hãy kiểm tra email để xác nhận.";
-      toast.success(message);
-      setSuccess(false);
-    }
-  }, [error, success, mode]);
+  }, [error]);
 
   return (
     <main className="grid min-h-screen place-items-center bg-slate-50 px-6 py-12 dark:bg-slate-950">

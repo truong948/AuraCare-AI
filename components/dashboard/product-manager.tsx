@@ -69,6 +69,7 @@ export function DashboardProductManager() {
 
   useEffect(() => {
     const loaded = loadAdminProducts();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProducts(loaded);
   }, []);
 
@@ -85,8 +86,10 @@ export function DashboardProductManager() {
 
   useEffect(() => {
     if (selectedProduct) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDraft(selectedProduct);
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDraft(buildEmptyProduct());
     }
   }, [selectedProduct]);

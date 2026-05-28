@@ -20,6 +20,7 @@ export function DashboardOrderManager() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOrders(loadOrders());
   }, []);
 

@@ -19,6 +19,7 @@ export default function OrderDetailPage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOrder(getOrderById(params.id) ?? null);
     setLoaded(true);
   }, [params.id]);
@@ -72,74 +73,74 @@ export default function OrderDetailPage() {
       <StorefrontHeader />
       <main className="py-10">
         <div className="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
-        <Link href="/orders" className="inline-flex items-center text-sm font-semibold text-[#5b8c7a]">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Quay lại lịch sử đơn
-        </Link>
+          <Link href="/orders" className="inline-flex items-center text-sm font-semibold text-[#5b8c7a]">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Quay lại lịch sử đơn
+          </Link>
 
-        <section className="rounded-[36px] border border-[#dce6df] bg-white p-8 shadow-[0_16px_34px_rgba(15,23,42,0.06)]">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#5b8c7a]">Chi tiết đơn hàng</p>
-              <h1 className="mt-3 text-4xl font-bold text-[#0f172a]">{order.id}</h1>
-              <div className="mt-4 flex flex-wrap gap-3 text-sm text-[#64748b]">
-                <span className="inline-flex items-center gap-2 rounded-full bg-[#f8fbfa] px-4 py-2">
-                  <CalendarDays className="h-4 w-4" />
-                  {new Date(order.createdAt).toLocaleString("vi-VN")}
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-full bg-[#edf4f1] px-4 py-2 font-semibold text-[#4f7c6d]">
-                  <CheckCircle2 className="h-4 w-4" />
-                  {orderStatusLabels[order.status]}
-                </span>
+          <section className="rounded-[36px] border border-[#dce6df] bg-white p-8 shadow-[0_16px_34px_rgba(15,23,42,0.06)]">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#5b8c7a]">Chi tiết đơn hàng</p>
+                <h1 className="mt-3 text-4xl font-bold text-[#0f172a]">{order.id}</h1>
+                <div className="mt-4 flex flex-wrap gap-3 text-sm text-[#64748b]">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-[#f8fbfa] px-4 py-2">
+                    <CalendarDays className="h-4 w-4" />
+                    {new Date(order.createdAt).toLocaleString("vi-VN")}
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full bg-[#edf4f1] px-4 py-2 font-semibold text-[#4f7c6d]">
+                    <CheckCircle2 className="h-4 w-4" />
+                    {orderStatusLabels[order.status]}
+                  </span>
+                </div>
+              </div>
+
+              <div className="rounded-[28px] bg-[#28453a] p-5 text-white">
+                <p className="text-sm text-white/70">Tổng thanh toán</p>
+                <p className="mt-2 text-3xl font-bold">{formatMockPrice(order.subtotal)}</p>
+                <p className="mt-1 text-sm text-white/70">{itemCount} sản phẩm</p>
+                <Button onClick={handleReorder} className="mt-5 rounded-2xl bg-white text-[#28453a] hover:bg-[#f6f4ee]">
+                  Mua lại đơn này
+                </Button>
+              </div>
+            </div>
+          </section>
+
+          <section className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">
+            <div className="rounded-[30px] border border-[#d7e5df] bg-white p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
+              <div className="flex items-center gap-3">
+                <MapPin className="h-5 w-5 text-[#5b8c7a]" />
+                <h2 className="text-lg font-bold">Giao hàng</h2>
+              </div>
+              <div className="mt-5 space-y-2 text-sm leading-7 text-[#475569]">
+                <p className="font-semibold text-[#0f172a]">{order.shipping.name}</p>
+                <p>{order.shipping.email}</p>
+                <p>{order.shipping.phone}</p>
+                <p>{order.shipping.address}</p>
               </div>
             </div>
 
-            <div className="rounded-[28px] bg-[#28453a] p-5 text-white">
-              <p className="text-sm text-white/70">Tổng thanh toán</p>
-              <p className="mt-2 text-3xl font-bold">{formatMockPrice(order.subtotal)}</p>
-              <p className="mt-1 text-sm text-white/70">{itemCount} sản phẩm</p>
-              <Button onClick={handleReorder} className="mt-5 rounded-2xl bg-white text-[#28453a] hover:bg-[#f6f4ee]">
-                Mua lại đơn này
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        <section className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">
-          <div className="rounded-[30px] border border-[#d7e5df] bg-white p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
-            <div className="flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-[#5b8c7a]" />
-              <h2 className="text-lg font-bold">Giao hàng</h2>
-            </div>
-            <div className="mt-5 space-y-2 text-sm leading-7 text-[#475569]">
-              <p className="font-semibold text-[#0f172a]">{order.shipping.name}</p>
-              <p>{order.shipping.email}</p>
-              <p>{order.shipping.phone}</p>
-              <p>{order.shipping.address}</p>
-            </div>
-          </div>
-
-          <div className="rounded-[30px] border border-[#d7e5df] bg-white p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
-            <div className="flex items-center gap-3">
-              <Package className="h-5 w-5 text-[#5b8c7a]" />
-              <h2 className="text-lg font-bold">Sản phẩm trong đơn</h2>
-            </div>
-            <div className="mt-5 space-y-4">
-              {order.items.map((item) => (
-                <div key={item.productSlug} className="flex gap-4 rounded-[24px] border border-[#d7e5df] bg-[#f8fbfa] p-4">
-                  <ProductImage product={{ image: item.image, name: item.name }} className="h-20 w-20 shrink-0 rounded-2xl" imageClassName="p-2" />
-                  <div className="min-w-0 flex-1">
-                    <Link href={`/products/${item.productSlug}`} className="font-semibold leading-6 text-[#0f172a] hover:text-[#5b8c7a]">
-                      {item.name}
-                    </Link>
-                    <p className="mt-1 text-sm text-[#64748b]">Số lượng: {item.quantity}</p>
+            <div className="rounded-[30px] border border-[#d7e5df] bg-white p-6 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
+              <div className="flex items-center gap-3">
+                <Package className="h-5 w-5 text-[#5b8c7a]" />
+                <h2 className="text-lg font-bold">Sản phẩm trong đơn</h2>
+              </div>
+              <div className="mt-5 space-y-4">
+                {order.items.map((item) => (
+                  <div key={item.productSlug} className="flex gap-4 rounded-[24px] border border-[#d7e5df] bg-[#f8fbfa] p-4">
+                    <ProductImage product={{ image: item.image, name: item.name }} className="h-20 w-20 shrink-0 rounded-2xl" imageClassName="p-2" />
+                    <div className="min-w-0 flex-1">
+                      <Link href={`/products/${item.productSlug}`} className="font-semibold leading-6 text-[#0f172a] hover:text-[#5b8c7a]">
+                        {item.name}
+                      </Link>
+                      <p className="mt-1 text-sm text-[#64748b]">Số lượng: {item.quantity}</p>
+                    </div>
+                    <p className="text-sm font-bold text-[#0f172a]">{formatMockPrice(item.price * item.quantity)}</p>
                   </div>
-                  <p className="text-sm font-bold text-[#0f172a]">{formatMockPrice(item.price * item.quantity)}</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
         </div>
       </main>
       <StorefrontFooter />

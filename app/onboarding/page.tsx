@@ -40,7 +40,6 @@ export default function OnboardingPage() {
   const router = useRouter();
   const mountedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [step, setStep] = useState(0);
   const [skinType, setSkinType] = useState<string>(skinTypes[0].value);
@@ -65,7 +64,8 @@ export default function OnboardingPage() {
           return;
         }
         if (result.success) {
-          setSuccess(true);
+          toast.success("Thông tin da đã được lưu. Chuyển về dashboard.");
+          router.push("/dashboard");
         } else {
           setError("Không thể lưu thông tin da.");
         }
@@ -85,14 +85,8 @@ export default function OnboardingPage() {
 
     if (error) {
       toast.error(error);
-      setError(null);
     }
-
-    if (success) {
-      toast.success("Thông tin da đã được lưu. Chuyển về dashboard.");
-      router.push("/dashboard");
-    }
-  }, [error, success, router]);
+  }, [error]);
 
   const progress = useMemo(() => ((step + 1) / 3) * 100, [step]);
 
@@ -181,7 +175,7 @@ export default function OnboardingPage() {
                 ))}
               </div>
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
-                <p>Gợi ý: nếu bạn không dị ứng thành phần nào, hãy chọn "Không có".</p>
+                <p>Gợi ý: nếu bạn không dị ứng thành phần nào, hãy chọn &quot;Không có&quot;.</p>
               </div>
             </div>
           </Card>

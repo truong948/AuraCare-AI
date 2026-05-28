@@ -104,6 +104,15 @@ Gia tri khac biet so voi website ecommerce thong thuong:
 - Thu nghiem ranking san pham dua tren profile va context.
 - Thu nghiem chatbot handoff tu AI sang nguoi that.
 
+## Cấu hình môi trường
+
+Để kết nối với Supabase, sao chép file `.env.local` và cập nhật các giá trị sau:
+
+- `NEXT_PUBLIC_SUPABASE_URL`: URL dự án Supabase
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anon public key
+
+Nếu các giá trị hiện tại vẫn là placeholder (`https://your-supabase-project.supabase.co` hoặc `your_supabase_anon_key_here`), thì ứng dụng chưa kết nối được với Supabase.
+
 ## 4. Doi tuong nguoi dung
 
 ### 4.1. Khach hang

@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 export function AuthSignIn() {
   const mountedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -29,7 +28,7 @@ export function AuthSignIn() {
           return;
         }
         if (result.success) {
-          setSuccess(true);
+          toast.success("Signed in successfully.");
         } else {
           setError("Unable to sign in.");
         }
@@ -49,13 +48,8 @@ export function AuthSignIn() {
 
     if (error) {
       toast.error(error);
-      setError(null);
     }
-    if (success) {
-      toast.success("Signed in successfully.");
-      setSuccess(false);
-    }
-  }, [error, success]);
+  }, [error]);
 
   return (
     <div className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-card dark:border-slate-800 dark:bg-slate-900">

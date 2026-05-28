@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, Camera, Heart, Home, Menu, PackageSearch, ReceiptText, Scale, Search, Sparkles, User2 } from "lucide-react";
+import { BookOpen, Camera, Heart, Home, LogIn, Menu, PackageSearch, ReceiptText, Scale, Search, Sparkles, User2 } from "lucide-react";
 import { useCompare } from "@/components/compare/compare-context";
 import { useWishlist } from "@/components/wishlist/wishlist-context";
 import { Button } from "@/components/ui/button";
@@ -177,6 +177,11 @@ export function StorefrontHeader() {
                   {compareCount}
                 </span>
               ) : null}
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="icon" className="rounded-2xl border-[#d7e5df] bg-white">
+            <Link href="/login" aria-label="Đăng nhập">
+              <LogIn className="h-4 w-4" />
             </Link>
           </Button>
           <Button asChild variant="outline" size="icon" className="rounded-2xl border-[#d7e5df] bg-white">

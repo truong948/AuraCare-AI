@@ -149,7 +149,7 @@ export default async function SearchPage({
             <div className="rounded-[28px] border border-dashed border-[#d7e5df] bg-[#ffffff] px-6 py-12 text-center">
               <p className="text-lg font-semibold text-[#0f172a]">Chưa có sản phẩm phù hợp</p>
               <p className="mt-2 text-sm text-[#64748b]">
-                Hãy thử với từ khóa như "da nhạy cảm thiếu ẩm" hoặc "vitamin hỗ trợ năng lượng".
+                Hãy thử với từ khóa như &quot;da nhạy cảm thiếu ẩm&quot; hoặc &quot;vitamin hỗ trợ năng lượng&quot;.
               </p>
             </div>
           )}

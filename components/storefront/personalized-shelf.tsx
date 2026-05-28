@@ -17,6 +17,7 @@ export function PersonalizedShelf() {
   const [recentlyViewed, setRecentlyViewed] = useState<RecentlyViewedEntry[]>([]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRecentlyViewed(loadRecentlyViewedEntries());
   }, []);
 

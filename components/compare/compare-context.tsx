@@ -18,6 +18,7 @@ export function CompareProvider({ children }: { children: ReactNode }) {
   const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setItems(loadCompare());
     setHasHydrated(true);
   }, []);

@@ -20,6 +20,7 @@ export default async function DiaryPage() {
   const { data: entries, error } = await supabase
     .from("skin_diaries")
     .select("*")
+    .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
 
   if (error) {
