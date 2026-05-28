@@ -24,11 +24,11 @@ export async function getCurrentUserContext() {
     return { supabase, user: null, profile: null, role: "guest" as const };
   }
 
-  const { data: profile } = await supabase
+  const { data: profile } = (await (supabase as any)
     .from("profiles")
     .select("id,email,full_name,role,status,created_at,updated_at")
     .eq("id", user.id)
-    .maybeSingle();
+    .maybeSingle()) as { data: AppUserProfile | null };
 
   const fallbackProfile: AppUserProfile = {
     id: user.id,
