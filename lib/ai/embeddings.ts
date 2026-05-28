@@ -52,7 +52,7 @@ export async function createFullEmbedding(text: string) {
     // Fall back below.
   }
 
-  const fallbackVector = deterministicVector(text, 64);
+  const fallbackVector = deterministicVector(text, 768);
   return {
     source: "deterministic-fallback" as const,
     dimensions: fallbackVector.length,

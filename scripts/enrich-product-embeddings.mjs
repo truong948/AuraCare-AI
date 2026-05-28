@@ -55,7 +55,7 @@ async function createVector(text) {
     }
   }
 
-  const fallbackVector = deterministicVector(text, 64);
+  const fallbackVector = deterministicVector(text, 768);
   return {
     source: "deterministic-fallback",
     dimensions: fallbackVector.length,
