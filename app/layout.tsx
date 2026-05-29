@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+    <html lang="vi" suppressHydrationWarning className={cn("font-sans", geist.variable)} data-scroll-behavior="smooth">
       <body className="min-h-screen bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50">
         <ThemeProvider>
           <WishlistProvider>

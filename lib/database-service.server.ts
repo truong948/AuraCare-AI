@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { getLocalFeedbacks, addLocalFeedback, deleteLocalFeedback, type ProductFeedback } from "@/lib/mock-data/feedbacks";
 import { getLocalConsultations, type MockConsultation } from "@/lib/mock-data/consultations";
 import { mockOrders, type MockOrder } from "@/lib/mock-data/orders";
+import { cache } from "react";
 
 async function getSupabaseClient(): Promise<any> {
   return await createClient();
@@ -37,7 +38,7 @@ function mapDbProductToMock(dbProduct: any): MockProduct {
   };
 }
 
-export async function getProducts(): Promise<MockProduct[]> {
+export const getProducts = cache(async function getProducts(): Promise<MockProduct[]> {
   try {
     const supabase = await getSupabaseClient();
     const { data, error } = await supabase
@@ -52,9 +53,9 @@ export async function getProducts(): Promise<MockProduct[]> {
     console.warn("Failed to fetch products from Supabase, falling back to mock catalog:", err);
   }
   return mockProducts;
-}
+});
 
-export async function getProductBySlug(slug: string): Promise<MockProduct | undefined> {
+export const getProductBySlug = cache(async function getProductBySlug(slug: string): Promise<MockProduct | undefined> {
   try {
     const supabase = await getSupabaseClient();
     const { data, error } = await supabase
@@ -70,9 +71,9 @@ export async function getProductBySlug(slug: string): Promise<MockProduct | unde
     console.warn(`Failed to fetch product ${slug} from Supabase, falling back to mock catalog:`, err);
   }
   return mockProducts.find((p) => p.slug === slug);
-}
+});
 
-export async function getProductsByCategory(category: ProductCategory): Promise<MockProduct[]> {
+export const getProductsByCategory = cache(async function getProductsByCategory(category: ProductCategory): Promise<MockProduct[]> {
   try {
     const supabase = await getSupabaseClient();
     const { data, error } = await supabase
@@ -88,7 +89,7 @@ export async function getProductsByCategory(category: ProductCategory): Promise<
     console.warn(`Failed to fetch products for category ${category} from Supabase, falling back to mock:`, err);
   }
   return mockProducts.filter((p) => p.category === category);
-}
+});
 
 export async function searchProducts(query: string, category?: ProductCategory): Promise<MockProduct[]> {
   try {

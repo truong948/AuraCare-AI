@@ -5,6 +5,7 @@ import { PersonalizedShelf } from "@/components/storefront/personalized-shelf";
 import { ProductCard } from "@/components/storefront/product-card";
 import { ProductImage } from "@/components/storefront/product-image";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
+import { HomeAiChatWidget } from "@/components/storefront/home-ai-chat-widget";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
 import { getHomeRecommendations } from "@/lib/ai/recommendations";
 import {
@@ -196,6 +197,7 @@ export default function HomePage() {
       </main>
 
       <StorefrontFooter />
+      <HomeAiChatWidget />
     </div>
   );
 }

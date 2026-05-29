@@ -132,7 +132,7 @@ export function StorefrontHeader() {
               variant="ghost"
               className="rounded-2xl px-4 text-sm text-slate-600 hover:bg-blue-50 hover:text-[#0b57c5]"
             >
-              <Link href={item.href}>{item.label}</Link>
+              <Link href={item.href} prefetch={false}>{item.label}</Link>
             </Button>
           ))}
         </nav>

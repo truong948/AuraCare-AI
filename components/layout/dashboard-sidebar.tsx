@@ -67,7 +67,7 @@ export function DashboardSidebarNav({ role, onNavigate }: DashboardSidebarNavPro
                 : "text-slate-600 hover:bg-white hover:text-slate-900"
             )}
           >
-            <Link href={item.href} onClick={onNavigate}>
+            <Link href={item.href} onClick={onNavigate} prefetch={false}>
               <item.icon className={cn("mr-3 h-4 w-4", isActive && "text-white")} />
               {item.label}
             </Link>
