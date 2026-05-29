@@ -1,23 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ChangeEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Bot, ChevronDown, Send, Sparkles, X, Activity } from "lucide-react";
+import { Bot, ChevronDown, Send, Sparkles, X, Activity, ImagePlus, Trash2 } from "lucide-react";
 import type { ChatResponsePayload } from "@/lib/ai/types";
 import { formatMockPrice } from "@/lib/mock-data/catalog";
+import { createClient } from "@/utils/supabase/client";
 
 const quickPrompts = [
   "Da nhạy cảm thiếu ẩm",
   "Gợi ý sản phẩm trị mụn",
-  "Dược phẩm trị mất ngủ",
-  "Hỏi về thành phần thuốc",
+  "Vitamin tăng cường miễn dịch",
+  "Sản phẩm chống lão hóa",
 ] as const;
 
 type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  image_url?: string;
   suggestions?: ChatResponsePayload["suggestions"];
 };
 
@@ -25,18 +27,32 @@ function createMessageId() {
   return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
 }
 
-// Simple text formatter to handle bold and newlines
+// Simple text formatter to handle bold, newlines, and bullet points
 function FormattedText({ text }: { text: string }) {
-  const parts = text.split(/(\*\*.*?\*\*|\n)/g);
+  const lines = text.split("\n");
   
   return (
     <>
-      {parts.map((part, index) => {
-        if (part === "\n") return <br key={index} />;
-        if (part.startsWith("**") && part.endsWith("**")) {
-          return <strong key={index}>{part.slice(2, -2)}</strong>;
+      {lines.map((line, lineIdx) => {
+        // Handle bullet points
+        const isBullet = line.trimStart().startsWith("•") || line.trimStart().startsWith("-") || line.trimStart().startsWith("*");
+        const content = isBullet ? line.trimStart().replace(/^[•\-\*]\s*/, "") : line;
+        
+        const parts = content.split(/(\*\*.*?\*\*)/g);
+        const rendered = parts.map((part, partIdx) => {
+          if (part.startsWith("**") && part.endsWith("**")) {
+            return <strong key={partIdx}>{part.slice(2, -2)}</strong>;
+          }
+          return <span key={partIdx}>{part}</span>;
+        });
+
+        if (isBullet) {
+          return <div key={lineIdx} className="flex gap-2 mt-1"><span className="text-teal-500">•</span><span>{rendered}</span></div>;
         }
-        return <span key={index}>{part}</span>;
+        if (line === "") {
+          return <div key={lineIdx} className="h-2" />;
+        }
+        return <div key={lineIdx}>{rendered}</div>;
       })}
     </>
   );
@@ -47,29 +63,146 @@ export function HomeAiChatWidget() {
   const [input, setInput] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [pendingImage, setPendingImage] = useState<string | null>(null);
+  const [pendingImagePreview, setPendingImagePreview] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "welcome",
       role: "assistant",
       content:
-        "Xin chào! Mình là Dược sĩ AI của AuraCare. Bạn đang quan tâm đến sản phẩm nào, hay có triệu chứng gì cần tư vấn?",
+        "Xin chào! Mình là **Dược sĩ AI** của AuraCare 💊\n\nBạn có thể:\n• Mô tả triệu chứng để mình gợi ý sản phẩm\n• Gửi ảnh da để mình phân tích\n• Hỏi về thành phần, cách dùng bất kỳ sản phẩm nào",
     },
   ]);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Check auth state and load chat history
+  useEffect(() => {
+    async function initAuth() {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setUserId(user.id);
+        }
+      } catch {
+        // Not logged in — that's fine
+      }
+    }
+    initAuth();
+  }, []);
+
+  // Load chat history from Supabase when user is logged in
+  useEffect(() => {
+    if (!userId || historyLoaded) return;
+    
+    async function loadHistory() {
+      try {
+        const supabase = createClient();
+        const { data, error: fetchError } = await (supabase as any)
+          .from("chat_messages")
+          .select("id, role, content, image_url, suggestions, created_at")
+          .eq("user_id", userId)
+          .order("created_at", { ascending: true })
+          .limit(100);
+
+        if (!fetchError && data && data.length > 0) {
+          const loaded: ChatMessage[] = [
+            {
+              id: "welcome",
+              role: "assistant",
+              content:
+                "Xin chào! Mình là **Dược sĩ AI** của AuraCare 💊\n\nBạn có thể:\n• Mô tả triệu chứng để mình gợi ý sản phẩm\n• Gửi ảnh da để mình phân tích\n• Hỏi về thành phần, cách dùng bất kỳ sản phẩm nào",
+            },
+            ...data.map((row: any) => ({
+              id: row.id,
+              role: row.role as "user" | "assistant",
+              content: row.content,
+              image_url: row.image_url || undefined,
+              suggestions: row.suggestions || undefined,
+            })),
+          ];
+          setMessages(loaded);
+        }
+      } catch {
+        // Failed to load — use default
+      }
+      setHistoryLoaded(true);
+    }
+    loadHistory();
+  }, [userId, historyLoaded]);
 
   useEffect(() => {
     if (!open) return;
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, open, loading]);
 
+  // Save a message to Supabase
+  async function saveMessage(msg: ChatMessage) {
+    if (!userId) return;
+    try {
+      const supabase = createClient();
+      await (supabase as any).from("chat_messages").insert({
+        id: msg.id,
+        user_id: userId,
+        role: msg.role,
+        content: msg.content,
+        image_url: msg.image_url || null,
+        suggestions: msg.suggestions ? JSON.parse(JSON.stringify(
+          msg.suggestions.map(s => ({ name: s.product.name, slug: s.product.slug, price: s.product.price, image: s.product.image, reason: s.reason }))
+        )) : null,
+      });
+    } catch {
+      // Silent fail — chat still works locally
+    }
+  }
+
+  function handleImageSelect(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Max 4MB
+    if (file.size > 4 * 1024 * 1024) {
+      setError("Ảnh quá lớn. Vui lòng chọn ảnh dưới 4MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      setPendingImage(base64);
+      setPendingImagePreview(base64);
+    };
+    reader.readAsDataURL(file);
+    
+    // Reset file input
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
   async function askAssistant(message: string) {
     const trimmed = message.trim();
-    if (!trimmed || loading) return;
+    if ((!trimmed && !pendingImage) || loading) return;
 
     setLoading(true);
     setError("");
     setOpen(true);
-    setMessages((current) => [...current, { id: createMessageId(), role: "user", content: trimmed }]);
+
+    const userMsg: ChatMessage = {
+      id: createMessageId(),
+      role: "user",
+      content: trimmed || "📷 Phân tích ảnh này giúp mình",
+      image_url: pendingImagePreview || undefined,
+    };
+    setMessages((current) => [...current, userMsg]);
+    
+    // Save user message
+    void saveMessage(userMsg);
+
+    const imageToSend = pendingImage;
+    setPendingImage(null);
+    setPendingImagePreview(null);
 
     try {
       const history = messages.filter(m => m.id !== "welcome").map(m => ({ role: m.role, content: m.content }));
@@ -77,7 +210,11 @@ export function HomeAiChatWidget() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, history }),
+        body: JSON.stringify({ 
+          message: trimmed || "Phân tích hình ảnh và tư vấn sản phẩm phù hợp", 
+          history,
+          imageBase64: imageToSend || undefined,
+        }),
       });
       const data = (await response.json()) as ChatResponsePayload & { error?: string };
 
@@ -85,29 +222,47 @@ export function HomeAiChatWidget() {
         throw new Error(data.error ?? "Không thể lấy phản hồi từ AuraCare AI.");
       }
 
-      setMessages((current) => [
-        ...current,
-        { 
-          id: createMessageId(), 
-          role: "assistant", 
-          content: data.answer,
-          suggestions: data.suggestions
-        },
-      ]);
+      const assistantMsg: ChatMessage = {
+        id: createMessageId(),
+        role: "assistant",
+        content: data.answer,
+        suggestions: data.suggestions,
+      };
+      setMessages((current) => [...current, assistantMsg]);
       setInput("");
+      
+      // Save assistant message
+      void saveMessage(assistantMsg);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Không thể lấy phản hồi từ AuraCare AI.");
-      setMessages((current) => [
-        ...current,
-        {
-          id: createMessageId(),
-          role: "assistant",
-          content: "Hệ thống đang bận. Bạn thử lại hoặc đặt câu hỏi ngắn hơn nhé.",
-        },
-      ]);
+      const errorMsg: ChatMessage = {
+        id: createMessageId(),
+        role: "assistant",
+        content: "Hệ thống đang bận. Bạn thử lại hoặc đặt câu hỏi ngắn hơn nhé.",
+      };
+      setMessages((current) => [...current, errorMsg]);
     } finally {
       setLoading(false);
     }
+  }
+
+  async function clearHistory() {
+    if (!confirm("Bạn có chắc muốn xóa toàn bộ lịch sử chat?")) return;
+    
+    if (userId) {
+      try {
+        const supabase = createClient();
+        await (supabase as any).from("chat_messages").delete().eq("user_id", userId);
+      } catch {
+        // Silent
+      }
+    }
+    
+    setMessages([{
+      id: "welcome",
+      role: "assistant",
+      content: "Xin chào! Mình là **Dược sĩ AI** của AuraCare 💊\n\nBạn có thể:\n• Mô tả triệu chứng để mình gợi ý sản phẩm\n• Gửi ảnh da để mình phân tích\n• Hỏi về thành phần, cách dùng bất kỳ sản phẩm nào",
+    }]);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -128,18 +283,30 @@ export function HomeAiChatWidget() {
               <div>
                 <p className="text-base font-bold">AuraCare AI</p>
                 <p className="text-xs text-teal-100 flex items-center gap-1">
-                  <Activity className="w-3 h-3" /> Tư vấn chuyên môn y tế
+                  <Activity className="w-3 h-3" /> 
+                  {userId ? "💾 Đã đăng nhập • Chat được lưu" : "Chưa đăng nhập • Chat tạm thời"}
                 </p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition hover:bg-white/20 hover:text-white"
-              aria-label="Đóng chatbot"
-            >
-              <X className="h-5 w-5" />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={clearHistory}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-white/60 transition hover:bg-white/20 hover:text-white"
+                aria-label="Xóa lịch sử"
+                title="Xóa lịch sử chat"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition hover:bg-white/20 hover:text-white"
+                aria-label="Đóng chatbot"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
           {/* Chat History */}
@@ -150,6 +317,17 @@ export function HomeAiChatWidget() {
                 className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div className="flex flex-col gap-2 max-w-[85%]">
+                  {/* Image Preview (for user messages with images) */}
+                  {message.image_url && (
+                    <div className={`overflow-hidden rounded-2xl border border-slate-200 shadow-sm ${message.role === "user" ? "ml-auto" : ""}`}>
+                      <img 
+                        src={message.image_url} 
+                        alt="Ảnh tư vấn" 
+                        className="max-h-48 w-auto rounded-2xl object-cover"
+                      />
+                    </div>
+                  )}
+                  
                   <div
                     className={`rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm ${
                       message.role === "user"
@@ -210,6 +388,22 @@ export function HomeAiChatWidget() {
             <div ref={bottomRef} />
           </div>
 
+          {/* Pending Image Preview */}
+          {pendingImagePreview && (
+            <div className="border-t border-slate-100 bg-slate-50 px-4 py-2">
+              <div className="relative inline-block">
+                <img src={pendingImagePreview} alt="Preview" className="h-20 w-auto rounded-lg border border-slate-200 object-cover" />
+                <button
+                  type="button"
+                  onClick={() => { setPendingImage(null); setPendingImagePreview(null); }}
+                  className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-sm text-xs"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Input Area */}
           <div className="border-t border-slate-100 bg-white p-4">
             {/* Horizontal Scroll Quick Prompts */}
@@ -227,22 +421,43 @@ export function HomeAiChatWidget() {
             </div>
 
             <form onSubmit={handleSubmit} className="flex items-end gap-2">
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageSelect}
+              />
+              
+              {/* Image upload button */}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={loading}
+                className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-300 bg-white text-slate-500 shadow-sm transition hover:border-teal-400 hover:text-teal-600 disabled:opacity-50"
+                aria-label="Gửi ảnh tư vấn"
+                title="Gửi ảnh để tư vấn"
+              >
+                <ImagePlus className="h-5 w-5" />
+              </button>
+
               <textarea
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    if(input.trim()) handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
+                    if(input.trim() || pendingImage) handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
                   }
                 }}
                 rows={1}
-                placeholder="Nhập triệu chứng hoặc nhu cầu..."
+                placeholder={pendingImage ? "Mô tả thêm về ảnh (tùy chọn)..." : "Nhập triệu chứng hoặc nhu cầu..."}
                 className="max-h-[8rem] min-h-[3rem] flex-1 resize-none rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-[#0f172a] shadow-sm outline-none transition focus:border-[#0d9488] focus:ring-1 focus:ring-[#0d9488]"
               />
               <button
                 type="submit"
-                disabled={loading || !input.trim()}
+                disabled={loading || (!input.trim() && !pendingImage)}
                 className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0d9488] text-white shadow-sm transition hover:bg-[#0f766e] disabled:cursor-not-allowed disabled:opacity-50"
                 aria-label="Gửi câu hỏi"
               >

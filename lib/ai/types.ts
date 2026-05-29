@@ -33,6 +33,7 @@ export interface ChatRequestInput {
   history?: { role: string; content: string }[];
   productSlug?: string;
   category?: ProductCategory;
+  imageBase64?: string;
 }
 
 export interface ChatResponsePayload {
