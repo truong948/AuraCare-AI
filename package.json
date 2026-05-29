@@ -27,6 +27,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.4.0",
+    "recharts": "^3.8.1",
     "rss-parser": "^3.13.0",
     "shadcn": "^4.7.0",
     "tailwind-merge": "^1.14.0",

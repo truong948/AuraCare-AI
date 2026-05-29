@@ -13,7 +13,9 @@ export async function AdminDashboardOverview() {
   ]);
 
   // Compute metrics
-  const totalRevenue = orders.reduce((sum, o) => sum + o.subtotal, 0);
+  const totalRevenue = orders
+    .filter((o) => o.status === "delivered")
+    .reduce((sum, o) => sum + o.subtotal, 0);
   const totalOrders = orders.length;
   const aov = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
   const lowStockProducts = products.filter(p => p.stockStatus === "low_stock").length;
@@ -21,7 +23,7 @@ export async function AdminDashboardOverview() {
 
   const pendingOrders = orders.filter(o => o.status === "pending").length;
   const processingOrders = orders.filter(o => o.status === "processing").length;
-  const completedOrders = orders.filter(o => o.status === "completed").length;
+  const completedOrders = orders.filter(o => o.status === "delivered").length;
 
   return (
     <div className="space-y-6">
@@ -137,11 +139,15 @@ export async function AdminDashboardOverview() {
                         </td>
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            order.status === "completed" ? "bg-emerald-50 text-emerald-700" :
-                            order.status === "processing" ? "bg-sky-50 text-sky-700" : "bg-amber-50 text-amber-700"
+                            order.status === 'delivered' ? 'bg-teal-50 text-teal-700' :
+                            order.status === 'processing' ? 'bg-blue-50 text-blue-700' :
+                            order.status === 'shipped' ? 'bg-amber-50 text-amber-700' :
+                            'bg-slate-100 text-slate-700'
                           }`}>
-                            {order.status === "completed" ? "Hoàn tất" :
-                             order.status === "processing" ? "Đang xử lý" : "Chờ xác nhận"}
+                            {order.status === 'delivered' ? 'Đã giao' : 
+                             order.status === 'processing' ? 'Đang chuẩn bị' :
+                             order.status === 'shipped' ? 'Đang giao' : 
+                             'Chờ xử lý'}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right font-bold text-slate-950">
