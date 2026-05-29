@@ -2,33 +2,30 @@ import Link from "next/link";
 
 const footerColumns = [
   {
-    title: "Mua sắm",
+    title: "Về AuraCare",
+    links: [
+      { label: "Giới thiệu", href: "/about" },
+      { label: "Tuyển dụng", href: "/about" },
+      { label: "Hệ thống nhà thuốc", href: "/about" },
+      { label: "Bài viết sức khỏe", href: "/articles" },
+    ],
+  },
+  {
+    title: "Mua sắm & Hỗ trợ",
     links: [
       { label: "Tất cả sản phẩm", href: "/products" },
-      { label: "Thực phẩm bổ sung", href: "/categories/supplement" },
-      { label: "Chăm sóc da", href: "/categories/skincare" },
-      { label: "Wishlist", href: "/wishlist" },
-      { label: "So sánh sản phẩm", href: "/compare" },
-      { label: "Ưu đãi nhanh", href: "/#deals" },
+      { label: "Theo dõi đơn hàng", href: "/orders" },
+      { label: "Chính sách giao hàng", href: "/contact" },
+      { label: "Đổi trả & Hoàn tiền", href: "/contact" },
     ],
   },
   {
-    title: "Tính năng AI",
+    title: "Chính sách chung",
     links: [
-      { label: "Aura AI", href: "/consult" },
-      { label: "Tìm kiếm ngữ nghĩa", href: "/search?q=da%20nh%E1%BA%A1y%20c%E1%BA%A3m" },
-      { label: "Gợi ý sản phẩm", href: "/products" },
-      { label: "Lịch sử AI", href: "/ai-history" },
-      { label: "Ghi chú AI", href: "/articles" },
-    ],
-  },
-  {
-    title: "Hỗ trợ",
-    links: [
-      { label: "Giao hàng", href: "/" },
-      { label: "Đổi trả", href: "/" },
-      { label: "Quyền riêng tư", href: "/" },
-      { label: "Liên hệ", href: "/" },
+      { label: "Liên hệ", href: "/contact" },
+      { label: "Điều khoản sử dụng", href: "/about" },
+      { label: "Quyền riêng tư", href: "/about" },
+      { label: "Giải quyết khiếu nại", href: "/contact" },
     ],
   },
 ] as const;
@@ -38,10 +35,9 @@ export function StorefrontFooter() {
     <footer className="border-t border-[#d7e5df] bg-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_repeat(3,1fr)] lg:px-8">
         <div className="space-y-3">
-          <p className="text-lg font-semibold text-slate-900">AuraCare</p>
+          <p className="text-xl font-black tracking-tight text-[#0d9488]">AuraCare</p>
           <p className="max-w-sm text-sm leading-6 text-slate-600">
-            Mô hình thương mại điện tử sức khỏe định hướng nghiên cứu, tập trung vào khám phá sản phẩm rõ ràng, AI hữu
-            ích và nội dung đáng tin cậy.
+            Hệ thống nhà thuốc và chăm sóc sức khỏe toàn diện. Cam kết 100% sản phẩm chính hãng, tư vấn tận tâm bởi đội ngũ dược sĩ chuyên môn cao.
           </p>
         </div>
 

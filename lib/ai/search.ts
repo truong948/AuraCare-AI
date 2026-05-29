@@ -32,7 +32,8 @@ const queryExpansionRules = [
   { match: "mien dich", additions: ["immune", "immune-defense", "immune support"] },
   { match: "nang luong", additions: ["energy", "energy-support", "daily vitality"] },
   { match: "tap trung", additions: ["focus", "focus-clarity", "focus support"] },
-  { match: "giac ngu", additions: ["sleep", "sleep-balance", "night recovery"] },
+  { match: "giac ngu", additions: ["sleep", "sleep-balance", "night recovery", "insomnia", "mất ngủ"] },
+  { match: "mat ngu", additions: ["sleep", "giac ngu", "khó ngủ", "melatonin"] },
   { match: "bo sung", additions: ["supplement", "daily wellness"] },
   { match: "cham soc da", additions: ["skincare", "skin support"] },
 ] as const;

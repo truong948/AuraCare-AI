@@ -3,6 +3,7 @@ import { ArrowRight, Boxes, SearchCheck, Sparkles } from "lucide-react";
 import { ProductCard } from "@/components/storefront/product-card";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
+import { HomeAiChatWidget } from "@/components/storefront/home-ai-chat-widget";
 import { Pagination } from "@/components/storefront/pagination";
 import { storefrontCategories } from "@/lib/mock-data/catalog";
 import { getProducts } from "@/lib/database-service.server";
@@ -80,6 +81,7 @@ export default async function ProductsPage({
       </main>
 
       <StorefrontFooter />
+      <HomeAiChatWidget />
     </div>
   );
 }

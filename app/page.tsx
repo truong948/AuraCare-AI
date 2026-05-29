@@ -3,6 +3,7 @@ import { ShieldCheck, Truck, RotateCcw, Medal, ChevronRight } from "lucide-react
 import { ProductCard } from "@/components/storefront/product-card";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
+import { HomeAiChatWidget } from "@/components/storefront/home-ai-chat-widget";
 import {
   skincareProducts,
   supplementProducts,
@@ -164,6 +165,7 @@ export default function HomePage() {
       </main>
 
       <StorefrontFooter />
+      <HomeAiChatWidget />
     </div>
   );
 }

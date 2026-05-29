@@ -16,11 +16,11 @@ import { StorefrontCartSheet } from "@/components/storefront/storefront-cart-she
 import { useCart } from "@/components/cart/cart-context";
 
 const navItems = [
-  { label: "Thực phẩm chức năng", href: "/products?category=supplement" },
-  { label: "Dược mỹ phẩm", href: "/products?category=skincare" },
-  { label: "Chăm sóc cá nhân", href: "/products?category=personal-care" },
-  { label: "Thiết bị y tế", href: "/products?category=medical-devices" },
-  { label: "Góc sức khỏe", href: "/articles" },
+  { label: "Trang chủ", href: "/" },
+  { label: "Giới thiệu", href: "/about" },
+  { label: "Sản phẩm", href: "/products" },
+  { label: "Bài viết sức khỏe", href: "/articles" },
+  { label: "Liên hệ", href: "/contact" },
 ] as const;
 
 export function StorefrontHeader() {

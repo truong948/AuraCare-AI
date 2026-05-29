@@ -56,7 +56,7 @@ function buildHandoffSummary(input: ChatRequestInput, answer: string, productNam
   return summaryParts.join(" | ");
 }
 
-function buildMockAnswer(input: ChatRequestInput): ChatResponsePayload {
+async function buildMockAnswer(input: ChatRequestInput): Promise<ChatResponsePayload> {
   const normalizedMessage = normalizeText(input.message);
   const product = input.productSlug ? getProductBySlug(input.productSlug) : undefined;
   const knowledgeMatches = findKnowledgeMatches(input.message, 3);
@@ -64,6 +64,7 @@ function buildMockAnswer(input: ChatRequestInput): ChatResponsePayload {
   const escalationReason = getSafetyEscalationReason(input.message);
 
   let answer = "";
+  let suggestions: { product: any; score: number; reason: string }[] = [];
 
   if (escalationReason === "urgent") {
     answer =
@@ -89,19 +90,23 @@ function buildMockAnswer(input: ChatRequestInput): ChatResponsePayload {
     } else {
       answer = `${product.name} là một sản phẩm thuộc nhóm ${product.category === "supplement" ? "thực phẩm bổ sung" : "chăm sóc da"}, nổi bật với ${product.ingredientsText}. Nếu bạn muốn, mình có thể giải thích thêm về thành phần, cách dùng hoặc đối tượng phù hợp.`;
     }
-  } else if (faqMatches[0]) {
-    answer = knowledgeMatches[0]?.answer ?? faqMatches[0];
-  } else if (knowledgeMatches[0]) {
-    answer = `Theo knowledge base hiện tại: ${knowledgeMatches[0].answer}`;
   } else {
-    answer =
-      "Mình có thể hỗ trợ bạn theo ba hướng: gợi ý sản phẩm theo nhu cầu, giải thích thành phần/cách dùng, hoặc hướng dẫn tìm kiếm bằng mô tả tự nhiên như 'da nhạy cảm thiếu ẩm' hoặc 'vitamin hỗ trợ tập trung'.";
+    const searchResponse = await runSemanticSearch({ query: input.message, category: input.category, limit: 3 });
+    suggestions = searchResponse.results.map(r => ({ product: r.product, score: r.score, reason: r.reason }));
+    
+    if (suggestions.length > 0) {
+      answer = `Dựa trên mô tả của bạn, mình xin gợi ý một số sản phẩm phù hợp. ${knowledgeMatches[0] ? `Theo chuyên gia: ${knowledgeMatches[0].answer}` : ""}`;
+    } else if (faqMatches[0]) {
+      answer = knowledgeMatches[0]?.answer ?? faqMatches[0];
+    } else {
+      answer =
+        "Mình có thể hỗ trợ bạn theo ba hướng: gợi ý sản phẩm theo nhu cầu, giải thích thành phần/cách dùng, hoặc hướng dẫn tìm kiếm bằng mô tả tự nhiên như 'da nhạy cảm thiếu ẩm' hoặc 'vitamin hỗ trợ tập trung'.";
+    }
   }
 
-  const suggestions = product
-    && !escalationReason
-    ? getProductRecommendations(product.slug, 3)
-    : [];
+  if (product && !escalationReason) {
+    suggestions = getProductRecommendations(product.slug, 3).map(item => ({ ...item, reason: "Gợi ý tương tự" }));
+  }
 
   return {
     source: "mock",
