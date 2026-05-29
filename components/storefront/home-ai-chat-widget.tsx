@@ -72,10 +72,12 @@ export function HomeAiChatWidget() {
     setMessages((current) => [...current, { id: createMessageId(), role: "user", content: trimmed }]);
 
     try {
+      const history = messages.filter(m => m.id !== "welcome").map(m => ({ role: m.role, content: m.content }));
+      
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed }),
+        body: JSON.stringify({ message: trimmed, history }),
       });
       const data = (await response.json()) as ChatResponsePayload & { error?: string };
 

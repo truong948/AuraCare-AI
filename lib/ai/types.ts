@@ -30,6 +30,7 @@ export interface RecommendationItem {
 
 export interface ChatRequestInput {
   message: string;
+  history?: { role: string; content: string }[];
   productSlug?: string;
   category?: ProductCategory;
 }

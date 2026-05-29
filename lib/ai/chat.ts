@@ -46,6 +46,8 @@ function getSafetyEscalationReason(message: string) {
   return null;
 }
 
+
+
 function buildHandoffSummary(input: ChatRequestInput, answer: string, productName?: string) {
   const summaryParts = [
     `Người dùng hỏi: ${input.message}`,
@@ -92,7 +94,9 @@ async function buildMockAnswer(input: ChatRequestInput): Promise<ChatResponsePay
     }
   } else {
     const searchResponse = await runSemanticSearch({ query: input.message, category: input.category, limit: 3 });
-    suggestions = searchResponse.results.map(r => ({ product: r.product, score: r.score, reason: r.reason }));
+    suggestions = searchResponse.results
+      .filter(r => r.score > 0.35)
+      .map(r => ({ product: r.product, score: r.score, reason: r.reason }));
     
     // Check if it's a strong knowledge match (e.g. asking a specific question)
     const isQuestion = input.message.includes("?") || input.message.toLowerCase().includes("thế nào") || input.message.toLowerCase().includes("tại sao");
@@ -134,18 +138,24 @@ async function buildGeminiAnswer(input: ChatRequestInput) {
     query: product ? `${input.message} ${product.name}` : input.message,
     category: input.category,
     limit: 3,
-  })).results;
+  })).results.filter(item => item.score > 0.35);
   const knowledgeContext = buildKnowledgeContext(input.message, 3);
 
-  const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+  const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: "gemini-2.5-pro" });
+  
+  let historyText = "";
+  if (input.history && input.history.length > 0) {
+    historyText = "\nLỊCH SỬ CHAT TRƯỚC ĐÓ:\n" + input.history.map(m => `${m.role === 'user' ? 'Khách hàng' : 'AuraCare AI'}: ${m.content}`).join('\n') + "\n";
+  }
+  
   const prompt = `
-Bạn là AuraCare AI, trợ lý tư vấn sản phẩm cho một storefront học thuật bằng tiếng Việt.
-
+Bạn là AuraCare AI, trợ lý tư vấn sản phẩm cho một cửa hàng y tế trực tuyến bằng tiếng Việt.
 Nguyên tắc:
-- Trả lời ngắn gọn, rõ ràng, không quá 140 từ.
-- Chỉ hỗ trợ tra cứu và gợi ý sản phẩm, không chẩn đoán bệnh.
-- Không kê đơn, không điều chỉnh liều, không xử lý tình huống khẩn cấp; hãy khuyên người dùng gặp chuyên gia y tế khi câu hỏi vượt phạm vi sản phẩm.
-- Nếu thông tin chưa chắc chắn, nói rõ đây chỉ là gợi ý tham khảo.
+- Trả lời ngắn gọn, rõ ràng, thân thiện.
+- Không kê đơn thuốc hoặc điều chỉnh liều lượng. Khuyên người dùng hỏi ý kiến bác sĩ nếu câu hỏi vượt quá phạm vi sản phẩm cơ bản.
+- KHÔNG hiển thị ảnh hay giá tiền khi gợi ý sản phẩm, chỉ cần nhắc tên, hệ thống giao diện sẽ tự xử lý hiển thị.
+${historyText}
+Yêu cầu hiện tại của khách hàng: "${input.message}"
 
 Ngữ cảnh sản phẩm hiện tại:
 ${product ? JSON.stringify(product, null, 2) : "Không có sản phẩm cụ thể."}

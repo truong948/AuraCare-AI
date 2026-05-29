@@ -7,6 +7,7 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const message = typeof body.message === "string" ? body.message : "";
   const productSlug = typeof body.productSlug === "string" ? body.productSlug : undefined;
+  const history = Array.isArray(body.history) ? body.history : [];
   const category =
     body.category === "supplement" || body.category === "skincare"
       ? (body.category as ProductCategory)
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await runChatAssistant({ message, productSlug, category });
+    const result = await runChatAssistant({ message, history, productSlug, category });
     await logChatEvent({
       message,
       productSlug: productSlug ?? null,
