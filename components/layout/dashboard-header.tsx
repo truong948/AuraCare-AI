@@ -35,27 +35,27 @@ function getInitials(profile: AppUserProfile) {
 
 export function DashboardHeader({ profile, role }: DashboardHeaderProps) {
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-slate-50/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-20 border-b border-[#dce6df] bg-white/90 backdrop-blur-xl">
       <div className="flex h-20 items-center gap-3 px-4 sm:px-6 lg:px-8">
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="outline"
               size="icon"
-              className="rounded-2xl border-slate-200 bg-white lg:hidden"
+              className="rounded-2xl border-[#dce6df] bg-white lg:hidden"
               aria-label="Open navigation menu"
             >
               <Menu className="h-4 w-4" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[300px] border-slate-200 bg-[#f0f4fa] p-0">
+          <SheetContent side="left" className="w-[300px] border-[#dce6df] bg-[#f6f4ee] p-0">
             <SheetHeader className="sr-only">
               <SheetTitle>Dashboard navigation</SheetTitle>
             </SheetHeader>
             <div className="flex h-full flex-col px-5 py-6">
               <DashboardLogo />
               <div className="mt-8">
-                <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+                <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#5b8c7a]">
                   Điều hướng
                 </p>
                 <DashboardSidebarNav role={role} />
@@ -68,24 +68,24 @@ export function DashboardHeader({ profile, role }: DashboardHeaderProps) {
           <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <Input
             type="search"
-            placeholder="Tìm kiếm routine, AI scan, nhật ký..."
-            className="h-12 rounded-2xl border-slate-200 bg-white pl-11 text-sm shadow-sm shadow-slate-950/5 placeholder:text-slate-400 focus-visible:ring-blue-500/20"
+            placeholder="Tìm kiếm sản phẩm, đơn hàng, khách hàng..."
+            className="h-12 rounded-2xl border-[#dce6df] bg-[#f6f4ee] pl-11 text-sm shadow-sm placeholder:text-slate-400 focus-visible:ring-[#0d9488]/20 focus-visible:border-[#0d9488]"
           />
         </div>
 
-        <div className="ml-auto flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm shadow-slate-950/5">
+        <div className="ml-auto flex items-center gap-3 rounded-2xl border border-[#dce6df] bg-white px-3 py-2 shadow-sm">
           <Avatar className="h-10 w-10">
-            <AvatarFallback className="bg-[#0b57c5] text-sm font-semibold text-white">
+            <AvatarFallback className="bg-[#0d9488] text-sm font-semibold text-white">
               {getInitials(profile) || "AC"}
             </AvatarFallback>
           </Avatar>
           <div className="hidden text-left sm:block">
-            <p className="text-sm font-semibold text-slate-900">
+            <p className="text-sm font-semibold text-[#0f172a]">
               {profile.full_name || profile.email}
             </p>
-            <p className="flex items-center gap-1 text-xs text-slate-500">
+            <p className="flex items-center gap-1 text-xs text-[#5b8c7a]">
               {role === "admin" ? <ShieldCheck className="h-3 w-3" /> : null}
-              {role === "admin" ? "Admin" : "User"}
+              {role === "admin" ? "Quản trị viên" : "Người dùng"}
             </p>
           </div>
           <form action={signOut}>
@@ -93,7 +93,7 @@ export function DashboardHeader({ profile, role }: DashboardHeaderProps) {
               type="submit"
               variant="ghost"
               size="icon"
-              className="rounded-xl text-slate-500 hover:text-slate-900"
+              className="rounded-xl text-[#475569] hover:bg-red-50 hover:text-red-600 transition-colors"
               aria-label="Đăng xuất"
             >
               <LogOut className="h-4 w-4" />

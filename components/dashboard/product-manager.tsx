@@ -173,103 +173,113 @@ export function DashboardProductManager() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5">
+      <div className="flex flex-col gap-4 rounded-[32px] border border-[#dce6df] bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Catalog Admin</p>
-            <h1 className="mt-2 text-3xl font-semibold text-slate-900">Quản lý sản phẩm</h1>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#5b8c7a]">Catalog Admin</p>
+            <h1 className="mt-2 text-3xl font-semibold text-[#0f172a]">Quản lý sản phẩm</h1>
           </div>
-          <Button onClick={() => { setEditingSlug(null); setDraft(buildEmptyProduct()); }} className="inline-flex items-center gap-2 rounded-2xl bg-[#5b8c7a] text-white hover:bg-[#4f7c6d]">
+          <Button onClick={() => { setEditingSlug(null); setDraft(buildEmptyProduct()); }} className="inline-flex items-center gap-2 rounded-2xl bg-[#0d9488] text-white hover:bg-[#0f766e] shadow-sm">
             <Plus className="h-4 w-4" /> Thêm sản phẩm
           </Button>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <div>
-            <p className="text-sm font-medium text-slate-700">Số sản phẩm trong catalog</p>
-            <p className="mt-2 text-4xl font-semibold text-slate-900">{products.length}</p>
+        <div className="grid gap-4 md:grid-cols-2 mt-4">
+          <div className="rounded-2xl bg-[#f6f4ee] p-5">
+            <p className="text-sm font-medium text-[#5b8c7a]">Số sản phẩm trong catalog</p>
+            <p className="mt-2 text-4xl font-semibold text-[#0d9488]">{products.length}</p>
           </div>
-          <div>
-            <p className="text-sm font-medium text-slate-700">Trạng thái đồng bộ</p>
-            <p className="mt-2 text-base text-slate-500">Đã kết nối cơ sở dữ liệu Supabase (dự phòng LocalStorage).</p>
+          <div className="rounded-2xl bg-[#f6f4ee] p-5">
+            <p className="text-sm font-medium text-[#5b8c7a]">Trạng thái đồng bộ</p>
+            <p className="mt-2 text-sm text-[#475569]">Đã kết nối cơ sở dữ liệu Supabase (dự phòng LocalStorage). Real-time Updates Bật.</p>
           </div>
         </div>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
         <div className="space-y-6">
-          <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5">
+          <div className="rounded-[32px] border border-[#dce6df] bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">Danh sách sản phẩm</p>
-                <p className="mt-2 text-sm text-slate-600">Danh sách sản phẩm từ database, hỗ trợ chỉnh sửa và xóa trực tiếp.</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#5b8c7a]">Danh sách sản phẩm</p>
+                <p className="mt-2 text-sm text-[#475569]">Danh sách sản phẩm hỗ trợ chỉnh sửa và xóa trực tiếp.</p>
               </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">{products.length} items</span>
+              <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-[#0d9488]">{products.length} items</span>
             </div>
 
-            <div className="mt-6 space-y-4">
-              {products.slice(0, 12).map((product) => (
-                <div key={product.slug} className="rounded-3xl border border-slate-200 p-4 sm:p-5">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-900">{product.name}</p>
-                      <p className="mt-1 text-sm text-slate-500">{product.brand} · {product.category}</p>
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 h-[800px] overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-200">
+              {products.map((product) => (
+                <div key={product.slug} className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-[#dce6df] bg-white transition-all hover:border-[#0d9488] hover:shadow-md">
+                  <div className="flex items-start gap-4 p-4">
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-slate-100 bg-slate-50">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={product.image} alt={product.name} className="absolute inset-0 h-full w-full object-cover" />
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Button onClick={() => setEditingSlug(product.slug)} variant="outline" className="rounded-2xl">
-                        <Pencil className="h-4 w-4" /> Sửa
-                      </Button>
-                      <Button onClick={() => handleDelete(product.slug)} variant="destructive" className="rounded-2xl">
-                        <Trash2 className="h-4 w-4" /> Xóa
-                      </Button>
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-2 text-sm font-bold text-[#0f172a]" title={product.name}>{product.name}</p>
+                      <p className="mt-1 text-xs text-[#5b8c7a]">{product.brand}</p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600">
+                          {product.category}
+                        </span>
+                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${product.stockStatus === 'in_stock' ? 'bg-teal-50 text-teal-700' : 'bg-red-50 text-red-700'}`}>
+                          {product.stockStatus === 'in_stock' ? 'Còn hàng' : 'Hết/Sắp hết'}
+                        </span>
+                      </div>
                     </div>
+                  </div>
+                  <div className="flex items-center gap-2 border-t border-slate-100 bg-slate-50 p-3">
+                    <Button onClick={() => setEditingSlug(product.slug)} variant="ghost" size="sm" className="h-8 flex-1 rounded-xl text-teal-700 hover:bg-teal-100 hover:text-teal-800">
+                      <Pencil className="mr-2 h-3.5 w-3.5" /> Sửa
+                    </Button>
+                    <Button onClick={() => handleDelete(product.slug)} variant="ghost" size="sm" className="h-8 flex-1 rounded-xl text-red-600 hover:bg-red-100 hover:text-red-700">
+                      <Trash2 className="mr-2 h-3.5 w-3.5" /> Xóa
+                    </Button>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-
-          <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5">
+          </div>          <div className="rounded-[32px] border border-[#dce6df] bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">Biên tập sản phẩm</p>
-                <p className="mt-2 text-sm text-slate-600">Điền thông tin và lưu trực tiếp vào Supabase.</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#5b8c7a]">Biên tập sản phẩm</p>
+                <p className="mt-2 text-sm text-[#475569]">Điền thông tin và lưu trực tiếp vào cơ sở dữ liệu.</p>
               </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+              <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-[#0d9488]">
                 {editingSlug ? "Đang chỉnh sửa" : "Tạo mới"}
               </span>
             </div>
 
             <div className="mt-6 grid gap-4">
               <div className="grid gap-3 sm:grid-cols-2">
-                <label className="block text-sm font-medium text-slate-700">
+                <label className="block text-sm font-medium text-[#0f172a]">
                   Tên sản phẩm *
-                  <Input value={draft.name ?? ""} onChange={(event) => setField("name", event.target.value)} />
+                  <Input value={draft.name ?? ""} onChange={(event) => setField("name", event.target.value)} className="mt-2 border-[#dce6df] focus-visible:ring-[#0d9488]" />
                 </label>
-                <label className="block text-sm font-medium text-slate-700">
+                <label className="block text-sm font-medium text-[#0f172a]">
                   Giá bán *
-                  <Input type="number" value={draft.price ?? 0} onChange={(event) => setField("price", Number(event.target.value))} />
+                  <Input type="number" value={draft.price ?? 0} onChange={(event) => setField("price", Number(event.target.value))} className="mt-2 border-[#dce6df] focus-visible:ring-[#0d9488]" />
                 </label>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <label className="block text-sm font-medium text-slate-700">
+                <label className="block text-sm font-medium text-[#0f172a]">
                   Danh mục
                   <select
                     value={draft.category ?? "supplement"}
                     onChange={(event) => setField("category", event.target.value)}
-                    className="mt-2 block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900"
+                    className="mt-2 block w-full rounded-2xl border border-[#dce6df] bg-[#f6f4ee] px-4 py-3 text-sm text-[#0f172a] focus:ring-[#0d9488]"
                   >
                     {categoryOptions.map((option) => (
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
                   </select>
                 </label>
-                <label className="block text-sm font-medium text-slate-700">
+                <label className="block text-sm font-medium text-[#0f172a]">
                   Nhãn
                   <select
                     value={draft.badge ?? "New"}
                     onChange={(event) => setField("badge", event.target.value)}
-                    className="mt-2 block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900"
+                    className="mt-2 block w-full rounded-2xl border border-[#dce6df] bg-[#f6f4ee] px-4 py-3 text-sm text-[#0f172a] focus:ring-[#0d9488]"
                   >
                     {badgeOptions.map((badge) => (
                       <option key={badge} value={badge}>{badge}</option>
@@ -278,16 +288,16 @@ export function DashboardProductManager() {
                 </label>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <label className="block text-sm font-medium text-slate-700">
+                <label className="block text-sm font-medium text-[#0f172a]">
                   Hình ảnh (URL)
-                  <Input value={draft.image ?? ""} onChange={(event) => setField("image", event.target.value)} placeholder="https://..." />
+                  <Input value={draft.image ?? ""} onChange={(event) => setField("image", event.target.value)} placeholder="https://..." className="mt-2 border-[#dce6df] focus-visible:ring-[#0d9488]" />
                 </label>
-                <label className="block text-sm font-medium text-slate-700">
+                <label className="block text-sm font-medium text-[#0f172a]">
                   Trạng thái tồn kho
                   <select
                     value={draft.stockStatus ?? "in_stock"}
                     onChange={(event) => setField("stockStatus", event.target.value)}
-                    className="mt-2 block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900"
+                    className="mt-2 block w-full rounded-2xl border border-[#dce6df] bg-[#f6f4ee] px-4 py-3 text-sm text-[#0f172a] focus:ring-[#0d9488]"
                   >
                     <option value="in_stock">Còn hàng</option>
                     <option value="low_stock">Sắp hết</option>
@@ -295,72 +305,84 @@ export function DashboardProductManager() {
                   </select>
                 </label>
               </div>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-[#0f172a]">
                 Mô tả ngắn *
-                <Input value={draft.shortDescription ?? ""} onChange={(event) => setField("shortDescription", event.target.value)} />
+                <Input value={draft.shortDescription ?? ""} onChange={(event) => setField("shortDescription", event.target.value)} className="mt-2 border-[#dce6df] focus-visible:ring-[#0d9488]" />
               </label>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-[#0f172a]">
                 Mô tả dài
                 <textarea 
                   value={draft.longDescription ?? ""} 
                   onChange={(event) => setField("longDescription", event.target.value)}
-                  className="mt-2 flex min-h-[80px] w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+                  className="mt-2 flex min-h-[80px] w-full rounded-2xl border border-[#dce6df] bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d9488]"
                 />
               </label>
               <div className="grid gap-3 sm:grid-cols-2">
-                <label className="block text-sm font-medium text-slate-700">
+                <label className="block text-sm font-medium text-[#0f172a]">
                   Quy cách
-                  <Input value={draft.packageSize ?? ""} onChange={(event) => setField("packageSize", event.target.value)} placeholder="Ví dụ: 30 viên" />
+                  <Input value={draft.packageSize ?? ""} onChange={(event) => setField("packageSize", event.target.value)} placeholder="Ví dụ: 30 viên" className="mt-2 border-[#dce6df] focus-visible:ring-[#0d9488]" />
                 </label>
-                <label className="block text-sm font-medium text-slate-700">
+                <label className="block text-sm font-medium text-[#0f172a]">
                   Mối quan tâm (cách nhau bởi dấu phẩy)
                   <Input 
                     value={draft.concernTags?.join(", ") ?? ""} 
                     onChange={(event) => setField("concernTags", event.target.value.split(",").map(s => s.trim()).filter(Boolean))} 
                     placeholder="Mụn, Nám..." 
+                    className="mt-2 border-[#dce6df] focus-visible:ring-[#0d9488]"
                   />
                 </label>
               </div>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-[#0f172a]">
                 Thành phần
                 <textarea 
                   value={draft.ingredientsText ?? ""} 
                   onChange={(event) => setField("ingredientsText", event.target.value)}
-                  className="mt-2 flex min-h-[80px] w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+                  className="mt-2 flex min-h-[80px] w-full rounded-2xl border border-[#dce6df] bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d9488]"
                 />
               </label>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-[#0f172a]">
                 Hướng dẫn sử dụng
                 <textarea 
                   value={draft.usageInstructions ?? ""} 
                   onChange={(event) => setField("usageInstructions", event.target.value)}
-                  className="mt-2 flex min-h-[80px] w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+                  className="mt-2 flex min-h-[80px] w-full rounded-2xl border border-[#dce6df] bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d9488]"
                 />
               </label>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-[#0f172a]">
                 Cảnh báo
-                <Input value={draft.warnings ?? ""} onChange={(event) => setField("warnings", event.target.value)} />
+                <Input value={draft.warnings ?? ""} onChange={(event) => setField("warnings", event.target.value)} className="mt-2 border-[#dce6df] focus-visible:ring-[#0d9488]" />
               </label>
               <div className="flex gap-3">
-                <Button onClick={handleSave} className="rounded-2xl bg-[#5b8c7a] text-white hover:bg-[#4f7c6d]">Lưu sản phẩm</Button>
-                <Button variant="outline" onClick={handleCancel} className="rounded-2xl">Hủy</Button>
+                <Button onClick={handleSave} className="rounded-2xl bg-[#0d9488] text-white hover:bg-[#0f766e]">Lưu sản phẩm</Button>
+                <Button variant="outline" onClick={handleCancel} className="rounded-2xl border-[#dce6df] text-[#475569] hover:bg-[#f6f4ee]">Hủy</Button>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5">
-          <div className="flex items-center gap-3 text-slate-900">
-            <Archive className="h-5 w-5" />
+        <div className="rounded-[32px] border border-[#dce6df] bg-white p-6 shadow-sm">
+          <div className="flex items-center gap-3 text-[#0f172a]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-teal-50 text-[#0d9488]">
+              <Archive className="h-5 w-5" />
+            </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.22em]">Cơ sở dữ liệu tích hợp</p>
-              <p className="mt-1 text-sm text-slate-600">Đã cập nhật lên kết nối Supabase</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#5b8c7a]">Cơ sở dữ liệu</p>
+              <p className="mt-1 text-sm text-[#475569]">Đã cập nhật kết nối</p>
             </div>
           </div>
-          <Separator className="my-6" />
-          <p className="text-sm leading-7 text-slate-600">
-            Trang quản trị sản phẩm hiện tại đã được cấu hình liên kết trực tiếp tới các API thao tác dữ liệu của Supabase. Khi lưu hoặc xóa sản phẩm, hệ thống sẽ tự động đồng bộ hóa trên Cloud.
+          <Separator className="my-6 bg-[#dce6df]" />
+          <p className="text-sm leading-7 text-[#475569]">
+            Trang quản trị sản phẩm hiện tại đã được cấu hình liên kết trực tiếp tới các API thao tác dữ liệu. Các thông tin sẽ được cập nhật thời gian thực vào giao diện người dùng.
           </p>
+          {draft.image && (
+             <div className="mt-6 rounded-2xl border border-[#dce6df] p-2 bg-[#f6f4ee]">
+               <p className="text-xs font-semibold text-[#5b8c7a] mb-2 px-2">XEM TRƯỚC HÌNH ẢNH</p>
+               <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white border border-[#dce6df]">
+                 {/* eslint-disable-next-line @next/next/no-img-element */}
+                 <img src={draft.image} alt="Preview" className="absolute inset-0 h-full w-full object-cover" />
+               </div>
+             </div>
+          )}
         </div>
       </div>
     </div>
