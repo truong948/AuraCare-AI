@@ -274,16 +274,72 @@ export function DashboardProductManager() {
                   </select>
                 </label>
               </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="block text-sm font-medium text-slate-700">
+                  Hình ảnh (URL)
+                  <Input value={draft.image ?? ""} onChange={(event) => setField("image", event.target.value)} placeholder="https://..." />
+                </label>
+                <label className="block text-sm font-medium text-slate-700">
+                  Trạng thái tồn kho
+                  <select
+                    value={draft.stockStatus ?? "in_stock"}
+                    onChange={(event) => setField("stockStatus", event.target.value)}
+                    className="mt-2 block w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900"
+                  >
+                    <option value="in_stock">Còn hàng</option>
+                    <option value="low_stock">Sắp hết</option>
+                    <option value="out_of_stock">Hết hàng</option>
+                  </select>
+                </label>
+              </div>
               <label className="block text-sm font-medium text-slate-700">
                 Mô tả ngắn *
                 <Input value={draft.shortDescription ?? ""} onChange={(event) => setField("shortDescription", event.target.value)} />
               </label>
               <label className="block text-sm font-medium text-slate-700">
                 Mô tả dài
-                <Input value={draft.longDescription ?? ""} onChange={(event) => setField("longDescription", event.target.value)} />
+                <textarea 
+                  value={draft.longDescription ?? ""} 
+                  onChange={(event) => setField("longDescription", event.target.value)}
+                  className="mt-2 flex min-h-[80px] w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+                />
+              </label>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="block text-sm font-medium text-slate-700">
+                  Quy cách
+                  <Input value={draft.packageSize ?? ""} onChange={(event) => setField("packageSize", event.target.value)} placeholder="Ví dụ: 30 viên" />
+                </label>
+                <label className="block text-sm font-medium text-slate-700">
+                  Mối quan tâm (cách nhau bởi dấu phẩy)
+                  <Input 
+                    value={draft.concernTags?.join(", ") ?? ""} 
+                    onChange={(event) => setField("concernTags", event.target.value.split(",").map(s => s.trim()).filter(Boolean))} 
+                    placeholder="Mụn, Nám..." 
+                  />
+                </label>
+              </div>
+              <label className="block text-sm font-medium text-slate-700">
+                Thành phần
+                <textarea 
+                  value={draft.ingredientsText ?? ""} 
+                  onChange={(event) => setField("ingredientsText", event.target.value)}
+                  className="mt-2 flex min-h-[80px] w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+                />
+              </label>
+              <label className="block text-sm font-medium text-slate-700">
+                Hướng dẫn sử dụng
+                <textarea 
+                  value={draft.usageInstructions ?? ""} 
+                  onChange={(event) => setField("usageInstructions", event.target.value)}
+                  className="mt-2 flex min-h-[80px] w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+                />
+              </label>
+              <label className="block text-sm font-medium text-slate-700">
+                Cảnh báo
+                <Input value={draft.warnings ?? ""} onChange={(event) => setField("warnings", event.target.value)} />
               </label>
               <div className="flex gap-3">
-                <Button onClick={handleSave} className="rounded-2xl bg-[#5b8c7a] text-white hover:bg-[#4f7c6d]">Lưu</Button>
+                <Button onClick={handleSave} className="rounded-2xl bg-[#5b8c7a] text-white hover:bg-[#4f7c6d]">Lưu sản phẩm</Button>
                 <Button variant="outline" onClick={handleCancel} className="rounded-2xl">Hủy</Button>
               </div>
             </div>

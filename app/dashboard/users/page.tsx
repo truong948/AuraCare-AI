@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ShieldCheck, UserCog, UsersRound } from "lucide-react";
 import { updateUserAccess } from "@/app/dashboard/users/actions";
 import { Button } from "@/components/ui/button";
@@ -142,7 +143,12 @@ export default async function DashboardUsersPage() {
                   <td className="px-6 py-5 text-slate-500">
                     {formatDate(user.created_at)}
                   </td>
-                  <td className="px-6 py-5 text-right">
+                  <td className="px-6 py-5 text-right flex justify-end gap-2">
+                    <Link href={`/dashboard/users/${user.id}`}>
+                      <Button variant="outline" className="rounded-2xl">
+                        Chi tiết
+                      </Button>
+                    </Link>
                     <Button
                       type="submit"
                       form={`access-${user.id}`}

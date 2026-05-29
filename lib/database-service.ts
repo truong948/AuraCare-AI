@@ -360,3 +360,41 @@ export async function loadAllConsultations(): Promise<MockConsultation[]> {
   }
   return getLocalConsultations();
 }
+
+export async function getConsultationsByUserId(userId: string): Promise<MockConsultation[]> {
+  try {
+    const supabase = await getSupabaseClient();
+    const { data, error } = await supabase
+      .from("consultations")
+      .select(`
+        id,
+        user_id,
+        skin_concern,
+        description,
+        ai_summary,
+        created_at,
+        profiles (
+          full_name,
+          email
+        )
+      `)
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      return data.map((d: any) => ({
+        id: d.id,
+        userId: d.user_id,
+        userEmail: d.profiles?.email || "anonymous@example.com",
+        userFullName: d.profiles?.full_name || "Khách hàng ẩn danh",
+        skinConcern: d.skin_concern,
+        description: d.description,
+        aiSummary: typeof d.ai_summary === "string" ? JSON.parse(d.ai_summary) : d.ai_summary || {},
+        createdAt: d.created_at
+      }));
+    }
+  } catch (err) {
+    console.warn(`Failed to fetch consultations for user ${userId} from Supabase:`, err);
+  }
+  return getLocalConsultations().filter(c => c.userId === userId);
+}
