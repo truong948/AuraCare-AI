@@ -1,4 +1,4 @@
-export type ProductCategory = "supplement" | "skincare";
+export type ProductCategory = "supplement" | "skincare" | "medicine" | "personal-care" | "medical-devices";
 
 export interface MockProduct {
   id: string;
@@ -446,7 +446,9 @@ function buildSkincareProducts() {
   );
 }
 
-export const mockProducts = [...buildSupplementProducts(), ...buildSkincareProducts()];
+import { extraProducts } from "./catalog-extras";
+
+export const mockProducts = [...buildSupplementProducts(), ...buildSkincareProducts(), ...extraProducts];
 
 export const storefrontCategories = [
   {
@@ -457,9 +459,27 @@ export const storefrontCategories = [
   },
   {
     id: "skincare",
-    label: "Chăm sóc da",
+    label: "Dược mỹ phẩm",
     description: "Dưỡng ẩm, phục hồi hàng rào bảo vệ da, hỗ trợ da mụn và làn da nhạy cảm.",
     itemCount: mockProducts.filter((product) => product.category === "skincare").length,
+  },
+  {
+    id: "medicine",
+    label: "Thuốc không kê đơn",
+    description: "Các loại thuốc giảm đau, hạ sốt, tiêu hóa và các bệnh thông thường.",
+    itemCount: mockProducts.filter((product) => product.category === "medicine").length,
+  },
+  {
+    id: "personal-care",
+    label: "Chăm sóc cá nhân",
+    description: "Sữa tắm, dầu gội, chăm sóc răng miệng và vệ sinh cá nhân hàng ngày.",
+    itemCount: mockProducts.filter((product) => product.category === "personal-care").length,
+  },
+  {
+    id: "medical-devices",
+    label: "Thiết bị y tế",
+    description: "Máy đo huyết áp, nhiệt kế, que thử và các dụng cụ y tế gia đình.",
+    itemCount: mockProducts.filter((product) => product.category === "medical-devices").length,
   },
 ] as const;
 
@@ -560,7 +580,20 @@ export function getArticleBySlug(slug: string) {
 }
 
 export function getCategoryLabel(category: ProductCategory) {
-  return category === "supplement" ? "Thực phẩm bổ sung" : "Chăm sóc da";
+  switch (category) {
+    case "supplement":
+      return "Thực phẩm bổ sung";
+    case "skincare":
+      return "Dược mỹ phẩm";
+    case "medicine":
+      return "Thuốc";
+    case "personal-care":
+      return "Chăm sóc cá nhân";
+    case "medical-devices":
+      return "Thiết bị y tế";
+    default:
+      return "Khác";
+  }
 }
 
 export function getBadgeLabel(badge: MockProduct["badge"]) {

@@ -1,197 +1,157 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, Camera, Heart, Home, LogIn, Menu, PackageSearch, ReceiptText, Scale, Search, Sparkles, User2 } from "lucide-react";
-import { useCompare } from "@/components/compare/compare-context";
-import { useWishlist } from "@/components/wishlist/wishlist-context";
+import { Menu, Search, ShoppingCart, User2, MapPin, Phone, Truck, ShieldCheck, Cross } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { StorefrontCartSheet } from "@/components/storefront/storefront-cart-sheet";
+import { useCart } from "@/components/cart/cart-context";
 
 const navItems = [
-  { label: "Trang chủ", href: "/", icon: Home },
-  { label: "Danh mục", href: "/products", icon: PackageSearch },
-  { label: "Tư vấn AI", href: "/consult", icon: Sparkles },
-  { label: "AI Scan", href: "/scan", icon: Camera },
-  { label: "Bài viết", href: "/articles", icon: BookOpen },
-  { label: "So sánh", href: "/compare", icon: Scale },
-] as const;
-
-const utilityItems = [
-  { label: "Wishlist", href: "/wishlist", icon: Heart },
-  { label: "Đơn hàng", href: "/orders", icon: ReceiptText },
-  { label: "Lịch sử AI", href: "/ai-history", icon: User2 },
+  { label: "Thực phẩm chức năng", href: "/products?category=supplement" },
+  { label: "Dược mỹ phẩm", href: "/products?category=skincare" },
+  { label: "Chăm sóc cá nhân", href: "/products?category=personal-care" },
+  { label: "Thiết bị y tế", href: "/products?category=medical-devices" },
+  { label: "Góc sức khỏe", href: "/articles" },
 ] as const;
 
 export function StorefrontHeader() {
-  const { count: wishlistCount } = useWishlist();
-  const { count: compareCount } = useCompare();
+  const { items } = useCart();
+  const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-2xl border-slate-200 bg-white lg:hidden"
-              aria-label="Mở menu"
-            >
-              <Menu className="h-4 w-4" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-[86vw] border-slate-200 bg-white p-0 sm:max-w-sm">
-            <SheetHeader className="border-b border-slate-100 p-5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#0b57c5] text-white">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div>
-                  <SheetTitle className="text-lg font-semibold text-[#0f172a]">AuraCare</SheetTitle>
-                  <SheetDescription className="text-sm text-[#64748b]">Mua sắm sức khỏe với AI</SheetDescription>
-                </div>
-              </div>
-            </SheetHeader>
+    <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
+      {/* Top bar */}
+      <div className="hidden w-full bg-[#0d9488] px-4 py-2 text-sm text-white sm:block">
+        <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="flex items-center gap-6">
+            <span className="flex items-center gap-2">
+              <Phone className="h-4 w-4" /> Hotline: 1800 6928 (Miễn phí)
+            </span>
+            <span className="flex items-center gap-2">
+              <Truck className="h-4 w-4" /> Miễn phí vận chuyển từ 300k
+            </span>
+            <span className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4" /> Cam kết 100% chính hãng
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link href="/stores" className="flex items-center gap-2 hover:underline">
+              <MapPin className="h-4 w-4" /> Hệ thống nhà thuốc
+            </Link>
+          </div>
+        </div>
+      </div>
 
-            <form action="/search" className="px-5 pt-5">
-              <div className="relative">
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94a3b8]" />
-                <Input
-                  type="search"
-                  name="q"
-                  placeholder="Tìm sản phẩm..."
-                  className="h-12 rounded-2xl border-slate-200 bg-white pl-11 text-sm focus-visible:ring-blue-500/20"
-                />
-              </div>
-            </form>
-
-            <nav className="grid gap-2 p-5">
-              {navItems.map((item) => (
-                <SheetClose asChild key={item.label}>
-                  <Link
-                    href={item.href}
-                    className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-[#334155] transition hover:bg-blue-50 hover:text-[#0b57c5]"
-                  >
-                    <item.icon className="h-4 w-4 text-[#0b57c5]" />
-                    {item.label}
-                  </Link>
-                </SheetClose>
-              ))}
-            </nav>
-
-            <div className="mt-auto border-t border-slate-100 p-5">
-              <div className="grid gap-2">
-                {utilityItems.map((item) => (
-                  <SheetClose asChild key={item.label}>
-                    <Link
-                      href={item.href}
-                      className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-[#334155] hover:bg-blue-50 hover:text-[#0b57c5] transition"
-                    >
-                      <span className="flex items-center gap-3">
-                        <item.icon className="h-4 w-4 text-[#0b57c5]" />
+      {/* Main Header */}
+      <div className="border-b border-slate-200">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-4">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="lg:hidden text-[#0d9488]">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[85vw] p-0 sm:max-w-sm">
+                <SheetHeader className="border-b border-slate-100 p-5 bg-[#0d9488] text-white">
+                  <div className="flex items-center gap-2">
+                    <Cross className="h-6 w-6" />
+                    <SheetTitle className="text-xl font-bold text-white">AuraCare</SheetTitle>
+                  </div>
+                </SheetHeader>
+                <nav className="grid gap-2 p-5">
+                  {navItems.map((item) => (
+                    <SheetClose asChild key={item.label}>
+                      <Link
+                        href={item.href}
+                        className="rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-teal-50 hover:text-[#0d9488]"
+                      >
                         {item.label}
-                      </span>
-                      {item.href === "/wishlist" && wishlistCount > 0 ? (
-                        <span className="rounded-full bg-[#0b57c5] px-2 py-0.5 text-xs text-white">{wishlistCount}</span>
-                      ) : null}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                  <div className="my-2 h-px bg-slate-200"></div>
+                  <SheetClose asChild>
+                    <Link href="/login" className="rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-teal-50 hover:text-[#0d9488]">
+                      Đăng nhập / Đăng ký
                     </Link>
                   </SheetClose>
-                ))}
+                </nav>
+              </SheetContent>
+            </Sheet>
+
+            <Link href="/" className="flex items-center gap-2 text-[#0d9488]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0d9488] text-white">
+                <Cross className="h-6 w-6" />
               </div>
-            </div>
-          </SheetContent>
-        </Sheet>
-
-        <Link href="/" className="flex shrink-0 items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#0b57c5] text-white shadow-lg shadow-blue-500/10">
-            <Sparkles className="h-5 w-5" />
+              <span className="hidden text-2xl font-black tracking-tight sm:block">AuraCare</span>
+            </Link>
           </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0b57c5]">
-              Sạch sẽ và tin cậy
-            </p>
-            <p className="text-lg font-semibold tracking-tight text-slate-900">AuraCare</p>
-          </div>
-        </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
-          {navItems.map((item) => (
+          <form action="/search" className="relative flex max-w-2xl flex-1 items-center">
+            <Input
+              type="search"
+              name="q"
+              placeholder="Tìm tên thuốc, bệnh lý, thực phẩm chức năng..."
+              className="h-11 w-full rounded-full border-2 border-[#0d9488] bg-white pl-4 pr-12 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
             <Button
-              key={item.label}
-              asChild
-              variant="ghost"
-              className="rounded-2xl px-4 text-sm text-slate-600 hover:bg-blue-50 hover:text-[#0b57c5]"
+              type="submit"
+              size="icon"
+              className="absolute right-1 top-1 h-9 w-9 rounded-full bg-[#0d9488] text-white hover:bg-teal-700"
             >
-              <Link href={item.href} prefetch={false}>{item.label}</Link>
-            </Button>
-          ))}
-        </nav>
-
-        <form action="/search" className="relative ml-auto hidden max-w-xl flex-1 lg:block">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <Input
-            type="search"
-            name="q"
-            placeholder="Tìm sản phẩm, vấn đề da, thành phần..."
-            className="h-12 rounded-2xl border-slate-200 bg-slate-50 pl-11 pr-32 text-sm shadow-sm shadow-slate-950/5 focus-visible:ring-blue-500/20"
-          />
-          <Button
-            type="submit"
-            className="absolute right-2 top-1/2 h-8 -translate-y-1/2 rounded-xl bg-[#0b57c5] px-4 text-white hover:bg-[#0b57c5]/90"
-          >
-            Tìm
-          </Button>
-        </form>
-
-        <div className="ml-auto flex items-center gap-2 lg:ml-0">
-          <Button asChild variant="outline" size="icon" className="rounded-2xl border-slate-200 bg-white lg:hidden">
-            <Link href="/search" aria-label="Tìm kiếm">
               <Search className="h-4 w-4" />
+            </Button>
+          </form>
+
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/login" className="hidden flex-col items-center justify-center gap-1 text-slate-600 hover:text-[#0d9488] sm:flex">
+              <User2 className="h-6 w-6" />
+              <span className="text-[10px] font-semibold">Tài khoản</span>
             </Link>
-          </Button>
-          <Button asChild variant="outline" size="icon" className="relative rounded-2xl border-slate-200 bg-white hover:bg-slate-50">
-            <Link href="/wishlist" aria-label="Wishlist">
-              <Heart className="h-4 w-4" />
-              {wishlistCount > 0 ? (
-                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#0b57c5] px-1 text-[10px] font-semibold text-white">
-                  {wishlistCount}
-                </span>
-              ) : null}
+            <div className="relative">
+              <StorefrontCartSheet customTrigger={
+                <Button variant="ghost" className="flex h-auto flex-col items-center gap-1 px-2 text-slate-600 hover:bg-transparent hover:text-[#0d9488]">
+                  <div className="relative">
+                    <ShoppingCart className="h-6 w-6" />
+                    {cartCount > 0 && (
+                      <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">
+                        {cartCount}
+                      </span>
+                    )}
+                  </div>
+                  <span className="hidden text-[10px] font-semibold sm:block">Giỏ hàng</span>
+                </Button>
+              } />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Menu (Desktop) */}
+      <div className="hidden w-full bg-white lg:block shadow-sm">
+        <div className="mx-auto flex max-w-7xl items-center gap-8 px-8 py-3">
+          {navItems.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="text-sm font-bold uppercase tracking-wide text-slate-700 transition-colors hover:text-[#0d9488]"
+            >
+              {item.label}
             </Link>
-          </Button>
-          <Button asChild variant="outline" size="icon" className="relative rounded-2xl border-slate-200 bg-white hover:bg-slate-50">
-            <Link href="/compare" aria-label="So sánh sản phẩm">
-              <Scale className="h-4 w-4" />
-              {compareCount > 0 ? (
-                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#0b57c5] px-1 text-[10px] font-semibold text-white">
-                  {compareCount}
-                </span>
-              ) : null}
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="icon" className="rounded-2xl border-slate-200 bg-white hover:bg-slate-50">
-            <Link href="/login" aria-label="Đăng nhập">
-              <LogIn className="h-4 w-4" />
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="icon" className="rounded-2xl border-slate-200 bg-white hover:bg-slate-50">
-            <Link href="/ai-history" aria-label="Lịch sử AI">
-              <User2 className="h-4 w-4" />
-            </Link>
-          </Button>
-          <StorefrontCartSheet />
+          ))}
         </div>
       </div>
     </header>
   );
 }
+

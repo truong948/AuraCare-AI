@@ -51,6 +51,30 @@ const needsByCategory: Record<
       context: "Nên dùng khi bạn đang tìm sản phẩm hướng đến mụn, dầu và lỗ chân lông.",
     },
   ],
+  medicine: [
+    {
+      id: "fever",
+      label: "Cảm sốt thông thường",
+      prompt: "thuốc hạ sốt giảm đau trị cảm cúm",
+      context: "Tìm nhanh các loại thuốc không kê đơn cho triệu chứng cảm cúm.",
+    }
+  ],
+  "personal-care": [
+    {
+      id: "daily",
+      label: "Chăm sóc hàng ngày",
+      prompt: "sữa tắm dầu gội chăm sóc cơ thể",
+      context: "Tìm kiếm các sản phẩm thiết yếu cho sinh hoạt hằng ngày.",
+    }
+  ],
+  "medical-devices": [
+    {
+      id: "monitoring",
+      label: "Theo dõi sức khỏe tại nhà",
+      prompt: "máy đo huyết áp nhiệt kế theo dõi sức khỏe",
+      context: "Thiết bị y tế gia đình tiện dụng và chính xác.",
+    }
+  ],
 };
 
 const budgetOptions = [
@@ -137,7 +161,7 @@ export function ConsultationBuilder() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94a3b8]">Bước 1</p>
           <h3 className="mt-2 text-lg font-semibold text-[#0f172a]">Chọn nhóm sản phẩm</h3>
           <div className="mt-4 flex flex-wrap gap-3">
-            {(["supplement", "skincare"] as ProductCategory[]).map((item) => {
+            {(["supplement", "skincare", "medicine", "personal-care", "medical-devices"] as ProductCategory[]).map((item) => {
               const active = item === category;
               return (
                 <button

@@ -16,16 +16,18 @@ import { useCart } from "@/components/cart/cart-context";
 import { ProductImage } from "@/components/storefront/product-image";
 import { getBadgeLabel, formatMockPrice, getProductBySlug } from "@/lib/mock-data/catalog";
 
-export function StorefrontCartSheet() {
+export function StorefrontCartSheet({ customTrigger }: { customTrigger?: React.ReactNode }) {
   const { items, subtotal, count, updateQuantity, removeItem } = useCart();
 
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="rounded-2xl bg-[#e8a950] px-4 text-slate-950 hover:bg-[#d59c48]">
-          <ShoppingBag className="mr-2 h-4 w-4" />
-          Giỏ hàng ({count})
-        </Button>
+        {customTrigger ? customTrigger : (
+          <Button className="rounded-2xl bg-[#e8a950] px-4 text-slate-950 hover:bg-[#d59c48]">
+            <ShoppingBag className="mr-2 h-4 w-4" />
+            Giỏ hàng ({count})
+          </Button>
+        )}
       </SheetTrigger>
 
       <SheetContent side="right" className="w-full border-[#d7e5df] bg-[#fcfdfc] p-0 sm:max-w-md">

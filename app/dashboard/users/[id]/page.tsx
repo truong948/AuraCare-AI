@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { requireAdmin, type AppUserProfile } from "@/lib/auth/roles";
 import { getConsultationsByUserId } from "@/lib/database-service";
 
-export default async function UserDetailAdminPage({ params }: { params: { id: string } }) {
+export default async function UserDetailAdminPage({ params }: { params: Promise<{ id: string }> }) {
   const { supabase } = await requireAdmin();
-  const userId = params.id;
+  const { id: userId } = await params;
 
   const { data: user, error } = (await (supabase as any)
     .from("profiles")

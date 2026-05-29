@@ -4,14 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { Bot, LoaderCircle, SearchCheck, Sparkles } from "lucide-react";
 import type { SearchResponsePayload } from "@/lib/ai/types";
-import { getCategoryLabel } from "@/lib/mock-data/catalog";
+import { getCategoryLabel, type ProductCategory } from "@/lib/mock-data/catalog";
 
 export function SearchAiWidget({
   initialQuery,
   category,
 }: {
   initialQuery: string;
-  category?: "supplement" | "skincare";
+  category?: ProductCategory;
 }) {
   const [query, setQuery] = useState(initialQuery);
   const [data, setData] = useState<SearchResponsePayload | null>(null);

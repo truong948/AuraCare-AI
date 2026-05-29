@@ -1,18 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Plus, ShieldCheck, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CompareToggleButton } from "@/components/storefront/compare-toggle-button";
 import { ProductImage } from "@/components/storefront/product-image";
-import { WishlistToggleButton } from "@/components/storefront/wishlist-toggle-button";
+import { useCart } from "@/components/cart/cart-context";
 import {
   formatMockPrice,
-  getBadgeLabel,
-  getCategoryLabel,
   type MockProduct,
 } from "@/lib/mock-data/catalog";
+import { toast } from "react-hot-toast";
 
 export function ProductCard({
   product,
@@ -21,9 +19,18 @@ export function ProductCard({
   product: MockProduct;
   onProductOpen?: (productSlug: string) => void;
 }) {
+  const { addItem } = useCart();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(product.slug, 1);
+    toast.success(`Đã thêm ${product.name} vào giỏ hàng`);
+  };
+
   return (
     <Card
-      className="group overflow-hidden rounded-[28px] border border-[#d7e5df] bg-[#ffffff] py-0 shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(15,23,42,0.1)]"
+      className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-lg"
       onClickCapture={(event) => {
         if (!onProductOpen) return;
         const target = event.target as HTMLElement | null;
@@ -33,62 +40,55 @@ export function ProductCard({
         }
       }}
     >
-      <Link href={`/products/${product.slug}`} className="block">
-        <ProductImage product={product} className="aspect-[4/3]" imageClassName="p-5 group-hover:scale-[1.03]">
-          <span className="absolute left-4 top-4 rounded-full bg-[rgba(255,255,255,0.95)] px-3 py-1 text-xs font-semibold text-[#5b8c7a] shadow-sm">
-            {getBadgeLabel(product.badge)}
+      <Link href={`/products/${product.slug}`} className="block relative">
+        <ProductImage product={product} className="aspect-square bg-white" imageClassName="p-4 group-hover:scale-105 transition-transform duration-300" />
+        <div className="absolute left-2 top-2 flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 rounded bg-[#0d9488] px-2 py-1 text-[10px] font-bold uppercase text-white shadow-sm">
+            <ShieldCheck className="h-3 w-3" /> Chính hãng
           </span>
-          <WishlistToggleButton productSlug={product.slug} className="absolute right-4 top-4 h-9 w-9" />
-        </ProductImage>
+          {product.badge && (
+            <span className="inline-block rounded bg-rose-500 px-2 py-1 text-[10px] font-bold uppercase text-white shadow-sm">
+              {product.badge}
+            </span>
+          )}
+        </div>
       </Link>
 
-      <CardContent className="space-y-4 px-5 py-5">
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#94a3b8]">
-            {product.brand} / {getCategoryLabel(product.category)}
-          </p>
-          <Link href={`/products/${product.slug}`} className="block">
-            <h3 className="line-clamp-2 text-base font-semibold leading-6 text-[#0f172a] transition group-hover:text-[#4f7c6d]">
-              {product.name}
-            </h3>
-          </Link>
-          <p className="line-clamp-2 text-sm leading-6 text-[#475569]">{product.shortDescription}</p>
+      <CardContent className="flex flex-col gap-2 p-4">
+        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+          {product.brand}
+        </p>
+        <Link href={`/products/${product.slug}`} className="block">
+          <h3 className="line-clamp-2 min-h-[40px] text-sm font-semibold leading-5 text-slate-800 transition group-hover:text-[#0d9488]">
+            {product.name}
+          </h3>
+        </Link>
+
+        <div className="flex items-center gap-1 text-xs text-slate-500">
+          <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+          <span className="font-medium text-slate-700">{product.rating.toFixed(1)}</span>
+          <span>({product.reviewCount})</span>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-[#64748b]">
-          <Star className="h-4 w-4 fill-[#e8a950] text-[#e8a950]" />
-          <span className="font-medium text-[#334155]">{product.rating.toFixed(1)}</span>
-          <span>({product.reviewCount} đánh giá)</span>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {product.concernTags.slice(0, 2).map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full bg-[#edf4f1] px-3 py-1 text-xs font-medium text-[#5b8c7a]"
-            >
-              {tag}
+        <div className="mt-2 flex items-end justify-between gap-2">
+          <div className="flex flex-col">
+            <span className="text-base font-bold text-rose-600">
+              {formatMockPrice(product.price)}
             </span>
-          ))}
-        </div>
-
-        <div className="flex items-end justify-between gap-3">
-          <div>
-            <p className="text-lg font-semibold text-[#0f172a]">{formatMockPrice(product.price)}</p>
-            <p className="text-sm text-[#94a3b8] line-through">
-              {formatMockPrice(product.compareAtPrice)}
-            </p>
+            {product.compareAtPrice > product.price && (
+              <span className="text-xs text-slate-400 line-through">
+                {formatMockPrice(product.compareAtPrice)}
+              </span>
+            )}
           </div>
-          <Button asChild className="rounded-2xl bg-[#5b8c7a] px-4 text-[#ffffff] hover:bg-[#4f7c6d]">
-            <Link href={`/products/${product.slug}`}>Xem chi tiết</Link>
+          <Button 
+            onClick={handleAddToCart}
+            size="icon" 
+            className="h-8 w-8 rounded-full bg-[#0d9488] text-white hover:bg-teal-700"
+            aria-label="Thêm vào giỏ"
+          >
+            <Plus className="h-4 w-4" />
           </Button>
-        </div>
-
-        <div className="flex items-center justify-between gap-3">
-          <CompareToggleButton productSlug={product.slug} />
-          <Link href="/wishlist" className="text-sm font-semibold text-[#5b8c7a]">
-            Xem wishlist
-          </Link>
         </div>
       </CardContent>
     </Card>

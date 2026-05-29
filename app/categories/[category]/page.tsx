@@ -24,6 +24,21 @@ const categoryAccents: Record<ProductCategory, { badge: string; panel: string; c
     panel: "bg-[linear-gradient(160deg,#fff7ea_0%,#fffdf8_100%)]",
     chip: "bg-[#fff3df] text-[#8e6423]",
   },
+  medicine: {
+    badge: "text-[#0d9488]",
+    panel: "bg-[linear-gradient(160deg,#f0fdfa_0%,#ccfbf1_100%)]",
+    chip: "bg-[#ccfbf1] text-[#0f766e]",
+  },
+  "personal-care": {
+    badge: "text-[#4f46e5]",
+    panel: "bg-[linear-gradient(160deg,#e0e7ff_0%,#c7d2fe_100%)]",
+    chip: "bg-[#c7d2fe] text-[#4338ca]",
+  },
+  "medical-devices": {
+    badge: "text-[#ea580c]",
+    panel: "bg-[linear-gradient(160deg,#ffedd5_0%,#fed7aa_100%)]",
+    chip: "bg-[#fed7aa] text-[#c2410c]",
+  },
 };
 
 function sortProducts(products: MockProduct[], sort: string) {

@@ -58,7 +58,10 @@ function buildEmptyProduct(): Partial<MockProduct> {
 
 const categoryOptions: { value: ProductCategory; label: string }[] = [
   { value: "supplement", label: "Thực phẩm bổ sung" },
-  { value: "skincare", label: "Chăm sóc da" },
+  { value: "skincare", label: "Dược mỹ phẩm" },
+  { value: "medicine", label: "Thuốc không kê đơn" },
+  { value: "personal-care", label: "Chăm sóc cá nhân" },
+  { value: "medical-devices", label: "Thiết bị y tế" },
 ];
 
 const badgeOptions = ["Best seller", "New", "AI pick", "Flash deal"] as const;
