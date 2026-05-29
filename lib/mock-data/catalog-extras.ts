@@ -61,7 +61,7 @@ function generateMockProducts(
       reviewCount: Math.floor(Math.random() * 500),
       originCountry: ["Vietnam", "Japan", "USA", "France", "Germany"][Math.floor(Math.random() * 5)],
       badge: ["Best seller", "New", "Flash deal", "AI pick"][Math.floor(Math.random() * 4)] as any,
-      image: images[category],
+      image: `https://placehold.co/600x600/0d9488/ffffff?text=${encodeURIComponent(name.split(" ").slice(0, 3).join(" "))}`,
       embeddingVector: null
     });
   }
