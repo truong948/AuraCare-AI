@@ -56,6 +56,10 @@ function sortProducts(products: MockProduct[], sort: string) {
   }
 }
 
+import { Pagination } from "@/components/storefront/pagination";
+
+const ITEMS_PER_PAGE = 24;
+
 export const dynamic = "force-dynamic";
 
 export default async function CategoryPage({
@@ -63,10 +67,11 @@ export default async function CategoryPage({
   searchParams,
 }: {
   params: Promise<{ category: string }>;
-  searchParams: Promise<{ sort?: string; badge?: string }>;
+  searchParams: Promise<{ sort?: string; badge?: string; page?: string }>;
 }) {
   const { category } = await params;
-  const { sort = "popular", badge = "all" } = await searchParams;
+  const { sort = "popular", badge = "all", page = "1" } = await searchParams;
+  const currentPage = parseInt(page, 10) || 1;
   const currentCategory = storefrontCategories.find((item) => item.id === category);
 
   if (!currentCategory) {
@@ -77,6 +82,11 @@ export default async function CategoryPage({
   const filteredProducts =
     badge === "all" ? baseProducts : baseProducts.filter((product) => product.badge === badge);
   const products = sortProducts(filteredProducts, sort);
+  
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentProducts = products.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
   const accent = categoryAccents[currentCategory.id];
   const benefitTags = Array.from(new Set(baseProducts.flatMap((product) => product.benefitTags))).slice(0, 4);
 
@@ -221,7 +231,7 @@ export default async function CategoryPage({
             <div>
               <p className={`text-sm font-semibold uppercase tracking-[0.2em] ${accent.badge}`}>Kết quả hiển thị</p>
               <p className="mt-2 text-sm text-[#64748b]">
-                {products.length} sản phẩm phù hợp với bộ lọc hiện tại
+                Hiển thị trang {currentPage} / {totalPages} (Tổng {products.length} sản phẩm)
               </p>
             </div>
             <Link href={`/products/${products[0]?.slug ?? ""}`} className="inline-flex items-center text-sm font-semibold text-[#5b8c7a]">
@@ -231,10 +241,14 @@ export default async function CategoryPage({
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {products.map((product) => (
+            {currentProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
+
+          {totalPages > 1 && (
+            <Pagination totalPages={totalPages} currentPage={currentPage} />
+          )}
 
           {products.length === 0 ? (
             <div className="mt-8 rounded-[28px] border border-dashed border-[#d7e5df] bg-[#ffffff] px-6 py-10 text-center">
