@@ -6,13 +6,23 @@ import Parser from "rss-parser";
 
 const parser = new Parser();
 
+interface Article {
+  id: string;
+  title: string | undefined;
+  excerpt: string;
+  link: string | undefined;
+  imageUrl: string;
+  source: string;
+  pubDate: Date;
+}
+
 async function getHealthNews() {
   const sources = [
     { name: "VnExpress", url: "https://vnexpress.net/rss/suc-khoe.rss" },
     { name: "Tuổi Trẻ", url: "https://tuoitre.vn/rss/suc-khoe.rss" }
   ];
 
-  let allArticles = [];
+  let allArticles: Article[] = [];
 
   for (const source of sources) {
     try {
@@ -28,7 +38,7 @@ async function getHealthNews() {
         }
         
         return {
-          id: item.guid || item.link,
+          id: item.guid || item.link || Math.random().toString(),
           title: item.title,
           excerpt: item.contentSnippet?.slice(0, 150) + "...",
           link: item.link,
