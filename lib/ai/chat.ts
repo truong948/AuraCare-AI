@@ -94,8 +94,13 @@ async function buildMockAnswer(input: ChatRequestInput): Promise<ChatResponsePay
     const searchResponse = await runSemanticSearch({ query: input.message, category: input.category, limit: 3 });
     suggestions = searchResponse.results.map(r => ({ product: r.product, score: r.score, reason: r.reason }));
     
-    if (suggestions.length > 0) {
-      answer = `Dựa trên mô tả của bạn, mình xin gợi ý một số sản phẩm phù hợp. ${knowledgeMatches[0] ? `Theo chuyên gia: ${knowledgeMatches[0].answer}` : ""}`;
+    // Check if it's a strong knowledge match (e.g. asking a specific question)
+    const isQuestion = input.message.includes("?") || input.message.toLowerCase().includes("thế nào") || input.message.toLowerCase().includes("tại sao");
+    
+    if (isQuestion && knowledgeMatches[0]) {
+      answer = knowledgeMatches[0].answer;
+    } else if (suggestions.length > 0) {
+      answer = `Dựa trên mô tả của bạn, mình xin gợi ý một số sản phẩm phù hợp.`;
     } else if (faqMatches[0]) {
       answer = knowledgeMatches[0]?.answer ?? faqMatches[0];
     } else {
@@ -132,7 +137,7 @@ async function buildGeminiAnswer(input: ChatRequestInput) {
   })).results;
   const knowledgeContext = buildKnowledgeContext(input.message, 3);
 
-  const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: "gemini-1.5-flash-latest" });
   const prompt = `
 Bạn là AuraCare AI, trợ lý tư vấn sản phẩm cho một storefront học thuật bằng tiếng Việt.
 
@@ -189,8 +194,8 @@ export async function runChatAssistant(input: ChatRequestInput): Promise<ChatRes
     if (geminiResponse) {
       return geminiResponse;
     }
-  } catch {
-    // Gracefully fall back to the deterministic local assistant.
+  } catch (err) {
+    console.error("Gemini fallback triggered due to error:", err);
   }
 
   return buildMockAnswer(input);

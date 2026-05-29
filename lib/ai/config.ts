@@ -12,6 +12,7 @@ export function isPlaceholderEnv(value: string | undefined) {
 
 export function getGoogleApiKey() {
   const key = process.env.GOOGLE_API_KEY;
+  console.log("GOOGLE_API_KEY in getGoogleApiKey:", key);
   return isPlaceholderEnv(key) ? null : key;
 }
 
