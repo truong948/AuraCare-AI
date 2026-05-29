@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { mockProducts, type MockProduct, type ProductCategory } from "@/lib/mock-data/catalog";
-import { getProducts, adminUpsertProduct, adminDeleteProduct } from "@/lib/database-service";
+import { getProducts, adminUpsertProduct, adminDeleteProduct, adminBulkUpsertProducts } from "@/lib/database-service";
 
 const DASHBOARD_PRODUCTS_KEY = "auracare_admin_products";
 const defaultProductImage = mockProducts[0]?.image ?? "";
@@ -212,7 +212,35 @@ export function DashboardProductManager() {
                 <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#5b8c7a]">Danh sách sản phẩm</p>
                 <p className="mt-2 text-sm text-[#475569]">Danh sách sản phẩm hỗ trợ chỉnh sửa và xóa trực tiếp.</p>
               </div>
-              <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-[#0d9488]">{products.length} items</span>
+              <div className="flex items-center gap-3">
+                <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-[#0d9488]">{products.length} items</span>
+                <Button 
+                  onClick={() => {
+                    if(confirm('Hành động này sẽ tải lại toàn bộ 60 sản phẩm mẫu vào danh sách hiện tại của bạn. Bạn có chắc chắn không?')) {
+                      setProducts(mockProducts);
+                    }
+                  }} 
+                  variant="outline" 
+                  size="sm" 
+                  className="rounded-full border-teal-200 text-teal-700 hover:bg-teal-50"
+                >
+                  Nạp dữ liệu mẫu
+                </Button>
+                <Button 
+                  onClick={async () => {
+                    if(confirm('Hành động này sẽ lưu toàn bộ danh sách sản phẩm hiện tại lên Supabase. Bạn có chắc chắn không?')) {
+                      const { success } = await adminBulkUpsertProducts(products);
+                      if(success) alert('Đồng bộ thành công!');
+                      else alert('Đồng bộ thất bại, hãy kiểm tra kết nối Supabase.');
+                    }
+                  }} 
+                  variant="default" 
+                  size="sm" 
+                  className="rounded-full bg-teal-600 hover:bg-teal-700 text-white"
+                >
+                  Đồng bộ lên Supabase
+                </Button>
+              </div>
             </div>
 
             <div className="mt-6 overflow-hidden rounded-2xl border border-[#dce6df] shadow-sm">

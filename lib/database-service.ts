@@ -163,6 +163,44 @@ export async function adminUpsertProduct(product: Partial<MockProduct>): Promise
   }
 }
 
+export async function adminBulkUpsertProducts(products: MockProduct[]): Promise<{ success: boolean; error?: any }> {
+  try {
+    const supabase = await getSupabaseClient();
+    const rows = products.map((product) => ({
+      slug: product.slug,
+      name: product.name,
+      brand: product.brand || "AuraCare Lab",
+      category: product.category,
+      short_description: product.shortDescription || "",
+      long_description: product.longDescription || "",
+      price: product.price || 0,
+      compare_at_price: product.compareAtPrice || 0,
+      stock_status: product.stockStatus === "low_stock" ? "out_of_stock" : product.stockStatus,
+      package_size: product.packageSize || "",
+      ingredients_text: product.ingredientsText || "",
+      usage_instructions: product.usageInstructions || "",
+      warnings: product.warnings || "",
+      concern_tags: product.concernTags || [],
+      symptom_tags: product.symptomTags || [],
+      benefit_tags: product.benefitTags || [],
+      searchable_text: product.searchableText || "",
+      rating: product.rating || 4.5,
+      review_count: product.reviewCount || 0,
+      origin_country: product.originCountry || "Vietnam",
+      badge: product.badge,
+      image: product.image,
+      embedding_vector: product.embeddingVector ?? null,
+    }));
+
+    const { error } = await supabase.from("products").upsert(rows, { onConflict: "slug" });
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    console.warn("Admin bulk upsert products to Supabase failed:", err);
+    return { success: false, error: err };
+  }
+}
+
 export async function adminDeleteProduct(slug: string): Promise<{ success: boolean; error?: any }> {
   try {
     const supabase = await getSupabaseClient();

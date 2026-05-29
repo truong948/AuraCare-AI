@@ -8,6 +8,7 @@ export interface AppUserProfile {
   id: string;
   email: string;
   full_name: string | null;
+  avatar_url: string | null;
   role: UserRole;
   status: UserStatus;
   created_at: string | null;
@@ -26,7 +27,7 @@ export async function getCurrentUserContext() {
 
   const { data: profile } = (await (supabase as any)
     .from("profiles")
-    .select("id,email,full_name,role,status,created_at,updated_at")
+    .select("id,email,full_name,avatar_url,role,status,created_at,updated_at")
     .eq("id", user.id)
     .maybeSingle()) as { data: AppUserProfile | null };
 
@@ -34,6 +35,7 @@ export async function getCurrentUserContext() {
     id: user.id,
     email: user.email ?? "",
     full_name: null,
+    avatar_url: null,
     role: "user",
     status: "active",
     created_at: null,
