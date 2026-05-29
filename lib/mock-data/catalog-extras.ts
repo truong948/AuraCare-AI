@@ -12,9 +12,27 @@ function generateMockProducts(
   };
 
   const images = {
-    medicine: "https://cdn.shopify.com/s/files/1/0066/7569/3639/files/NMHL000385PK001945ZEROSUGARB12GUMMIES_5A008300ccfront.png?v=1756999567",
-    "personal-care": "https://www.cerave.com/-/media/project/loreal/brand-sites/cerave/americas/us/products-v4/moisturizing-cream/cerave_moisturizing_cream_16oz_jar_front-700x700-v3.jpg?rev=7e37e9cc45754615b1532d77df5a0b52",
-    "medical-devices": "https://nuunlife.com/cdn/shop/files/Nuun_Tube_Upright_withTabs_Strawberry_lemonade_web_1200x1200.png?v=1744037007"
+    medicine: [
+      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1550572017-edb4b6099df3?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=600&q=80"
+    ],
+    "personal-care": [
+      "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1571781926291-c477eb31f8d4?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1555820598-c167449c2560?auto=format&fit=crop&w=600&q=80"
+    ],
+    "medical-devices": [
+      "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1583947581924-860bda6a45df?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1516245836540-1c60d922ce07?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80"
+    ]
   };
 
   const names = {
@@ -32,11 +50,13 @@ function generateMockProducts(
   const products: MockProduct[] = [];
   const categoryBrands = brands[category];
   const categoryNames = names[category];
+  const categoryImages = images[category];
   
   for (let i = 0; i < count; i++) {
     const brand = categoryBrands[i % categoryBrands.length];
     const name = categoryNames[i % categoryNames.length] + " " + (i + 1);
     const price = 50000 + Math.floor(Math.random() * 500000);
+    const image = categoryImages[i % categoryImages.length];
     
     products.push({
       id: `${category}-${startId + i}`,
@@ -61,7 +81,7 @@ function generateMockProducts(
       reviewCount: Math.floor(Math.random() * 500),
       originCountry: ["Vietnam", "Japan", "USA", "France", "Germany"][Math.floor(Math.random() * 5)],
       badge: ["Best seller", "New", "Flash deal", "AI pick"][Math.floor(Math.random() * 4)] as any,
-      image: `https://placehold.co/600x600/0d9488/ffffff?text=${encodeURIComponent(name.split(" ").slice(0, 3).join(" "))}`,
+      image: image,
       embeddingVector: null
     });
   }
