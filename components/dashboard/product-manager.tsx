@@ -100,6 +100,7 @@ export function DashboardProductManager() {
 
   useEffect(() => {
     if (selectedProduct) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDraft(selectedProduct);
     } else {
       setDraft(buildEmptyProduct());

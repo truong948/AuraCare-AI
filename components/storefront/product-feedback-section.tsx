@@ -24,22 +24,21 @@ export function ProductFeedbackSection({ productId, productSlug }: ProductFeedba
   const [isPending, startTransition] = useTransition();
 
   // Load reviews and user session
-  async function loadData() {
-    try {
-      const data = await getProductFeedbacks(productSlug);
-      setFeedbacks(data);
-
-      const supabase = createClient();
-      const { data: { user: sessionUser } } = await supabase.auth.getUser();
-      setUser(sessionUser);
-    } catch (err) {
-      console.error("Failed to load feedbacks/session data:", err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await getProductFeedbacks(productSlug);
+        setFeedbacks(data);
+
+        const supabase = createClient();
+        const { data: { user: sessionUser } } = await supabase.auth.getUser();
+        setUser(sessionUser);
+      } catch (err) {
+        console.error("Failed to load feedbacks/session data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
     loadData();
   }, [productId, productSlug]);
 

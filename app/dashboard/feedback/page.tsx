@@ -81,7 +81,7 @@ export default async function DashboardFeedbackPage() {
                   </div>
 
                   <p className="text-sm leading-6 text-slate-700 italic bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    "{fb.comment}"
+                    &quot;{fb.comment}&quot;
                   </p>
                 </div>
 

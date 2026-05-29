@@ -80,7 +80,7 @@ export default function AboutPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   <div className="absolute bottom-8 left-8 right-8">
                     <p className="text-white font-medium text-lg border-l-4 border-[#0d9488] pl-4">
-                      "Sức khỏe của bạn không phải là lĩnh vực có thể thỏa hiệp. Chúng tôi cam kết chất lượng trên từng sản phẩm."
+                      &quot;Sức khỏe của bạn không phải là lĩnh vực có thể thỏa hiệp. Chúng tôi cam kết chất lượng trên từng sản phẩm.&quot;
                     </p>
                   </div>
                 </div>

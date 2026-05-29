@@ -320,9 +320,11 @@ export function HomeAiChatWidget() {
                   {/* Image Preview (for user messages with images) */}
                   {message.image_url && (
                     <div className={`overflow-hidden rounded-2xl border border-slate-200 shadow-sm ${message.role === "user" ? "ml-auto" : ""}`}>
-                      <img 
+                      <Image 
                         src={message.image_url} 
                         alt="Ảnh tư vấn" 
+                        width={200}
+                        height={150}
                         className="max-h-48 w-auto rounded-2xl object-cover"
                       />
                     </div>
@@ -392,7 +394,7 @@ export function HomeAiChatWidget() {
           {pendingImagePreview && (
             <div className="border-t border-slate-100 bg-slate-50 px-4 py-2">
               <div className="relative inline-block">
-                <img src={pendingImagePreview} alt="Preview" className="h-20 w-auto rounded-lg border border-slate-200 object-cover" />
+                <Image src={pendingImagePreview} alt="Preview" width={100} height={80} className="h-20 w-auto rounded-lg border border-slate-200 object-cover" />
                 <button
                   type="button"
                   onClick={() => { setPendingImage(null); setPendingImagePreview(null); }}

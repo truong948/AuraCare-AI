@@ -74,7 +74,7 @@ export default async function DashboardConsultationsPage() {
                       Chi tiết mô tả
                     </span>
                     <p className="text-sm leading-6 text-slate-700 bg-slate-50 border border-slate-100 p-4 rounded-2xl italic">
-                      "{c.description}"
+                      &quot;{c.description}&quot;
                     </p>
                   </div>
 

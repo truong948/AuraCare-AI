@@ -190,7 +190,7 @@ export async function AdminDashboardOverview() {
                     </div>
                   </div>
                   <p className="mt-2 text-xs leading-5 text-slate-600 italic">
-                    "{fb.comment}"
+                    &quot;{fb.comment}&quot;
                   </p>
                   <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
                     <CalendarDays className="h-3 w-3" />
@@ -238,7 +238,7 @@ export async function AdminDashboardOverview() {
                       </div>
                       <div className="mt-2 space-y-1">
                         <p className="text-xs font-semibold text-slate-500">Mô tả của khách:</p>
-                        <p className="text-xs text-slate-600 line-clamp-2 italic">"{c.description}"</p>
+                        <p className="text-xs text-slate-600 line-clamp-2 italic">&quot;{c.description}&quot;</p>
                       </div>
                     </div>
                     <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">

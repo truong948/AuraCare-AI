@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ShieldCheck, UserCog, UsersRound, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { updateUserAccess } from "@/app/dashboard/users/actions";
@@ -108,7 +109,7 @@ export function UsersManager({ initialUsers }: { initialUsers: AppUserProfile[] 
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 overflow-hidden rounded-full bg-slate-100">
                         {user.avatar_url ? (
-                          <img src={user.avatar_url} alt={user.full_name || ""} className="h-full w-full object-cover" />
+                          <Image src={user.avatar_url} alt={user.full_name || ""} width={40} height={40} className="h-full w-full object-cover" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center bg-teal-100 text-teal-700">
                             <UserIcon className="h-5 w-5" />
@@ -177,7 +178,7 @@ export function UsersManager({ initialUsers }: { initialUsers: AppUserProfile[] 
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-slate-500">
                     <UsersRound className="mx-auto h-12 w-12 text-slate-300 mb-3" />
-                    <p>Chưa có tài khoản nào. Vui lòng chọn "Nạp dữ liệu mẫu" để xem demo.</p>
+                    <p>Chưa có tài khoản nào. Vui lòng chọn &quot;Nạp dữ liệu mẫu&quot; để xem demo.</p>
                   </td>
                 </tr>
               )}

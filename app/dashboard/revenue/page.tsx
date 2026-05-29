@@ -54,27 +54,6 @@ export default function RevenuePage() {
     return `${(value / 1000).toFixed(0)} K`;
   };
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white p-4 border border-[#dce6df] rounded-2xl shadow-md">
-          <p className="font-bold text-[#0f172a] mb-2">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <div key={index} className="flex flex-col gap-1">
-              <span className="text-sm text-[#5b8c7a]">{entry.name}</span>
-              <span className="font-semibold" style={{ color: entry.color }}>
-                {entry.name === 'Doanh thu' 
-                  ? `${entry.value.toLocaleString('vi-VN')} đ` 
-                  : `${entry.value} đơn`}
-              </span>
-            </div>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 rounded-[32px] border border-[#dce6df] bg-white p-6 shadow-sm">
@@ -168,3 +147,24 @@ export default function RevenuePage() {
     </div>
   );
 }
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-4 border border-[#dce6df] rounded-2xl shadow-md">
+        <p className="font-bold text-[#0f172a] mb-2">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex flex-col gap-1">
+            <span className="text-sm text-[#5b8c7a]">{entry.name}</span>
+            <span className="font-semibold" style={{ color: entry.color }}>
+              {entry.name === 'Doanh thu' 
+                ? `${entry.value.toLocaleString('vi-VN')} đ` 
+                : `${entry.value} đơn`}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
