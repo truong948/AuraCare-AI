@@ -73,8 +73,16 @@ export function DashboardProductManager() {
 
   useEffect(() => {
     async function init() {
-      const data = await getProducts();
-      setProducts(data);
+      try {
+        const data = await getProducts();
+        if (data && data.length > 0) {
+          setProducts(data);
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      setProducts(loadAdminProductsFallback());
     }
     init();
   }, []);
@@ -207,37 +215,58 @@ export function DashboardProductManager() {
               <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-[#0d9488]">{products.length} items</span>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 h-[800px] overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-200">
-              {products.map((product) => (
-                <div key={product.slug} className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-[#dce6df] bg-white transition-all hover:border-[#0d9488] hover:shadow-md">
-                  <div className="flex items-start gap-4 p-4">
-                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-slate-100 bg-slate-50">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={product.image} alt={product.name} className="absolute inset-0 h-full w-full object-cover" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="line-clamp-2 text-sm font-bold text-[#0f172a]" title={product.name}>{product.name}</p>
-                      <p className="mt-1 text-xs text-[#5b8c7a]">{product.brand}</p>
-                      <div className="mt-2 flex items-center gap-2">
-                        <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600">
-                          {product.category}
-                        </span>
-                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${product.stockStatus === 'in_stock' ? 'bg-teal-50 text-teal-700' : 'bg-red-50 text-red-700'}`}>
-                          {product.stockStatus === 'in_stock' ? 'Còn hàng' : 'Hết/Sắp hết'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 border-t border-slate-100 bg-slate-50 p-3">
-                    <Button onClick={() => setEditingSlug(product.slug)} variant="ghost" size="sm" className="h-8 flex-1 rounded-xl text-teal-700 hover:bg-teal-100 hover:text-teal-800">
-                      <Pencil className="mr-2 h-3.5 w-3.5" /> Sửa
-                    </Button>
-                    <Button onClick={() => handleDelete(product.slug)} variant="ghost" size="sm" className="h-8 flex-1 rounded-xl text-red-600 hover:bg-red-100 hover:text-red-700">
-                      <Trash2 className="mr-2 h-3.5 w-3.5" /> Xóa
-                    </Button>
-                  </div>
-                </div>
-              ))}
+            <div className="mt-6 overflow-hidden rounded-2xl border border-[#dce6df] shadow-sm">
+              <div className="max-h-[800px] overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-200">
+                <table className="w-full text-left text-sm text-[#475569]">
+                  <thead className="sticky top-0 bg-[#0d9488] text-xs uppercase text-white shadow-sm">
+                    <tr>
+                      <th className="px-4 py-3 font-semibold text-center w-16">STT</th>
+                      <th className="px-4 py-3 font-semibold w-24 text-center">Hình ảnh</th>
+                      <th className="px-4 py-3 font-semibold min-w-[200px]">Tên sản phẩm</th>
+                      <th className="px-4 py-3 font-semibold">Danh mục</th>
+                      <th className="px-4 py-3 font-semibold text-center">Trạng thái</th>
+                      <th className="px-4 py-3 font-semibold text-center w-40">Tác vụ</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#dce6df] bg-white">
+                    {products.map((product, index) => (
+                      <tr key={product.slug} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 text-center font-medium text-[#0f172a]">{index + 1}</td>
+                        <td className="px-4 py-3">
+                          <div className="relative mx-auto h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={product.image} alt={product.name} className="absolute inset-0 h-full w-full object-cover" />
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <p className="line-clamp-2 font-bold text-[#0f172a]" title={product.name}>{product.name}</p>
+                          <p className="mt-0.5 text-xs text-[#5b8c7a]">{product.brand}</p>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+                            {product.category}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${product.stockStatus === 'in_stock' ? 'bg-teal-50 text-teal-700' : 'bg-red-50 text-red-700'}`}>
+                            {product.stockStatus === 'in_stock' ? 'Còn hàng' : 'Hết/Sắp hết'}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center justify-center gap-1.5">
+                            <Button onClick={() => setEditingSlug(product.slug)} size="sm" className="h-7 rounded bg-amber-500 text-white hover:bg-amber-600 px-2.5 text-xs">
+                              <Pencil className="mr-1.5 h-3 w-3" /> Sửa
+                            </Button>
+                            <Button onClick={() => handleDelete(product.slug)} size="sm" className="h-7 rounded bg-red-500 text-white hover:bg-red-600 px-2.5 text-xs">
+                              <Trash2 className="mr-1.5 h-3 w-3" /> Xóa
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>          <div className="rounded-[32px] border border-[#dce6df] bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">

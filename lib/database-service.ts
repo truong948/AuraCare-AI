@@ -158,7 +158,7 @@ export async function adminUpsertProduct(product: Partial<MockProduct>): Promise
     if (error) throw error;
     return { success: true, data: mapDbProductToMock(data) };
   } catch (err: any) {
-    console.error("Admin upsert product to Supabase failed:", err);
+    console.warn("Admin upsert product to Supabase failed:", err);
     return { success: false, error: err };
   }
 }
@@ -174,7 +174,7 @@ export async function adminDeleteProduct(slug: string): Promise<{ success: boole
     if (error) throw error;
     return { success: true };
   } catch (err: any) {
-    console.error(`Admin delete product ${slug} from Supabase failed:`, err);
+    console.warn(`Admin delete product ${slug} from Supabase failed:`, err);
     return { success: false, error: err };
   }
 }
