@@ -33,7 +33,16 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold">Địa chỉ</h3>
-                    <p className="mt-1 text-[#475569]">Tòa nhà AuraCare, 123 Đường Sức Khỏe, Quận Y Tế, TP. Hồ Chí Minh</p>
+                    <div className="mt-2 space-y-3">
+                      <div>
+                        <p className="text-sm font-semibold text-[#0d9488]">Trụ sở chính:</p>
+                        <p className="text-sm text-[#475569]">Tòa nhà AuraCare, 123 Đường Sức Khỏe, Quận Y Tế, TP. Hồ Chí Minh</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-[#0d9488]">Chi nhánh Đà Lạt:</p>
+                        <p className="text-sm text-[#475569]">Số 1 Phù Đổng Thiên Vương, Phường 8, TP. Đà Lạt, Lâm Đồng</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -72,8 +81,13 @@ export default function ContactPage() {
                 {/* Mock Map Image */}
                 <div className="h-64 bg-slate-200 flex items-center justify-center relative">
                    <img src="/prime-dental/map.jpg" alt="Map" className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-multiply" />
-                   <div className="bg-white p-4 rounded-xl shadow-md z-10 font-bold text-[#0d9488] flex items-center gap-2">
-                     <MapPin className="h-5 w-5" /> Trụ sở chính AuraCare
+                   <div className="absolute left-4 top-4 flex flex-col gap-2 z-10">
+                     <div className="bg-white px-4 py-2.5 rounded-xl shadow-md font-bold text-[#0d9488] flex items-center gap-2 text-xs">
+                       <MapPin className="h-4 w-4 shrink-0" /> Trụ sở chính AuraCare (TP. HCM)
+                     </div>
+                     <div className="bg-white px-4 py-2.5 rounded-xl shadow-md font-bold text-[#0d9488] flex items-center gap-2 text-xs">
+                       <MapPin className="h-4 w-4 shrink-0" /> Chi nhánh Đà Lạt (1 Phù Đổng Thiên Vương)
+                     </div>
                    </div>
                 </div>
               </div>
