@@ -15,13 +15,40 @@ const quickPrompts = [
   "Sản phẩm chống lão hóa",
 ] as const;
 
+/** Định dạng suggestion phẳng được lưu vào Supabase */
+interface FlatSuggestion {
+  name: string;
+  slug: string;
+  price: number;
+  image: string;
+  reason?: string;
+}
+
 type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   content: string;
   image_url?: string;
-  suggestions?: ChatResponsePayload["suggestions"];
+  suggestions?: ChatResponsePayload["suggestions"] | FlatSuggestion[];
 };
+
+/** Chuẩn hóa suggestion về format nested để render nhất quán */
+function normalizeSuggestion(item: any): { product: { id: string; name: string; slug: string; price: number; image: string }; reason?: string } {
+  if (item && item.product) {
+    return item as any;
+  }
+  // Format phẳng từ Supabase history
+  return {
+    product: {
+      id: item?.slug ?? "",
+      name: item?.name ?? "",
+      slug: item?.slug ?? "",
+      price: item?.price ?? 0,
+      image: item?.image ?? "",
+    },
+    reason: item?.reason,
+  };
+}
 
 function createMessageId() {
   return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
@@ -151,7 +178,10 @@ export function HomeAiChatWidget() {
         content: msg.content,
         image_url: msg.image_url || null,
         suggestions: msg.suggestions ? JSON.parse(JSON.stringify(
-          msg.suggestions.map(s => ({ name: s.product.name, slug: s.product.slug, price: s.product.price, image: s.product.image, reason: s.reason }))
+          msg.suggestions.map(s => {
+            const n = normalizeSuggestion(s);
+            return { name: n.product.name, slug: n.product.slug, price: n.product.price, image: n.product.image, reason: n.reason };
+          })
         )) : null,
       });
     } catch {
@@ -345,30 +375,34 @@ export function HomeAiChatWidget() {
                     <div className="mt-2 space-y-2">
                       <p className="text-xs font-semibold text-[#64748b] ml-1">Sản phẩm gợi ý:</p>
                       <div className="flex flex-col gap-2">
-                        {message.suggestions.slice(0, 3).map((item) => (
-                          <Link
-                            key={item.product.id}
-                            href={`/products/${item.product.slug}`}
-                            className="group flex gap-3 rounded-xl border border-slate-200 bg-white p-2 transition hover:border-[#0d9488] shadow-sm hover:shadow-md"
-                          >
-                            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-slate-100">
-                              <Image 
-                                src={item.product.image || "/placeholder.png"} 
-                                alt={item.product.name} 
-                                fill 
-                                className="object-cover" 
-                              />
-                            </div>
-                            <div className="flex flex-col justify-center">
-                              <p className="line-clamp-2 text-xs font-semibold text-[#0f172a] group-hover:text-[#0d9488]">
-                                {item.product.name}
-                              </p>
-                              <p className="mt-1 text-xs font-bold text-[#e11d48]">
-                                {formatMockPrice(item.product.price)}
-                              </p>
-                            </div>
-                          </Link>
-                        ))}
+                        {message.suggestions.slice(0, 3).map((rawItem, idx) => {
+                          const item = normalizeSuggestion(rawItem);
+                          if (!item.product.slug) return null;
+                          return (
+                            <Link
+                              key={item.product.slug + idx}
+                              href={`/products/${item.product.slug}`}
+                              className="group flex gap-3 rounded-xl border border-slate-200 bg-white p-2 transition hover:border-[#0d9488] shadow-sm hover:shadow-md"
+                            >
+                              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-slate-100">
+                                <Image 
+                                  src={item.product.image || "/placeholder.png"} 
+                                  alt={item.product.name} 
+                                  fill 
+                                  className="object-cover" 
+                                />
+                              </div>
+                              <div className="flex flex-col justify-center">
+                                <p className="line-clamp-2 text-xs font-semibold text-[#0f172a] group-hover:text-[#0d9488]">
+                                  {item.product.name}
+                                </p>
+                                <p className="mt-1 text-xs font-bold text-[#e11d48]">
+                                  {formatMockPrice(item.product.price)}
+                                </p>
+                              </div>
+                            </Link>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
