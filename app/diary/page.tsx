@@ -14,7 +14,7 @@ export default async function DiaryPage() {
   } = await supabase.auth.getSession();
 
   if (!session) {
-    redirect("/auth");
+    redirect("/login");
   }
 
   const { data: entries, error } = await supabase
