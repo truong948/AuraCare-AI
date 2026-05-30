@@ -53,13 +53,34 @@ function generateMockProducts(
   const categoryImages = images[category];
   
   for (let i = 0; i < count; i++) {
+    const id = `${category}-${startId + i}`;
     const brand = categoryBrands[i % categoryBrands.length];
     const name = categoryNames[i % categoryNames.length] + " " + (i + 1);
-    const price = 50000 + Math.floor(Math.random() * 500000);
     const image = categoryImages[i % categoryImages.length];
+
+    // Hàm tạo số ngẫu nhiên deterministic dựa trên chuỗi id và offset
+    const random = (seedOffset: number) => {
+      let hash = 0;
+      const seedStr = `${id}-${seedOffset}`;
+      for (let j = 0; j < seedStr.length; j++) {
+        hash = seedStr.charCodeAt(j) + ((hash << 5) - hash);
+      }
+      const x = Math.sin(hash) * 10000;
+      return x - Math.floor(x);
+    };
+
+    const price = 50000 + Math.floor(random(1) * 500000);
+    const compareAtPrice = price + Math.floor(random(2) * 50000);
+    const stockStatus = random(3) > 0.8 ? "low_stock" : "in_stock";
+    const rating = 4 + random(4);
+    const reviewCount = Math.floor(random(5) * 500);
+    const countries = ["Vietnam", "Japan", "USA", "France", "Germany"];
+    const originCountry = countries[Math.floor(random(6) * countries.length)];
+    const badges = ["Best seller", "New", "Flash deal", "AI pick"];
+    const badge = badges[Math.floor(random(7) * badges.length)] as any;
     
     products.push({
-      id: `${category}-${startId + i}`,
+      id: id,
       slug: `${category}-${startId + i}-${name.toLowerCase().replace(/\s+/g, "-")}`,
       name: `${brand} - ${name}`,
       brand: brand,
@@ -67,8 +88,8 @@ function generateMockProducts(
       shortDescription: descriptions[category],
       longDescription: `Sản phẩm ${name} của thương hiệu ${brand}. ${descriptions[category]}`,
       price: price,
-      compareAtPrice: price + (Math.floor(Math.random() * 50000)),
-      stockStatus: Math.random() > 0.8 ? "low_stock" : "in_stock",
+      compareAtPrice: compareAtPrice,
+      stockStatus: stockStatus,
       packageSize: category === "medicine" ? "Hộp 10 vỉ" : category === "personal-care" ? "Chai 500ml" : "1 bộ",
       ingredientsText: "Thành phần an toàn, đã được kiểm nghiệm.",
       usageInstructions: "Đọc kỹ hướng dẫn sử dụng trước khi dùng.",
@@ -77,10 +98,10 @@ function generateMockProducts(
       symptomTags: ["general"],
       benefitTags: ["health"],
       searchableText: `${brand} ${name} ${category}`,
-      rating: 4 + Math.random(),
-      reviewCount: Math.floor(Math.random() * 500),
-      originCountry: ["Vietnam", "Japan", "USA", "France", "Germany"][Math.floor(Math.random() * 5)],
-      badge: ["Best seller", "New", "Flash deal", "AI pick"][Math.floor(Math.random() * 4)] as any,
+      rating: rating,
+      reviewCount: reviewCount,
+      originCountry: originCountry,
+      badge: badge,
       image: image,
       embeddingVector: null
     });
